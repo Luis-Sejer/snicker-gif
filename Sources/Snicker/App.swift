@@ -39,20 +39,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// There is no GIF SF Symbol, so draw a template badge that tints with the menu bar like one.
+    /// The app icon's two tilted cards as a template image, so it tints with the menu bar like an SF Symbol.
     private static func statusIcon() -> NSImage {
-        let image = NSImage(size: NSSize(width: 22, height: 16), flipped: false) { rect in
-            let badge = NSBezierPath(roundedRect: rect.insetBy(dx: 1.5, dy: 2), xRadius: 3.5, yRadius: 3.5)
-            badge.lineWidth = 1.4
-            NSColor.black.setStroke()
-            badge.stroke()
+        let image = NSImage(size: NSSize(width: 24, height: 18), flipped: false) { rect in
+            guard let context = NSGraphicsContext.current?.cgContext else { return false }
+            func card(width: CGFloat, height: CGFloat, dx: CGFloat, dy: CGFloat, degrees: CGFloat) -> NSBezierPath {
+                let path = NSBezierPath(roundedRect: NSRect(x: -width / 2, y: -height / 2, width: width, height: height), xRadius: 2.3, yRadius: 2.3)
+                var transform = AffineTransform(translationByX: rect.midX + dx, byY: rect.midY + dy)
+                transform.rotate(byDegrees: degrees)
+                path.transform(using: transform)
+                return path
+            }
+            NSColor.black.withAlphaComponent(0.45).setFill()
+            card(width: 13, height: 9, dx: 1.4, dy: 2.1, degrees: 12).fill()
+            NSColor.black.setFill()
+            card(width: 15, height: 10, dx: -0.4, dy: -1.3, degrees: -6).fill()
+
+            context.saveGState()
+            context.setBlendMode(.destinationOut)
+            context.translateBy(x: rect.midX - 0.4, y: rect.midY - 1.3)
+            context.rotate(by: -6 * .pi / 180)
             let label = NSAttributedString(string: "GIF", attributes: [
-                .font: NSFont.systemFont(ofSize: 8, weight: .heavy),
+                .font: NSFont.systemFont(ofSize: 6.8, weight: .black),
                 .foregroundColor: NSColor.black,
-                .kern: 0.3,
+                .kern: 0.2,
             ])
-            let labelSize = label.size()
-            label.draw(at: NSPoint(x: rect.midX - labelSize.width / 2, y: rect.midY - labelSize.height / 2))
+            let size = label.size()
+            label.draw(at: NSPoint(x: -size.width / 2, y: -size.height / 2 + 0.3))
+            context.restoreGState()
             return true
         }
         image.isTemplate = true
