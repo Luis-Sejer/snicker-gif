@@ -185,11 +185,15 @@
 
   function realShots() {
     // The two windows drift at different speeds, so they read as depth on a desktop.
-    const scrub = { trigger: ".real__stage", start: "top bottom", end: "bottom top", scrub: true };
-    gsap.set(".real__shot--messages", { yPercent: 6 });
-    gsap.set(".real__shot--popover", { yPercent: 14 });
-    gsap.to(".real__shot--messages", { yPercent: -6, ease: "none", scrollTrigger: scrub });
-    gsap.to(".real__shot--popover", { yPercent: -10, ease: "none", scrollTrigger: { ...scrub } });
+    // They start slightly tilted back in 3D and settle flat as they reach the middle of the screen.
+    const settle = { trigger: ".real__stage", start: "top bottom", end: "center center", scrub: 0.6 };
+    const drift = { trigger: ".real__stage", start: "top bottom", end: "bottom top", scrub: true };
+    gsap.set(".real__shot--messages", { rotationX: 14, rotationY: -16, yPercent: 6, transformOrigin: "50% 60%" });
+    gsap.set(".real__shot--popover", { rotationX: 12, rotationY: 18, yPercent: 14, transformOrigin: "50% 60%" });
+    gsap.to(".real__shot--messages", { rotationX: 0, rotationY: 0, ease: "power2.out", scrollTrigger: settle });
+    gsap.to(".real__shot--popover", { rotationX: 0, rotationY: 0, ease: "power2.out", scrollTrigger: { ...settle } });
+    gsap.to(".real__shot--messages", { yPercent: -6, ease: "none", scrollTrigger: drift });
+    gsap.to(".real__shot--popover", { yPercent: -10, ease: "none", scrollTrigger: { ...drift } });
   }
 
   function video() {

@@ -21,6 +21,8 @@
 
 <p align="center">
   <a href="https://github.com/Luis-Sejer/snicker-gif/releases/latest/download/Snicker.zip"><img src="https://img.shields.io/badge/Download%20for%20macOS-Snicker.zip-0a84ff?style=for-the-badge&logo=apple&logoColor=white" alt="Download Snicker for macOS"></a>
+  <br>
+  <a href="https://luis-sejer.github.io/snicker-gif/"><strong>luis-sejer.github.io/snicker-gif</strong></a>, try the live demo in your browser
 </p>
 
 <p align="center">

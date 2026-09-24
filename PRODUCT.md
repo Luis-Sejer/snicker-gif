@@ -42,14 +42,16 @@ Used mid-conversation in chat apps (Teams, Slack, Discord, Messages, Mail). Open
 
 ## Brand Commitments
 
-- Name: Snicker. Icon: warm orange→pink→purple gradient tile with two tilted cards, the front one reading "GIF", and a lopsided smirk. Menu bar icon: the same two cards as a template glyph, no smirk.
+- Name: Snicker. Icon: warm orange→pink→purple gradient tile with two tilted cards, the front one reading "GIF" (the smirk under them was removed at the user's request). Menu bar icon: the same two cards as a template glyph.
+- The icon's gradient lives in the icon only. Around it the brand is Apple's light palette with blue as the single accent; pink or red fields are not part of the brand (the user's decision).
 - The app's look is Apple Liquid Glass; the product voice is playful but plain.
 
 ## Evidence on Hand
 
 - `docs/assets/icon.png`: app icon (1024px)
-- `docs/assets/hero.webp`, `docs/assets/hero.png`: animated and still render of the app in use
-- `docs/assets/snicker-launch.mp4`: 15-second launch video with voiceover and sound
+- `docs/assets/hero.webp`, `docs/assets/hero.png`: animated and still render of the app in use (light theme)
+- `docs/assets/snicker-launch.mp4` and `poster.jpg`: 15-second launch video with voiceover and sound (light theme)
+- `docs/assets/screens/`: real screenshots taken by the user: a "goofy dog" search and a Messages conversation with pasted GIFs. Earlier screenshots with celebrities and branded characters were deliberately left out.
 - No testimonials, user counts, press or reviews exist yet. Do not invent any.
 
 ## Product Principles

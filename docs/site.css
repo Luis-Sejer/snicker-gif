@@ -1,4 +1,4 @@
-/* Apple's light gray desktop, with committed flat pink and black fields. Light only, on purpose: one excellent theme. */
+/* Apple's light gray desktop, paced with white bands and one black field. Light only, on purpose: one excellent theme. */
 :root {
   --paper: #f5f5f7;
   --surface: #ffffff;
@@ -15,7 +15,6 @@
   --shadow-small: 0 10px 24px rgb(0 0 0 / 0.14), 0 1px 3px rgb(0 0 0 / 0.08);
   --menubar-bg: rgb(246 246 248 / 0.72);
   --link: #0066cc;
-  --pink: #ff375f;
   --night: #0b0b0d;
   --blue: #0a84ff;
   /* Apple's system blue is too light for white text; filled controls use the deeper link blue. */
@@ -53,10 +52,10 @@ body {
   color: var(--ink);
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
-  caret-color: var(--pink);
+  caret-color: var(--blue-fill);
 }
 
-::selection { background: rgb(255 55 95 / 0.3); }
+::selection { background: rgb(0 113 227 / 0.22); }
 
 a { color: var(--link); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
 a:hover { text-decoration-thickness: 2px; }
@@ -517,7 +516,7 @@ main { padding-top: var(--menubar); }
   gap: clamp(32px, 6vw, 96px);
   align-items: center;
 }
-.real__stage { position: relative; min-height: 760px; }
+.real__stage { position: relative; min-height: 760px; perspective: 1400px; }
 /* The screenshots carry their own macOS window shadows (transparent PNG captures). */
 .real__shot { position: absolute; height: auto; }
 .real__shot--messages { right: 0; top: 0; width: min(62%, 400px); }
@@ -529,8 +528,9 @@ section { position: relative; }
 
 .field { padding: clamp(96px, 16vh, 180px) 0; }
 .field__inner { max-width: 1200px; margin: 0 auto; padding: 0 var(--gutter); }
-.field--pink { background: var(--pink); color: #1d1d1f; }
-.field--pink .lead, .field--pink .facts li { color: #1d1d1f; }
+/* A white band on the gray page: the way Apple paces its product pages. */
+.field--white { background: var(--surface); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.field--white .facts li { color: var(--ink-2); }
 .field--night { background: var(--night); color: #f5f5f7; }
 .field--night .lead { color: #a1a1a6; }
 
@@ -538,7 +538,7 @@ section { position: relative; }
 
 .facts { list-style: none; padding: 0; margin: 36px 0 0; display: grid; gap: 14px; }
 .facts li { padding-left: 22px; position: relative; max-width: 58ch; }
-.facts li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 8px; height: 8px; border-radius: 50%; background: #1d1d1f; }
+.facts li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 8px; height: 8px; border-radius: 50%; background: var(--blue-fill); }
 
 .right-click { position: relative; min-height: 320px; }
 .right-click__tile { position: absolute; left: 0; top: 0; width: 230px; }

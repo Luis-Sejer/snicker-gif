@@ -16,4 +16,6 @@ All notable changes to Snicker are documented here. The format is based on
 - Keyboard navigation: arrow keys to choose, <kbd>Return</kbd> to copy, <kbd>⇧</kbd> <kbd>Return</kbd> to copy the link and <kbd>⌘</kbd> <kbd>D</kbd> to favorite.
 - Settings for Launch at Login and Random File Names.
 - VoiceOver labels, actions and announcements, and support for Reduce Motion and Auto-play Animated Images.
-- A Liquid Glass design for macOS 26 and later.
+- A Liquid Glass design for macOS 26 and later, with a menu bar icon that matches the app icon.
+- Near-zero CPU use while closed: GIFs only animate while the popover is open.
+- The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
