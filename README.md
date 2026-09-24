@@ -149,7 +149,7 @@ Bug reports, ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBU
 
 ## Support
 
-Snicker is free and open source. If it makes your chats better, you can [buy me a coffee on Ko-fi](https://ko-fi.com/luissejer), or pick **Support Snicker…** from the app’s ⋯ menu.
+Snicker is free and open source. If it makes your chats better, you can [buy me a coffee on Ko-fi](https://ko-fi.com/snickerapp), or pick **Support Snicker…** from the app’s ⋯ menu.
 
 ## Credits
 
