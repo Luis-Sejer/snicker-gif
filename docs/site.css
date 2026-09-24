@@ -671,8 +671,9 @@ section { position: relative; }
   gap: 10px;
   padding: 0 26px 0 20px;
   border-radius: var(--radius-control);
-  border: 1px solid rgb(255 255 255 / 0.4);
-  background: rgb(255 255 255 / 0.24);
+  /* Dark translucent, like Apple's video controls, so it reads on any frame, light poster included. */
+  border: 1px solid rgb(255 255 255 / 0.18);
+  background: rgb(29 29 31 / 0.72);
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
   box-shadow: 0 16px 40px rgb(0 0 0 / 0.3);
@@ -682,7 +683,7 @@ section { position: relative; }
   transition: transform 0.2s var(--ease-out), background-color 0.2s;
 }
 .player__play svg { width: 26px; height: 26px; fill: currentColor; }
-.player__play:hover { background: rgb(255 255 255 / 0.34); }
+.player__play:hover { background: rgb(29 29 31 / 0.84); }
 @media (hover: hover) and (pointer: fine) { .player__play:hover { transform: scale(1.04); } }
 .player__play[hidden] { display: none; }
 
