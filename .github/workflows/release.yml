@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # build.sh reads the version from the tag
+
+      - name: Build
+        env:
+          SNICKER_KLIPY_KEY: ${{ secrets.KLIPY_API_KEY }}
+        run: |
+          # Public downloads must work out of the box, so never publish a build without a key.
+          test -n "$SNICKER_KLIPY_KEY" || { echo "::error::The KLIPY_API_KEY secret is not set"; exit 1; }
+          ./build.sh
+          ditto -c -k --keepParent build/Snicker.app build/Snicker.zip
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" build/Snicker.zip --title "Snicker ${GITHUB_REF_NAME#v}" --generate-notes

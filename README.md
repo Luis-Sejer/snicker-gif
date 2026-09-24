@@ -55,6 +55,8 @@ curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install
 
 It installs Snicker into `~/Applications` (no admin password needed) and launches it. Run it again any time to update.
 
+Every release is built by [GitHub Actions](.github/workflows/release.yml) straight from the tagged source, so what you download is exactly what is in this repository.
+
 <details>
 <summary><strong>Install by hand</strong></summary>
 
@@ -114,7 +116,7 @@ Source builds don’t include a KLIPY key, so on first launch Snicker asks for o
 |---|---|
 | `./build.sh` | builds `build/Snicker.app` |
 | `./build.sh install` | builds, installs to `~/Applications` and launches |
-| `./release.sh 1.4.0` | tags, builds and publishes a GitHub release (requires a KLIPY key) |
+| `./release.sh 1.4.0` | tags a release; GitHub Actions builds and publishes it |
 | `docs/src/render.sh` | re-renders the icon, README artwork and launch video |
 
 ## Credits
