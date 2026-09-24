@@ -32,7 +32,7 @@
 
 Most GIF pickers put the GIF on the clipboard as image data. Slack and Discord accept that; **Microsoft Teams does not** — it wants a file. Snicker puts both on the clipboard at once, so one ⌘V works everywhere.
 
-It is also small and quiet: a native SwiftUI app of under 1 MB, with no account, no Dock icon, and nothing running until you press the shortcut.
+It is also small and quiet: a native SwiftUI app of under 1 MB, with no account, no setup, no Dock icon, and nothing to do until you press the shortcut.
 
 ## Features
 
@@ -67,12 +67,9 @@ It installs Snicker into `~/Applications` (no admin password needed) and launche
 
 ## Getting started
 
-Snicker searches the [KLIPY](https://klipy.com) GIF library, which needs a free API key:
+Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the **GIF** icon in the menu bar, and start typing. There is nothing to set up and no account to create.
 
-1. Sign up on KLIPY’s [developer portal](https://docs.klipy.com), add a platform, and copy your API key.
-2. Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the **GIF** icon in the menu bar, and paste the key.
-
-That’s it. To have Snicker start with your Mac, add it under **System Settings → General → Login Items**.
+To have Snicker start with your Mac, add it under **System Settings → General → Login Items**.
 
 ## Usage
 
@@ -98,7 +95,7 @@ Each app picks the one it understands, so the GIF stays animated wherever you pa
 ## Privacy
 
 - Your searches go to KLIPY to find GIFs, and nowhere else.
-- Your API key is stored locally in Snicker’s preferences.
+- If you add your own KLIPY key, it is stored locally in Snicker’s preferences.
 - No analytics, no tracking, no account.
 
 ## Build from source
@@ -111,11 +108,13 @@ cd snicker-gif
 ./build.sh install
 ```
 
+Source builds don’t include a KLIPY key, so on first launch Snicker asks for one. Keys are free from KLIPY’s [developer portal](https://docs.klipy.com). To build one in instead, set `SNICKER_KLIPY_KEY` or put the key in `~/.config/snicker/klipy-key`; it is written into the app at build time and never committed.
+
 | Script | What it does |
 |---|---|
 | `./build.sh` | builds `build/Snicker.app` |
 | `./build.sh install` | builds, installs to `~/Applications` and launches |
-| `./release.sh 1.2.0` | tags, builds and publishes a GitHub release |
+| `./release.sh 1.4.0` | tags, builds and publishes a GitHub release (requires a KLIPY key) |
 | `docs/src/render.sh` | re-renders the icon, README artwork and launch video |
 
 ## Credits

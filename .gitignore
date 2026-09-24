@@ -2,3 +2,4 @@
 build/
 *.app
 .DS_Store
+Sources/Snicker/BundledKey.swift

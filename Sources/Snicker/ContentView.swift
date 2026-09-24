@@ -13,6 +13,7 @@ final class ViewState: ObservableObject {
     @Published var pendingID: String?
     @Published var copiedID: String?
     @Published var apiKeyDraft = ""
+    @Published var isEditingKey = false
 }
 
 enum Layout {
@@ -26,7 +27,8 @@ enum Layout {
 struct ContentView: View {
     let close: () -> Void
 
-    @AppStorage(Klipy.apiKeyDefaultsKey) private var apiKey = ""
+    /// A key the user entered themselves; it takes precedence over the one built into release builds.
+    @AppStorage(Klipy.apiKeyDefaultsKey) private var customApiKey = ""
     @StateObject private var state = ViewState()
     @FocusState private var searchFocused: Bool
 
@@ -36,8 +38,8 @@ struct ContentView: View {
 
     var body: some View {
         Group {
-            if apiKey.isEmpty {
-                WelcomeView(apiKey: $apiKey, state: state)
+            if apiKey.isEmpty || state.isEditingKey {
+                WelcomeView(customApiKey: $customApiKey, state: state, canCancel: !apiKey.isEmpty)
             } else {
                 browser
             }
@@ -48,6 +50,10 @@ struct ContentView: View {
             state.copyError = nil
             searchFocused = true
         }
+    }
+
+    private var apiKey: String {
+        customApiKey.isEmpty ? BundledKey.value : customApiKey
     }
 
     // MARK: Browser
@@ -148,7 +154,13 @@ struct ContentView: View {
             Text("Powered by KLIPY")
                 .foregroundStyle(.tertiary)
             Menu {
-                Button("Change API Key…", systemImage: "key") { apiKey = "" }
+                Button("Use Your Own API Key…", systemImage: "key") {
+                    state.apiKeyDraft = customApiKey
+                    state.isEditingKey = true
+                }
+                if !customApiKey.isEmpty && !BundledKey.value.isEmpty {
+                    Button("Use Built-in API Key", systemImage: "arrow.uturn.backward") { customApiKey = "" }
+                }
                 Divider()
                 Button("Quit Snicker", systemImage: "power") { NSApp.terminate(nil) }
             } label: {
@@ -319,9 +331,11 @@ private struct GifTile: View {
 
 // MARK: - Welcome
 
+/// Shown when there is no key at all (a source build without one) or when the user chooses their own.
 private struct WelcomeView: View {
-    @Binding var apiKey: String
+    @Binding var customApiKey: String
     @ObservedObject var state: ViewState
+    let canCancel: Bool
 
     private var trimmedDraft: String {
         state.apiKeyDraft.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -335,9 +349,11 @@ private struct WelcomeView: View {
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.tint)
             VStack(spacing: 6) {
-                Text("Welcome to Snicker")
+                Text(canCancel ? "Use Your Own API Key" : "Welcome to Snicker")
                     .font(.title2.weight(.bold))
-                Text("Snicker searches KLIPY’s GIF library. Paste your free API key to get started.")
+                Text(canCancel
+                    ? "Snicker includes a KLIPY key. Paste your own free key to use it instead."
+                    : "Snicker searches KLIPY’s GIF library. Paste your free API key to get started.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -356,6 +372,12 @@ private struct WelcomeView: View {
                 .controlSize(.large)
                 .keyboardShortcut(.defaultAction)
                 .disabled(trimmedDraft.isEmpty)
+                if canCancel {
+                    Button("Cancel") { state.isEditingKey = false }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.secondary)
+                        .keyboardShortcut(.cancelAction)
+                }
             }
             Link("Get a key at docs.klipy.com", destination: URL(string: "https://docs.klipy.com")!)
                 .font(.caption)
@@ -366,7 +388,8 @@ private struct WelcomeView: View {
 
     private func save() {
         guard !trimmedDraft.isEmpty else { return }
-        apiKey = trimmedDraft
+        customApiKey = trimmedDraft
+        state.isEditingKey = false
     }
 }
 
