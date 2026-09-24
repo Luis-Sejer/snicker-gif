@@ -186,11 +186,14 @@
   function realShots() {
     // The two windows drift at different speeds, so they read as depth on a desktop.
     // They start slightly tilted back in 3D and settle flat as they reach the middle of the screen.
-    const settle = { trigger: ".real__stage", start: "top bottom", end: "center center", scrub: 0.6 };
-    gsap.set(".real__shot--glass", { rotationX: 12, rotationY: 16, transformOrigin: "50% 60%" });
-    gsap.set(".real__shot--messages", { rotationX: 14, rotationY: -18, transformOrigin: "50% 60%" });
-    gsap.to(".real__shot--glass", { rotationX: 0, rotationY: 0, ease: "power2.out", scrollTrigger: settle });
-    gsap.to(".real__shot--messages", { rotationX: 0, rotationY: 0, ease: "power2.out", scrollTrigger: { ...settle } });
+    // One arc across the whole pass: tilted back on the way in, flat while you read, tipping forward on the way out.
+    gsap.set([".real__shot--glass", ".real__shot--messages"], { transformOrigin: "50% 60%" });
+    gsap.timeline({ scrollTrigger: { trigger: ".real__stage", start: "top 95%", end: "bottom 5%", scrub: 0.8 } })
+      // Linear, so the tilt resolves steadily and is flat exactly as the windows reach the middle of the screen.
+      .fromTo(".real__shot--glass", { rotationX: 26, rotationY: 22 }, { rotationX: 0, rotationY: 0, duration: 0.5, ease: "none" }, 0)
+      .fromTo(".real__shot--messages", { rotationX: 28, rotationY: -26 }, { rotationX: 0, rotationY: 0, duration: 0.5, ease: "none" }, 0)
+      .to(".real__shot--glass", { rotationX: -18, rotationY: -14, duration: 0.4, ease: "none" }, 0.6)
+      .to(".real__shot--messages", { rotationX: -20, rotationY: 16, duration: 0.4, ease: "none" }, 0.6);
     // On wider screens the windows also drift at different depths; on phones they stay put so they never collide.
     if (window.matchMedia("(min-width: 901px)").matches) {
       const drift = { trigger: ".real__stage", start: "top bottom", end: "bottom top", scrub: true };

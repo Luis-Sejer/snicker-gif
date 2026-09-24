@@ -516,7 +516,7 @@ main { padding-top: var(--menubar); }
   gap: clamp(32px, 6vw, 96px);
   align-items: center;
 }
-.real__stage { position: relative; min-height: 720px; perspective: 1400px; }
+.real__stage { position: relative; min-height: 720px; perspective: 900px; }
 .real__shot { position: absolute; height: auto; }
 /* A slice of a real desktop: the menu bar and the glass popover over the wallpaper. */
 .real__shot--glass { left: 0; top: 0; width: min(76%, 540px); border-radius: 18px; box-shadow: var(--shadow-window); }
