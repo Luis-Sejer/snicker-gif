@@ -17,6 +17,8 @@ final class ViewState: ObservableObject {
     @Published var copiedID: String?
     @Published var apiKeyDraft = ""
     @Published var isEditingKey = false
+    /// GIFs only animate while the popover is open; a hidden popover must cost nothing.
+    @Published var isShown = false
     /// The result Return copies, moved with the arrow keys.
     @Published var selectedIndex = 0
     @Published var hasNavigated = false
@@ -81,7 +83,12 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSPopover.didShowNotification)) { _ in
             state.copiedID = nil
             state.notice = nil
+            state.isShown = true
             searchFocused = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSPopover.didCloseNotification)) { _ in
+            state.isShown = false
+            state.hoveredID = nil
         }
     }
 
@@ -458,6 +465,7 @@ private struct MasonryGrid: View {
                                 isHovered: gif.id == state.hoveredID,
                                 isPending: gif.id == state.pendingID,
                                 isCopied: gif.id == state.copiedID,
+                                isShown: state.isShown,
                                 onHover: { hovering in state.hoveredID = hovering ? gif.id : nil },
                                 actions: actions
                             )
@@ -493,6 +501,7 @@ private struct GifTile: View {
     let isHovered: Bool
     let isPending: Bool
     let isCopied: Bool
+    let isShown: Bool
     let onHover: (Bool) -> Void
     let actions: GifActions
 
@@ -509,7 +518,7 @@ private struct GifTile: View {
     }
 
     var body: some View {
-        AnimatedGif(url: gif.previewURL, animates: playAnimatedImages || isHovered || isHighlighted)
+        AnimatedGif(url: gif.previewURL, animates: isShown && (playAnimatedImages || isHovered || isHighlighted))
             .aspectRatio(gif.aspectRatio, contentMode: .fit)
             .background(.quaternary)
             .overlay { if isPending || isCopied { Color.black.opacity(0.25) } }
@@ -688,13 +697,19 @@ private final class PassthroughImageView: NSImageView {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
+/// Bounded, so browsing many searches doesn't keep every preview in memory; the cost is the GIF's byte size.
 private enum PreviewCache {
-    private static let cache = NSCache<NSURL, NSImage>()
+    private static let byteLimit = 24 * 1024 * 1024
+    private static let cache: NSCache<NSURL, NSImage> = {
+        let cache = NSCache<NSURL, NSImage>()
+        cache.totalCostLimit = byteLimit
+        return cache
+    }()
 
     static func image(for url: URL) async -> NSImage? {
         if let cached = cache.object(forKey: url as NSURL) { return cached }
         guard let (data, _) = try? await URLSession.shared.data(from: url), let image = NSImage(data: data) else { return nil }
-        cache.setObject(image, forKey: url as NSURL)
+        cache.setObject(image, forKey: url as NSURL, cost: data.count)
         return image
     }
 }
