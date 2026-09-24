@@ -1,12 +1,7 @@
 <!doctype html><html><head><meta charset="utf-8"><style>
 *{box-sizing:border-box}
 html,body{margin:0;width:1280px;height:720px;overflow:hidden;font-family:system-ui,-apple-system,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
-.desk{position:absolute;inset:0;background:
-  radial-gradient(ellipse 60% 70% at 15% 85%,#ff7a3d 0,transparent 60%),
-  radial-gradient(ellipse 55% 60% at 85% 20%,#6a4bff 0,transparent 60%),
-  radial-gradient(ellipse 50% 60% at 60% 95%,#e0307a 0,transparent 60%),
-  radial-gradient(ellipse 40% 40% at 35% 25%,#1e90ff 0,transparent 70%),
-  #120d24}
+.desk{position:absolute;inset:0;background:#ff375f}
 .menubar{position:absolute;top:0;left:0;right:0;height:30px;background:rgba(20,16,36,.35);backdrop-filter:blur(20px) saturate(1.6);
   display:flex;align-items:center;padding:0 16px;color:#fff;font-size:13.5px;font-weight:600;gap:18px}
 .menubar .apple{font-size:16px}
@@ -29,7 +24,7 @@ html,body{margin:0;width:1280px;height:720px;overflow:hidden;font-family:system-
 .grid{display:flex;gap:6px}
 .col{flex:1;display:flex;flex-direction:column;gap:6px}
 .t{border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;overflow:hidden}
-.t::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent 50%)}
+
 .ring{box-shadow:0 0 0 2.5px #0a84ff inset}
 .copied{position:absolute;z-index:2;font-size:14px;font-weight:600;padding:7px 13px;border-radius:16px;background:rgba(255,255,255,.22);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.3)}
 .dimmed::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.25);z-index:1}
@@ -63,7 +58,7 @@ html,body{margin:0;width:1280px;height:720px;overflow:hidden;font-family:system-
 .bub{max-width:260px;padding:9px 13px;border-radius:18px;font-size:14px;line-height:1.35;background:rgba(255,255,255,.13)}
 .msg.me .bub{background:#0a84ff}
 .name{font-size:11px;opacity:.55;margin:0 0 3px 4px}
-.gifbub{width:200px;height:150px;border-radius:16px;background:linear-gradient(135deg,#ffd60a,#ff7a00);display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;overflow:hidden}
+.gifbub{width:200px;height:150px;border-radius:16px;background:#ffb800;display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;overflow:hidden}
 .gifbub .tag{position:absolute;left:8px;bottom:8px;font-size:10px;font-weight:800;letter-spacing:.5px;padding:2px 5px;border-radius:4px;background:rgba(0,0,0,.35)}
 .compose{position:absolute;left:12px;right:12px;bottom:12px;height:40px;border-radius:20px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;padding:0 16px;font-size:14px;opacity:.9}
 .compose span{opacity:.45}
@@ -72,7 +67,7 @@ html,body{margin:0;width:1280px;height:720px;overflow:hidden;font-family:system-
 <div class="desk"></div>
 <div class="menubar"><span class="apple"></span><span>Finder</span><span class="dim">File</span><span class="dim">Edit</span><span class="dim">View</span><span class="dim">Go</span><span class="dim">Window</span>
  <div class="right"><span class="gifwrap"><svg width="24" height="18" viewBox="0 0 24 18" style="display:block"><defs><mask id="cut" maskUnits="userSpaceOnUse" x="-12" y="-9" width="24" height="18"><rect x="-12" y="-9" width="24" height="18" fill="#fff"/><text x="0" y="0.4" text-anchor="middle" dominant-baseline="middle" font-family="system-ui" font-weight="900" font-size="6.8" letter-spacing=".2" fill="#000">GIF</text></mask></defs><rect x="-6.5" y="-4.5" width="13" height="9" rx="2.3" fill="#fff" fill-opacity=".45" transform="translate(13.4 6.9) rotate(-12)"/><g transform="translate(11.6 10.3) rotate(6)"><rect x="-7.5" y="-5" width="15" height="10" rx="2.3" fill="#fff" mask="url(#cut)"/></g></svg></span><span>Thu 24 Sep 13.37</span></div></div>
-<div class="copy"><img class="icon" src="../assets/icon.png"><h1>Snicker</h1><p>GIF search in your Mac menu bar. Press a shortcut, click a GIF, paste it anywhere — even Teams.</p>
+<div class="copy"><img class="icon" src="../assets/icon.png"><h1>Snicker</h1><p>The perfect reaction, one shortcut away. Search GIFs from your menu bar and paste them anywhere.</p>
  <div class="keys"><div class="key">⌘</div><div class="key">⌥</div><div class="key">V</div></div></div>
 <div id="stage"></div>
 <script>
@@ -104,12 +99,12 @@ if(t>=OPEN_AT&&t<CLOSE_AT+0.3){
     const p=easeOut(prog(setStart+(n++)*0.035,0.3)), bob=Math.sin((t*5)+n)*4, rot=Math.sin(t*4+n*1.7)*6;
     const target=party&&ci===1&&ri===1, hover=target&&t>=POINT_AT+0.85, copied=target&&t>=CLICK_AT;
     const hs=hover?1.04:1;
-    tiles+=`<div class="t${copied?' dimmed':''}${ci===0&&ri===0&&party?' ring':''}" id="${target?'target':''}" style="height:${g[3]}px;background:linear-gradient(135deg,${g[1]},${g[2]});opacity:${p};transform:translateY(${(1-p)*12}px) scale(${(0.95+0.05*p)*hs});${hover?'z-index:3;box-shadow:0 10px 24px rgba(0,0,0,.35);':''}"><span class="e" style="transform:translateY(${bob}px) rotate(${rot}deg)">${g[0]}</span>${hover&&!copied?`<span style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:12px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;z-index:3">${STAR_SVG}</span>`:''}${copied?`<span class="copied" style="transform:scale(${back(prog(CLICK_AT,0.3))})">${CHK}Copied</span>`:''}</div>`;
+    tiles+=`<div class="t${copied?' dimmed':''}${ci===0&&ri===0&&party?' ring':''}" id="${target?'target':''}" style="height:${g[3]}px;background:${g[1]};opacity:${p};transform:translateY(${(1-p)*12}px) scale(${(0.95+0.05*p)*hs});${hover?'z-index:3;box-shadow:0 10px 24px rgba(0,0,0,.35);':''}"><span class="e" style="transform:translateY(${bob}px) rotate(${rot}deg)">${g[0]}</span>${hover&&!copied?`<span style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:12px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;z-index:3">${STAR_SVG}</span>`:''}${copied?`<span class="copied" style="transform:scale(${back(prog(CLICK_AT,0.3))})">${CHK}Copied</span>`:''}</div>`;
   }); tiles+='</div>' });
   const chip=(label,on)=>`<span class="chip${on?' on':''}">${label}</span>`;
   stage.innerHTML+=`<div class="arrow" style="left:1106px;opacity:${op}"></div>
   <div class="pop" style="opacity:${op};transform:scale(${sc})">
-   <div class="search"><span class="mag">${MAG}</span>${query?`<span>${query}</span>`:'<span style="opacity:.45">Search GIFs</span>'}${caret?'<span class="caret"'+(query?'':' style="margin-left:-98px"')+'></span>':''}${query?`<span class="x">${XM}</span>`:''}</div>
+   <div class="search"><span class="mag">${MAG}</span>${query?`<span>${query}</span>`:'<span style="opacity:.45">Search KLIPY</span>'}${caret?'<span class="caret"'+(query?'':' style="margin-left:-98px"')+'></span>':''}${query?`<span class="x">${XM}</span>`:''}</div>
    <div class="chips">${chip('⭐ Favorites')}${chip('🕘 Recent')}${chip('🔥 Trending',!query)}${(query.length>=3?['party time','party hard','party animal']:['Thank you','LOL','Yes','Party']).map(c=>chip(c)).join('')}</div>
    <div class="grid">${tiles}</div>
    <div class="footer"><span class="hint">⏎ copy · ⇧⏎ link · ⌘D favorite</span><span class="klipy">Powered by KLIPY</span><span class="dots">•••</span></div>

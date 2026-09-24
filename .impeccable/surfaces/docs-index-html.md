@@ -11,15 +11,15 @@ Landing page for Snicker at `docs/index.html`, served by GitHub Pages. Visitor m
 
 ## Direction contract
 
-THESIS: The site is a Mac desktop, and Snicker is already running on it. The category default, a centered headline over a screenshot with a feature grid, is refused; the product is demonstrated live in the first viewport.
+THESIS: The site is a Mac desktop in light mode, and Snicker is already running on it. The category default (centered headline over a screenshot, feature card grid) and the AI-default dark gradient glow are both refused; the product is demonstrated live in the first viewport, and the page reads like an Apple editorial product page.
 
-OWN-WORLD: A deep dusk wallpaper of the icon's colors (orange #ff9f0a, pink #ff375f, purple #bf5af2, blue #0a84ff) blooming over near-black violet #120d24. A translucent macOS menu bar across the top; every surface is Liquid Glass: blurred, saturated, hairline-lit edges, 26px continuous corners. SF Pro via the system stack, tight display tracking. Emoji-on-gradient tiles stand in for GIFs, labeled as illustrations.
+OWN-WORLD: Apple light gray desktop #f5f5f7 with ink #1d1d1f; macOS light-mode glass (white translucent, hairline edge, soft layered shadow) for the menu bar and popover. Editorial rhythm by flat, fully committed fields: one Snicker pink #ff375f field and one black #0b0b0d field, no gradients anywhere except inside GIF content. SF Pro via the system stack at Apple's semibold display weight, large and tight. Small draggable GIF windows with traffic lights scattered on the desktop; a big marquee of reaction words.
 
-STORY: A visitor sees a working GIF popover hanging from the menu bar, types or clicks a chip, clicks a GIF, and sees it copied. They learn it pastes into Teams because it writes both a file and image data, then take the one-line install.
+STORY: A visitor sees a working GIF popover hanging from the menu bar, types or clicks a chip, clicks a GIF, and sees it copied. They see the right-click menu, learn it pastes everywhere (Teams included) because it writes both a file and image data, then take the one-line install.
 
-FIRST VIEWPORT: Menu bar full width. Left 45%: app icon, the "Snicker" wordmark at display scale, a one-line promise, and ⌘⌥V keycaps above the primary Download button plus a copyable curl line. Right: the live popover (420×560) anchored under the menu bar icon, with its arrow, search focused and Trending loaded. Pressing ⌘⌥V toggles it. The search field is not auto-focused on page load: autofocus would take keyboard focus from the skip link and jump the page on phones. It focuses when ⌘⌥V or the menu bar icon opens the popover.
+FIRST VIEWPORT: Menu bar full width (light). Left: app icon, the "Snicker" wordmark at display scale, a one-line promise, and ⌘⌥V keycaps above the primary Download button plus a copyable curl line. Right: the live popover (420×560) anchored under the menu bar icon with its arrow, Trending loaded. Around them, a few draggable GIF windows sit on the desktop. Pressing ⌘⌥V toggles the popover. The search field is not auto-focused on page load: autofocus would take keyboard focus from the skip link and jump the page on phones. It focuses when ⌘⌥V or the menu bar icon opens the popover.
 
-FORM: The Menu Bar Site; position 7 of 7 on the ordered list (dealt by the roll, chosen by the user); raised by "Clipboard Anatomy" (position 4) as the second section. Seed key f4cd5ac6.
+FORM: The Menu Bar Site; position 7 of 7 on the ordered list (dealt by the roll, chosen by the user); raised by "Clipboard Anatomy" (position 4). Seed key f4cd5ac6. World revised by the user (2026-09-24): "more like Apple and less AI gradient, more editorial", references heyclicky.com and superlist.craftedbygc.com, keep the menu bar header. The user-pinned direction replaced the dusk-wallpaper world without a new roll.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
@@ -29,7 +29,7 @@ Typing in the page's popover actually filters the grid, and clicking a GIF shows
 
 ## Signature interaction and motion grammar
 
-Signature: the working popover, toggled by ⌘⌥V or the menu bar icon. Motion: glass springs from the menu bar icon (scale from top center with slight overshoot), tiles stagger in, the Copied badge pops; the anatomy section splits the GIF into two layers on scroll. All motion stops under prefers-reduced-motion.
+Signature: the working popover, toggled by ⌘⌥V or the menu bar icon. Motion: glass springs from the menu bar icon (scale from top center with slight overshoot), tiles stagger in only when the results change, the Copied badge pops in place without re-rendering the grid; desktop GIF windows drag; the reaction marquee scrolls; the anatomy section splits the GIF into two layers on scroll. All motion stops under prefers-reduced-motion.
 
 ## Unresolved
 

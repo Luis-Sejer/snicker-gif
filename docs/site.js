@@ -34,6 +34,7 @@ const QUICK_PICKS = ["Thank you", "LOL", "Yes", "No", "Wow", "Party", "Facepalm"
 const SUGGESTIONS = ["party time", "party hard", "happy birthday", "thank you so much", "lol funny", "wow amazing", "good morning coffee", "no way"];
 const COLUMN_COUNT = 3;
 const COPIED_LINGER_MS = 900;
+const ENTRANCE_MS = 1200;
 
 const ICONS = {
   star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>',
@@ -46,9 +47,11 @@ const state = {
   query: "",
   mode: "trending", // trending | favorites | recents | search
   selected: 0,
+  navigated: false,
   favorites: new Set(),
   recents: [],
   copiedID: null,
+  shownKey: "",
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -100,9 +103,8 @@ function renderChips() {
   }
 }
 
-function renderGrid() {
-  const gifs = results();
-  state.selected = Math.min(state.selected, Math.max(gifs.length - 1, 0));
+/** Builds the tiles. Only runs when the set of results changes, so copying or starring never re-renders the grid. */
+function buildGrid(gifs) {
   const columns = Array.from({ length: COLUMN_COUNT }, () => ({ el: document.createElement("div"), height: 0 }));
   columns.forEach(({ el }) => { el.className = "grid__col"; el.setAttribute("role", "presentation"); });
 
@@ -110,16 +112,12 @@ function renderGrid() {
     const tile = document.createElement("button");
     tile.type = "button";
     tile.className = "tile";
+    tile.dataset.id = gif.id;
+    tile.dataset.index = String(index);
     tile.setAttribute("role", "listitem");
     tile.style.cssText = `--a:${gif.a};--b:${gif.b};--i:${index};--speed:${1.2 + (index % 5) * 0.25}s;height:${gif.h}px`;
-    tile.classList.toggle("is-favorite", state.favorites.has(gif.id));
-    tile.classList.toggle("is-selected", Boolean(index === state.selected && (state.query || state.navigated)));
-    tile.classList.toggle("is-copied", state.copiedID === gif.id);
-    const favorite = state.favorites.has(gif.id);
-    tile.setAttribute("aria-label", `${gif.tags.split(" ")[0]} reaction${favorite ? ", favorite" : ""}. Copies ${gif.emoji}`);
     tile.innerHTML = `<span class="tile__emoji" aria-hidden="true">${gif.emoji}</span>
-      <span class="tile__star" role="button" tabindex="-1" aria-label="${favorite ? "Remove from" : "Add to"} Favorites">${ICONS.star}</span>
-      ${state.copiedID === gif.id ? `<span class="tile__copied">${ICONS.check}Copied</span>` : ""}`;
+      <span class="tile__star" aria-hidden="true">${ICONS.star}</span>`;
     tile.addEventListener("click", (event) => {
       if (event.target.closest(".tile__star")) toggleFavorite(gif);
       else copy(gif);
@@ -130,8 +128,26 @@ function renderGrid() {
   });
 
   grid.replaceChildren(...columns.map(({ el }) => el));
-  grid.style.gridTemplateColumns = `repeat(${COLUMN_COUNT}, 1fr)`;
-  grid.style.display = "grid";
+  grid.classList.add("is-entering");
+  clearTimeout(buildGrid.timer);
+  buildGrid.timer = setTimeout(() => grid.classList.remove("is-entering"), ENTRANCE_MS);
+}
+
+/** Updates selection, favorites and the Copied badge in place. */
+function updateTiles(gifs) {
+  grid.querySelectorAll(".tile").forEach((tile) => {
+    const gif = LIBRARY[Number(tile.dataset.id)];
+    const favorite = state.favorites.has(gif.id);
+    const selected = Number(tile.dataset.index) === state.selected && Boolean(state.query || state.navigated);
+    const copied = state.copiedID === gif.id;
+    tile.classList.toggle("is-favorite", favorite);
+    tile.classList.toggle("is-selected", selected);
+    tile.classList.toggle("is-copied", copied);
+    tile.setAttribute("aria-label", `${gif.tags.split(" ")[0]} reaction${favorite ? ", favorite" : ""}. Copies ${gif.emoji}`);
+    const badge = tile.querySelector(".tile__copied");
+    if (copied && !badge) tile.insertAdjacentHTML("beforeend", `<span class="tile__copied">${ICONS.check}Copied</span>`);
+    if (!copied && badge) badge.remove();
+  });
 
   empty.hidden = gifs.length > 0;
   if (!gifs.length) {
@@ -146,7 +162,14 @@ function renderGrid() {
 function render() {
   clear.hidden = !state.query;
   renderChips();
-  renderGrid();
+  const gifs = results();
+  state.selected = Math.min(state.selected, Math.max(gifs.length - 1, 0));
+  const key = gifs.map((gif) => gif.id).join(",");
+  if (key !== state.shownKey) {
+    state.shownKey = key;
+    buildGrid(gifs);
+  }
+  updateTiles(gifs);
 }
 
 function search(term) {
@@ -170,11 +193,12 @@ async function copy(gif) {
   state.recents = [gif.id, ...state.recents.filter((id) => id !== gif.id)];
   state.copiedID = gif.id;
   status.textContent = `Copied ${gif.emoji}`;
+  // In Recent, the list order changes; everywhere else only this tile's badge does.
   render();
   setTimeout(() => {
     if (state.copiedID !== gif.id) return;
     state.copiedID = null;
-    render();
+    updateTiles(results());
   }, COPIED_LINGER_MS);
 }
 
@@ -190,7 +214,7 @@ function moveSelection(offset) {
   if (!count) return;
   state.navigated = true;
   state.selected = Math.min(Math.max(state.selected + offset, 0), count - 1);
-  render();
+  updateTiles(results());
   grid.querySelector(".tile.is-selected")?.scrollIntoView({ block: "nearest" });
 }
 
@@ -258,7 +282,119 @@ document.querySelectorAll("[data-copy]").forEach((button) => {
   });
 });
 
-// The video starts from a glass play button, then hands over to the native controls.
+// ——— Desktop GIF windows you can drag around ———
+
+document.querySelectorAll(".sticker").forEach((sticker) => {
+  let start = null;
+  sticker.addEventListener("pointerdown", (event) => {
+    const dx = parseFloat(sticker.style.getPropertyValue("--dx")) || 0;
+    const dy = parseFloat(sticker.style.getPropertyValue("--dy")) || 0;
+    start = { x: event.clientX - dx, y: event.clientY - dy };
+    sticker.setPointerCapture(event.pointerId);
+    sticker.classList.add("is-dragging");
+  });
+  sticker.addEventListener("pointermove", (event) => {
+    if (!start) return;
+    sticker.style.setProperty("--dx", `${event.clientX - start.x}px`);
+    sticker.style.setProperty("--dy", `${event.clientY - start.y}px`);
+  });
+  const drop = () => { start = null; sticker.classList.remove("is-dragging"); };
+  sticker.addEventListener("pointerup", drop);
+  sticker.addEventListener("pointercancel", drop);
+});
+
+// ——— The Dock: rises at the bottom edge and magnifies the icons near the pointer ———
+
+const dock = $("#dock");
+const dockItems = [...dock.querySelectorAll(".dock__item")];
+const DOCK_BASE = 54;
+const DOCK_MAX = 96;
+const DOCK_REACH = 150;
+const DOCK_TRIGGER = 64;
+const DOCK_HIDE_DELAY_MS = 500;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let hideTimer;
+
+function showDock(visible) {
+  clearTimeout(hideTimer);
+  if (visible) dock.classList.add("is-visible");
+  else hideTimer = setTimeout(() => dock.classList.remove("is-visible"), DOCK_HIDE_DELAY_MS);
+}
+
+document.addEventListener("pointermove", (event) => {
+  if (event.pointerType !== "mouse") return;
+  const nearBottom = window.innerHeight - event.clientY < DOCK_TRIGGER;
+  showDock(nearBottom || dock.matches(":hover"));
+});
+document.addEventListener("pointerleave", () => showDock(false));
+
+// Each icon's size follows a spring toward its target, integrated every frame, so the swell stays smooth
+// however fast the pointer moves. Distances are measured from where each icon sits at rest; measuring the
+// live, already-magnified layout feeds back into itself and wobbles.
+const SPRING = { stiffness: 1500, damping: 120 }; // per unit mass: quick and slightly overdamped, like the Dock
+const REST_EPSILON = 0.05;
+const springs = dockItems.map(() => ({ size: DOCK_BASE, velocity: 0, target: DOCK_BASE }));
+let restOffsets = [];
+let frame = 0;
+let lastTime = 0;
+
+function measureRest() {
+  const dockBox = dock.getBoundingClientRect();
+  const dockCenter = dockBox.left + dockBox.width / 2;
+  restOffsets = dockItems.map((item) => {
+    const box = item.getBoundingClientRect();
+    return box.left + box.width / 2 - dockCenter;
+  });
+}
+
+function magnification(distance) {
+  const pull = Math.max(0, 1 - distance / DOCK_REACH);
+  // A cosine falloff gives the Dock's rounded swell rather than a linear peak.
+  return DOCK_BASE + (DOCK_MAX - DOCK_BASE) * (0.5 - Math.cos(pull * Math.PI) / 2);
+}
+
+function step(time) {
+  const elapsed = Math.min((time - (lastTime || time)) / 1000, 1 / 30);
+  lastTime = time;
+  let moving = false;
+  springs.forEach((spring, index) => {
+    // Two half-steps per frame keep the stiff spring stable on slow frames.
+    for (let substep = 0; substep < 2; substep++) {
+      const dt = elapsed / 2;
+      const acceleration = SPRING.stiffness * (spring.target - spring.size) - SPRING.damping * spring.velocity;
+      spring.velocity += acceleration * dt;
+      spring.size += spring.velocity * dt;
+    }
+    if (Math.abs(spring.target - spring.size) > REST_EPSILON || Math.abs(spring.velocity) > REST_EPSILON) moving = true;
+    else { spring.size = spring.target; spring.velocity = 0; }
+    dockItems[index].style.width = dockItems[index].style.height = `${spring.size}px`;
+  });
+  frame = moving ? requestAnimationFrame(step) : 0;
+  if (!moving) lastTime = 0;
+}
+
+function animateDock() {
+  if (!frame) frame = requestAnimationFrame(step);
+}
+
+dock.addEventListener("pointerenter", () => {
+  if (springs.every((spring) => spring.size === DOCK_BASE)) measureRest();
+});
+dock.addEventListener("pointermove", (event) => {
+  if (reduceMotion.matches || !restOffsets.length) return;
+  const dockBox = dock.getBoundingClientRect();
+  const pointer = event.clientX - (dockBox.left + dockBox.width / 2);
+  springs.forEach((spring, index) => { spring.target = magnification(Math.abs(pointer - restOffsets[index])); });
+  animateDock();
+});
+dock.addEventListener("pointerleave", () => {
+  springs.forEach((spring) => { spring.target = DOCK_BASE; });
+  animateDock();
+  showDock(false);
+});
+
+// ——— Video: a glass play button, then the native controls ———
+
 const video = $("#launch-video");
 const play = $("#launch-play");
 play.addEventListener("click", () => {
@@ -267,7 +403,8 @@ play.addEventListener("click", () => {
   video.play();
 });
 
-// The menu bar clock, like the real one.
+// ——— The menu bar clock, like the real one ———
+
 const clock = $("#clock");
 function tick() {
   const now = new Date();
@@ -284,6 +421,44 @@ function aimArrow() {
   popover.style.setProperty("--arrow-right", `${Math.max(box.right - (icon.left + icon.width / 2) - 11, 16)}px`);
 }
 window.addEventListener("resize", aimArrow);
+// The clock and the appearance icon change the menu bar's width, which moves the icon the arrow points at.
+new ResizeObserver(aimArrow).observe(document.querySelector(".menubar__extras"));
 
 render();
 aimArrow();
+
+// ——— The story: scroll position picks the step; CSS plays each step's scene ———
+
+const story = $("#how");
+const query = story.querySelector(".scene-query");
+const STORY_STEPS = 4;
+const TYPE_INTERVAL_MS = 90;
+let storyStep = -1;
+let typing = 0;
+
+function typeQuery(text) {
+  clearInterval(typing);
+  if (reduceMotion.matches) { query.textContent = text; return; }
+  query.textContent = "";
+  let index = 0;
+  typing = setInterval(() => {
+    query.textContent = text.slice(0, ++index);
+    if (index >= text.length) clearInterval(typing);
+  }, TYPE_INTERVAL_MS);
+}
+
+function updateStory() {
+  const box = story.getBoundingClientRect();
+  const scrollable = box.height - window.innerHeight;
+  const progress = Math.min(Math.max(-box.top / scrollable, 0), 0.999);
+  const next = box.top > window.innerHeight * 0.35 ? -1 : Math.floor(progress * STORY_STEPS);
+  if (next === storyStep) return;
+  if (next >= 1 && storyStep < 1) typeQuery(query.dataset.text);
+  if (next < 1) { clearInterval(typing); query.textContent = ""; }
+  storyStep = next;
+  story.dataset.step = String(next);
+}
+
+window.addEventListener("scroll", updateStory, { passive: true });
+window.addEventListener("resize", updateStory);
+updateStory();

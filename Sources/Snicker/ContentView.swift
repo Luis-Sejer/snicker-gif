@@ -169,7 +169,7 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
                 .fontWeight(.medium)
                 .accessibilityHidden(true)
-            TextField("Search GIFs", text: $state.query)
+            TextField("Search KLIPY", text: $state.query) // KLIPY's attribution rules require this placeholder
                 .textFieldStyle(.plain)
                 .font(.title3)
                 .focused($searchFocused)

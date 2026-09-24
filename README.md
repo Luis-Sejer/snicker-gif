@@ -31,23 +31,23 @@
 
 ## Why Snicker
 
-The perfect reaction is one shortcut away. Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> from any app, type, and click — the GIF is on your clipboard before the conversation moves on.
+Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> from any app, type what you’re after, and click. The GIF is on your clipboard before the conversation moves on.
 
 It is small and quiet: a native SwiftUI app of about 2 MB, with no account, no setup, no Dock icon, and nothing to do until you press the shortcut. And it pastes where other GIF pickers don’t, including Microsoft Teams.
 
 ## Features
 
-- **Instant search** from anywhere with <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>, with Trending shown before you type
-- **Click to copy**, or **drag** a GIF straight into any app
-- **Pastes everywhere** — Teams, Slack, Discord, Messages, Mail
-- **Favorites and Recent**, one click away and kept between launches
-- **Search suggestions** as you type, plus quick picks for the reactions you use most
-- **Copy Link** for chats that unfurl GIF links, and **Save to Downloads**
-- **Keyboard first** — arrows to choose, <kbd>Return</kbd> to copy, <kbd>⌘</kbd> <kbd>D</kbd> to favorite
-- **Masonry grid** that shows every GIF at its real shape, animated
-- **Launch at Login** and **Random File Names**, so pasted files don’t reveal what you searched for
-- **Liquid Glass** design that looks at home on macOS Tahoe and later
-- **Accessible** — VoiceOver, full keyboard control, Reduce Motion and Auto-play Animated Images
+- Search from any app with <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>. Trending shows up before you type.
+- Click a GIF to copy it, or drag it straight into another app.
+- Paste into Teams, Slack, Discord, Messages or Mail.
+- Favorites and Recent are one click away and survive a restart.
+- Suggestions appear as you type, and there are quick picks for common reactions.
+- Right-click a GIF to copy its link (handy in chats that unfurl links) or save it to Downloads.
+- Use the arrow keys to choose, <kbd>Return</kbd> to copy and <kbd>⌘</kbd> <kbd>D</kbd> to favorite.
+- The grid shows every GIF at its real shape, animated.
+- Launch at Login keeps it ready, and Random File Names stops pasted files from giving away your search.
+- The Liquid Glass design fits right in on macOS Tahoe and later.
+- It works with VoiceOver, the keyboard, Reduce Motion and Auto-play Animated Images.
 
 ## Install
 
@@ -57,7 +57,7 @@ Paste this into Terminal:
 curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install.sh | sh
 ```
 
-It installs Snicker into `~/Applications` (no admin password needed) and launches it. Run it again any time to update.
+It installs Snicker and opens it. Run it again any time to update.
 
 Every release is built by [GitHub Actions](.github/workflows/release.yml) straight from the tagged source, so what you download is exactly what is in this repository.
 
@@ -91,7 +91,7 @@ To have Snicker start with your Mac, add it under **System Settings → General 
 | Drag a GIF | drop it into any app |
 | Right-click a GIF | Copy GIF, Copy Link, Favorites, Save to Downloads, Open on KLIPY |
 
-Settings — Launch at Login, Random File Names and more — live in the **⋯** menu at the bottom right.
+Launch at Login, Random File Names and the other settings are in the ⋯ menu at the bottom right.
 
 ## How pasting works
 
@@ -108,11 +108,11 @@ Each app picks the one it understands, so the GIF stays animated wherever you pa
 
 Snicker is built to work for everyone:
 
-- **VoiceOver** reads every GIF by its title, announces when something is copied, and offers Copy Link, Favorites and Save to Downloads as actions.
-- **Keyboard** control covers everything: search, choose, copy, copy the link and favorite without touching the mouse.
-- **Reduce Motion** turns off the hover zoom and bouncy effects.
-- **Auto-play Animated Images** is respected: when it’s off, a GIF only plays while you point at it or select it.
-- **Increase Contrast** and **Reduce Transparency** apply automatically through the system’s Liquid Glass materials.
+- VoiceOver reads each GIF by its title, says when something is copied, and offers Copy Link, Favorites and Save to Downloads as actions.
+- You can search, choose, copy, copy the link and favorite without touching the mouse.
+- Reduce Motion turns off the hover zoom and the bouncy effects.
+- If Auto-play Animated Images is off, a GIF only plays while you point at it or select it.
+- Increase Contrast and Reduce Transparency work automatically, because Snicker uses the system’s Liquid Glass materials.
 
 Found something that doesn’t work with your setup? Please [open an issue](https://github.com/Luis-Sejer/snicker-gif/issues/new/choose).
 
