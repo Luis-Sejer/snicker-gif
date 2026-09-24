@@ -1,7 +1,11 @@
 #!/bin/sh
-# Builds GifBar.app, installs it to ~/Applications and launches it. Needs only the Xcode Command Line Tools.
+# Builds build/GifBar.app. `./build.sh install` also installs it to ~/Applications and launches it.
+# Needs only the Xcode Command Line Tools.
 set -e
 cd "$(dirname "$0")"
+
+VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
+VERSION=${VERSION:-0.0.0}
 
 swift build -c release
 APP=build/GifBar.app
@@ -17,18 +21,21 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleIdentifier</key><string>dk.sejer.gifbar</string>
     <key>CFBundleName</key><string>GifBar</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>1.0</string>
+    <key>CFBundleShortVersionString</key><string>$VERSION</string>
     <key>LSMinimumSystemVersion</key><string>26.0</string>
     <key>LSUIElement</key><true/>
 </dict>
 </plist>
 PLIST
+# Ad-hoc signature: Apple Silicon refuses to run unsigned code, and this needs no developer account.
 codesign --force --sign - "$APP"
+echo "Built $APP ($VERSION)"
 
+[ "$1" = "install" ] || exit 0
 # ~/Applications needs no admin rights and is still indexed by Spotlight.
 INSTALL_DIR="$HOME/Applications"
 mkdir -p "$INSTALL_DIR"
-pkill -x GifBar 2>/dev/null || true
+if pkill -x GifBar; then sleep 1; fi
 rm -rf "$INSTALL_DIR/GifBar.app"
 cp -R "$APP" "$INSTALL_DIR/"
 open "$INSTALL_DIR/GifBar.app"
