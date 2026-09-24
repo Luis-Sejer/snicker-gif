@@ -20,18 +20,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "photo.stack", accessibilityDescription: "GifBar")
+        statusItem.button?.image = Self.statusIcon()
+        statusItem.button?.setAccessibilityLabel("GifBar")
         statusItem.button?.target = self
         statusItem.button?.action = #selector(togglePopover)
 
-        popover.behavior = .transient
-        popover.contentViewController = NSHostingController(
+        let hostingController = NSHostingController(
             rootView: ContentView(close: { [weak self] in self?.popover.performClose(nil) })
         )
+        // Size up front: letting SwiftUI report it after showing makes the popover grow up under the menu bar.
+        hostingController.sizingOptions = []
+        popover.behavior = .transient
+        popover.contentSize = Layout.popoverSize
+        popover.contentViewController = hostingController
 
         hotKey = HotKey(keyCode: UInt32(kVK_ANSI_V), modifiers: UInt32(cmdKey | optionKey)) { [weak self] in
             self?.togglePopover()
         }
+    }
+
+    /// There is no GIF SF Symbol, so draw a template badge that tints with the menu bar like one.
+    private static func statusIcon() -> NSImage {
+        let image = NSImage(size: NSSize(width: 22, height: 16), flipped: false) { rect in
+            let badge = NSBezierPath(roundedRect: rect.insetBy(dx: 1.5, dy: 2), xRadius: 3.5, yRadius: 3.5)
+            badge.lineWidth = 1.4
+            NSColor.black.setStroke()
+            badge.stroke()
+            let label = NSAttributedString(string: "GIF", attributes: [
+                .font: NSFont.systemFont(ofSize: 8, weight: .heavy),
+                .foregroundColor: NSColor.black,
+                .kern: 0.3,
+            ])
+            let labelSize = label.size()
+            label.draw(at: NSPoint(x: rect.midX - labelSize.width / 2, y: rect.midY - labelSize.height / 2))
+            return true
+        }
+        image.isTemplate = true
+        return image
     }
 
     @objc private func togglePopover() {

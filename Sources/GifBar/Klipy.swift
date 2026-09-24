@@ -6,6 +6,8 @@ struct Gif: Identifiable {
     let title: String
     let previewURL: URL
     let fullURL: URL
+    /// Width over height, so the grid can lay tiles out at their real shape.
+    let aspectRatio: CGFloat
 
     var fileName: String {
         let slug = title.lowercased()
@@ -56,7 +58,18 @@ private struct SearchResponse: Decodable {
         let contentDescription: String?
         let mediaFormats: [String: Media]
 
-        struct Media: Decodable { let url: URL }
+        /// Keeps a panorama or a sliver from wrecking the masonry columns.
+        private static let aspectRatioRange: ClosedRange<CGFloat> = 0.5...2.2
+
+        struct Media: Decodable {
+            let url: URL
+            let dims: [Int]?
+
+            var aspectRatio: CGFloat? {
+                guard let dims, dims.count == 2, dims[0] > 0, dims[1] > 0 else { return nil }
+                return CGFloat(dims[0]) / CGFloat(dims[1])
+            }
+        }
 
         enum CodingKeys: String, CodingKey {
             case id, title
@@ -77,9 +90,16 @@ private struct SearchResponse: Decodable {
         }
 
         var gif: Gif? {
-            guard let full = mediaFormats["gif"]?.url else { return nil }
-            let preview = mediaFormats["tinygif"]?.url ?? full
-            return Gif(id: id, title: title ?? contentDescription ?? "", previewURL: preview, fullURL: full)
+            guard let full = mediaFormats["gif"] else { return nil }
+            let preview = mediaFormats["tinygif"] ?? full
+            let aspectRatio = preview.aspectRatio ?? full.aspectRatio ?? 1
+            return Gif(
+                id: id,
+                title: title ?? contentDescription ?? "",
+                previewURL: preview.url,
+                fullURL: full.url,
+                aspectRatio: min(max(aspectRatio, Self.aspectRatioRange.lowerBound), Self.aspectRatioRange.upperBound)
+            )
         }
     }
 }
