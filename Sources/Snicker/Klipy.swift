@@ -1,21 +1,36 @@
 import AppKit
 import UniformTypeIdentifiers
 
-struct Gif: Identifiable {
+/// Codable so favorites and recents can be kept between launches.
+struct Gif: Identifiable, Codable, Hashable {
     let id: String
     let title: String
     let previewURL: URL
+    /// The full-size GIF; also what "Copy Link" copies, since chat apps unfurl it inline.
     let fullURL: URL
+    /// The GIF's page on KLIPY.
+    let pageURL: URL?
     /// Width over height, so the grid can lay tiles out at their real shape.
     let aspectRatio: CGFloat
 
-    var fileName: String {
+    /// A readable name from the title, or with `random` a stable name that gives nothing away.
+    func fileName(random: Bool) -> String {
+        guard !random else { return "GIF-\(Self.stableHash(id)).gif" }
         let slug = title.lowercased()
             .components(separatedBy: CharacterSet.alphanumerics.inverted)
             .filter { !$0.isEmpty }
             .prefix(6)
             .joined(separator: "-")
         return (slug.isEmpty ? "gif" : slug) + ".gif"
+    }
+
+    /// FNV-1a, so the same GIF always gets the same name and hits the download cache.
+    private static func stableHash(_ text: String) -> String {
+        var hash: UInt64 = 0xcbf2_9ce4_8422_2325
+        for byte in text.utf8 {
+            hash = (hash ^ UInt64(byte)) &* 0x100_0000_01b3
+        }
+        return String(String(hash, radix: 16, uppercase: true).suffix(8))
     }
 }
 
@@ -25,15 +40,31 @@ enum Klipy {
     private static let baseURL = "https://api.klipy.com/v2/"
     private static let resultLimit = "40"
 
+    private static let suggestionLimit = "8"
+
+    /// Trending when the query is empty, otherwise search results.
     static func fetch(query: String, apiKey: String) async throws -> [Gif] {
         let trimmed = query.trimmingCharacters(in: .whitespaces)
-        var components = URLComponents(string: baseURL + (trimmed.isEmpty ? "featured" : "search"))!
+        let data = try await request(
+            trimmed.isEmpty ? "featured" : "search",
+            apiKey: apiKey,
+            parameters: ["limit": resultLimit, "media_filter": "gif,tinygif"].merging(trimmed.isEmpty ? [:] : ["q": trimmed]) { $1 }
+        )
+        return try JSONDecoder().decode(SearchResponse.self, from: data).results.compactMap(\.gif)
+    }
+
+    /// Completions for a partly typed query, like "hap" → "happy", "happy birthday".
+    static func autocomplete(query: String, apiKey: String) async throws -> [String] {
+        let data = try await request("autocomplete", apiKey: apiKey, parameters: ["q": query, "limit": suggestionLimit])
+        return try JSONDecoder().decode(TermsResponse.self, from: data).results
+    }
+
+    private static func request(_ endpoint: String, apiKey: String, parameters: [String: String]) async throws -> Data {
+        var components = URLComponents(string: baseURL + endpoint)!
         components.queryItems = [
             URLQueryItem(name: "key", value: apiKey),
             URLQueryItem(name: "client_key", value: "snicker"),
-            URLQueryItem(name: "limit", value: resultLimit),
-            URLQueryItem(name: "media_filter", value: "gif,tinygif"),
-        ] + (trimmed.isEmpty ? [] : [URLQueryItem(name: "q", value: trimmed)])
+        ] + parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         let (data, response) = try await URLSession.shared.data(from: components.url!)
         let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
@@ -41,7 +72,7 @@ enum Klipy {
             let message = (try? JSONDecoder().decode(ErrorResponse.self, from: data))?.errors.message.first
             throw KlipyError(statusCode: statusCode, message: message)
         }
-        return try JSONDecoder().decode(SearchResponse.self, from: data).results.compactMap(\.gif)
+        return data
     }
 }
 
@@ -57,6 +88,10 @@ private struct ErrorResponse: Decodable {
     struct Errors: Decodable { let message: [String] }
 }
 
+private struct TermsResponse: Decodable {
+    let results: [String]
+}
+
 private struct SearchResponse: Decodable {
     let results: [Item]
 
@@ -64,6 +99,7 @@ private struct SearchResponse: Decodable {
         let id: String
         let title: String?
         let contentDescription: String?
+        let itemURL: URL?
         let mediaFormats: [String: Media]
 
         /// Keeps a panorama or a sliver from wrecking the masonry columns.
@@ -82,6 +118,7 @@ private struct SearchResponse: Decodable {
         enum CodingKeys: String, CodingKey {
             case id, title
             case contentDescription = "content_description"
+            case itemURL = "itemurl"
             case mediaFormats = "media_formats"
         }
 
@@ -94,6 +131,7 @@ private struct SearchResponse: Decodable {
             }
             title = try container.decodeIfPresent(String.self, forKey: .title)
             contentDescription = try container.decodeIfPresent(String.self, forKey: .contentDescription)
+            itemURL = try? container.decodeIfPresent(URL.self, forKey: .itemURL)
             mediaFormats = try container.decodeIfPresent([String: Media].self, forKey: .mediaFormats) ?? [:]
         }
 
@@ -106,6 +144,7 @@ private struct SearchResponse: Decodable {
                 title: title ?? contentDescription ?? "",
                 previewURL: preview.url,
                 fullURL: full.url,
+                pageURL: itemURL,
                 aspectRatio: min(max(aspectRatio, Self.aspectRatioRange.lowerBound), Self.aspectRatioRange.upperBound)
             )
         }
@@ -118,9 +157,9 @@ enum GifFile {
         .appendingPathComponent("Snicker")
 
     /// Downloads once per GIF; the per-id folder keeps a readable file name without collisions.
-    static func download(_ gif: Gif) async throws -> URL {
+    static func download(_ gif: Gif, randomName: Bool) async throws -> URL {
         let folder = cacheDirectory.appendingPathComponent(gif.id)
-        let file = folder.appendingPathComponent(gif.fileName)
+        let file = folder.appendingPathComponent(gif.fileName(random: randomName))
         if FileManager.default.fileExists(atPath: file.path) { return file }
 
         let (temporaryFile, _) = try await URLSession.shared.download(from: gif.fullURL)
@@ -138,12 +177,32 @@ enum GifFile {
         pasteboard.setData(data, forType: NSPasteboard.PasteboardType(UTType.gif.identifier))
     }
 
-    static func dragProvider(for gif: Gif) -> NSItemProvider {
+    static func copyLinkToPasteboard(_ gif: Gif) {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(gif.fullURL.absoluteString, forType: .string)
+    }
+
+    /// Copies into ~/Downloads, numbering the name if a file is already there.
+    static func saveToDownloads(_ file: URL) throws -> URL {
+        let downloads = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask)[0]
+        let stem = file.deletingPathExtension().lastPathComponent
+        var destination = downloads.appendingPathComponent(file.lastPathComponent)
+        var number = 2
+        while FileManager.default.fileExists(atPath: destination.path) {
+            destination = downloads.appendingPathComponent("\(stem) \(number).gif")
+            number += 1
+        }
+        try FileManager.default.copyItem(at: file, to: destination)
+        return destination
+    }
+
+    static func dragProvider(for gif: Gif, randomName: Bool) -> NSItemProvider {
         let provider = NSItemProvider()
-        provider.suggestedName = gif.fileName
+        provider.suggestedName = gif.fileName(random: randomName)
         provider.registerFileRepresentation(forTypeIdentifier: UTType.gif.identifier, fileOptions: [], visibility: .all) { completion in
             Task {
-                do { completion(try await download(gif), false, nil) } catch { completion(nil, false, error) }
+                do { completion(try await download(gif, randomName: randomName), false, nil) } catch { completion(nil, false, error) }
             }
             return nil
         }
