@@ -1,0 +1,124 @@
+import AppKit
+import UniformTypeIdentifiers
+
+struct Gif: Identifiable {
+    let id: String
+    let title: String
+    let previewURL: URL
+    let fullURL: URL
+
+    var fileName: String {
+        let slug = title.lowercased()
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { !$0.isEmpty }
+            .prefix(6)
+            .joined(separator: "-")
+        return (slug.isEmpty ? "gif" : slug) + ".gif"
+    }
+}
+
+/// Klipy's Tenor-compatible v2 API (Tenor itself shut down in June 2026).
+enum Klipy {
+    static let apiKeyDefaultsKey = "klipyApiKey"
+    private static let baseURL = "https://api.klipy.com/v2/"
+    private static let resultLimit = "40"
+
+    static func fetch(query: String, apiKey: String) async throws -> [Gif] {
+        let trimmed = query.trimmingCharacters(in: .whitespaces)
+        var components = URLComponents(string: baseURL + (trimmed.isEmpty ? "featured" : "search"))!
+        components.queryItems = [
+            URLQueryItem(name: "key", value: apiKey),
+            URLQueryItem(name: "client_key", value: "gifbar"),
+            URLQueryItem(name: "limit", value: resultLimit),
+            URLQueryItem(name: "media_filter", value: "gif,tinygif"),
+        ] + (trimmed.isEmpty ? [] : [URLQueryItem(name: "q", value: trimmed)])
+
+        let (data, response) = try await URLSession.shared.data(from: components.url!)
+        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard statusCode == 200 else { throw KlipyError(statusCode: statusCode) }
+        return try JSONDecoder().decode(SearchResponse.self, from: data).results.compactMap(\.gif)
+    }
+}
+
+struct KlipyError: LocalizedError {
+    let statusCode: Int
+    var errorDescription: String? {
+        statusCode == 401 || statusCode == 403 ? "Klipy rejected the API key" : "Klipy returned HTTP \(statusCode)"
+    }
+}
+
+private struct SearchResponse: Decodable {
+    let results: [Item]
+
+    struct Item: Decodable {
+        let id: String
+        let title: String?
+        let contentDescription: String?
+        let mediaFormats: [String: Media]
+
+        struct Media: Decodable { let url: URL }
+
+        enum CodingKeys: String, CodingKey {
+            case id, title
+            case contentDescription = "content_description"
+            case mediaFormats = "media_formats"
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            if let stringID = try? container.decode(String.self, forKey: .id) {
+                id = stringID
+            } else {
+                id = String(try container.decode(Int.self, forKey: .id))
+            }
+            title = try container.decodeIfPresent(String.self, forKey: .title)
+            contentDescription = try container.decodeIfPresent(String.self, forKey: .contentDescription)
+            mediaFormats = try container.decodeIfPresent([String: Media].self, forKey: .mediaFormats) ?? [:]
+        }
+
+        var gif: Gif? {
+            guard let full = mediaFormats["gif"]?.url else { return nil }
+            let preview = mediaFormats["tinygif"]?.url ?? full
+            return Gif(id: id, title: title ?? contentDescription ?? "", previewURL: preview, fullURL: full)
+        }
+    }
+}
+
+enum GifFile {
+    private static let cacheDirectory = FileManager.default
+        .urls(for: .cachesDirectory, in: .userDomainMask)[0]
+        .appendingPathComponent("GifBar")
+
+    /// Downloads once per GIF; the per-id folder keeps a readable file name without collisions.
+    static func download(_ gif: Gif) async throws -> URL {
+        let folder = cacheDirectory.appendingPathComponent(gif.id)
+        let file = folder.appendingPathComponent(gif.fileName)
+        if FileManager.default.fileExists(atPath: file.path) { return file }
+
+        let (temporaryFile, _) = try await URLSession.shared.download(from: gif.fullURL)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        try FileManager.default.moveItem(at: temporaryFile, to: file)
+        return file
+    }
+
+    /// Teams only pastes a file URL; Slack, Discord and Messages also take the raw GIF data. Write both.
+    static func copyToPasteboard(_ file: URL) throws {
+        let data = try Data(contentsOf: file)
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.writeObjects([file as NSURL])
+        pasteboard.setData(data, forType: NSPasteboard.PasteboardType(UTType.gif.identifier))
+    }
+
+    static func dragProvider(for gif: Gif) -> NSItemProvider {
+        let provider = NSItemProvider()
+        provider.suggestedName = gif.fileName
+        provider.registerFileRepresentation(forTypeIdentifier: UTType.gif.identifier, fileOptions: [], visibility: .all) { completion in
+            Task {
+                do { completion(try await download(gif), false, nil) } catch { completion(nil, false, error) }
+            }
+            return nil
+        }
+        return provider
+    }
+}
