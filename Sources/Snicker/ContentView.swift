@@ -150,7 +150,7 @@ struct ContentView: View {
             Menu {
                 Button("Change API Key…", systemImage: "key") { apiKey = "" }
                 Divider()
-                Button("Quit GifBar", systemImage: "power") { NSApp.terminate(nil) }
+                Button("Quit Snicker", systemImage: "power") { NSApp.terminate(nil) }
             } label: {
                 Image(systemName: "ellipsis")
             }
@@ -335,9 +335,9 @@ private struct WelcomeView: View {
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.tint)
             VStack(spacing: 6) {
-                Text("Welcome to GifBar")
+                Text("Welcome to Snicker")
                     .font(.title2.weight(.bold))
-                Text("GifBar searches KLIPY’s GIF library. Paste your free API key to get started.")
+                Text("Snicker searches KLIPY’s GIF library. Paste your free API key to get started.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

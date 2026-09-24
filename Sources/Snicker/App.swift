@@ -21,7 +21,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = Self.statusIcon()
-        statusItem.button?.setAccessibilityLabel("GifBar")
+        statusItem.button?.setAccessibilityLabel("Snicker")
         statusItem.button?.target = self
         statusItem.button?.action = #selector(togglePopover)
 
@@ -85,7 +85,7 @@ final class HotKey {
             Unmanaged<HotKey>.fromOpaque(userData).takeUnretainedValue().action()
             return noErr
         }, 1, &eventType, Unmanaged.passUnretained(self).toOpaque(), &handlerRef)
-        let hotKeyID = EventHotKeyID(signature: OSType(0x4749_4642), id: 1) // "GIFB"
+        let hotKeyID = EventHotKeyID(signature: OSType(0x534E_4B52), id: 1) // "SNKR"
         RegisterEventHotKey(keyCode, modifiers, hotKeyID, GetApplicationEventTarget(), 0, &hotKeyRef)
     }
 

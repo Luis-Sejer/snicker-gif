@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "GifBar",
+    name: "Snicker",
     platforms: [.macOS("26.0")],
-    targets: [.executableTarget(name: "GifBar")]
+    targets: [.executableTarget(name: "Snicker")]
 )

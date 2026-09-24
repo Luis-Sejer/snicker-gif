@@ -30,7 +30,7 @@ enum Klipy {
         var components = URLComponents(string: baseURL + (trimmed.isEmpty ? "featured" : "search"))!
         components.queryItems = [
             URLQueryItem(name: "key", value: apiKey),
-            URLQueryItem(name: "client_key", value: "gifbar"),
+            URLQueryItem(name: "client_key", value: "snicker"),
             URLQueryItem(name: "limit", value: resultLimit),
             URLQueryItem(name: "media_filter", value: "gif,tinygif"),
         ] + (trimmed.isEmpty ? [] : [URLQueryItem(name: "q", value: trimmed)])
@@ -115,7 +115,7 @@ private struct SearchResponse: Decodable {
 enum GifFile {
     private static let cacheDirectory = FileManager.default
         .urls(for: .cachesDirectory, in: .userDomainMask)[0]
-        .appendingPathComponent("GifBar")
+        .appendingPathComponent("Snicker")
 
     /// Downloads once per GIF; the per-id folder keeps a readable file name without collisions.
     static func download(_ gif: Gif) async throws -> URL {

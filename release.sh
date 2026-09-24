@@ -6,6 +6,6 @@ cd "$(dirname "$0")"
 
 git tag "v$1"
 ./build.sh
-ditto -c -k --keepParent build/GifBar.app build/GifBar.zip
+ditto -c -k --keepParent build/Snicker.app build/Snicker.zip
 git push origin "v$1"
-gh release create "v$1" build/GifBar.zip --title "GifBar $1" --generate-notes
+gh release create "v$1" build/Snicker.zip --title "Snicker $1" --generate-notes
