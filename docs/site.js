@@ -467,3 +467,16 @@ function updateStory() {
 // The top half of the screen: a marker enters it exactly when it crosses the middle.
 const storyObserver = new IntersectionObserver(updateStory, { rootMargin: "0px 0px -50% 0px" });
 markers.forEach((marker) => storyObserver.observe(marker));
+
+// ——— Links to a section (like #watch) ———
+// The browser starts scrolling to the section while the page is still loading, and GSAP measuring the page on
+// load cancels that scroll halfway. Once everything has settled, go there directly.
+const SECTION_JUMP_DELAY_MS = 60;
+if (location.hash) {
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      target?.scrollIntoView({ block: "start", behavior: "instant" });
+    }, SECTION_JUMP_DELAY_MS);
+  });
+}
