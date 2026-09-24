@@ -147,6 +147,10 @@ Source builds ask for your own free KLIPY key on first launch; get one from KLIP
 
 Bug reports, ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started, and the [changelog](CHANGELOG.md) for what’s new.
 
+## Support
+
+Snicker is free and open source. If it makes your chats better, you can [buy me a coffee on Ko-fi](https://ko-fi.com/luissejer), or pick **Support Snicker…** from the app’s ⋯ menu.
+
 ## Credits
 
 GIFs are provided by [KLIPY](https://klipy.com). Launch video voiceover and sound effects by [ElevenLabs](https://elevenlabs.io). Inspired by [QuickGif](https://quickgif.app).

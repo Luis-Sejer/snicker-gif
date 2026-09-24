@@ -19,3 +19,4 @@ All notable changes to Snicker are documented here. The format is based on
 - A Liquid Glass design for macOS 26 and later, with a menu bar icon that matches the app icon.
 - Near-zero CPU use while closed: GIFs only animate while the popover is open.
 - The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
+- A Support Snicker… item in the ⋯ menu, linking to Ko-fi.

@@ -67,6 +67,7 @@ struct ContentView: View {
     @StateObject private var library = Library()
     @FocusState private var searchFocused: Bool
 
+    private static let supportURL = URL(string: "https://ko-fi.com/luissejer")!
     private static let quickPicks = ["Thank you", "LOL", "Yes", "No", "Wow", "Party", "Facepalm", "Good morning"]
     private static let searchDebounce: Duration = .milliseconds(300)
     private static let copiedLinger: Duration = .milliseconds(550)
@@ -292,6 +293,7 @@ struct ContentView: View {
                 Button("Use Built-in API Key", systemImage: "arrow.uturn.backward") { customApiKey = "" }
             }
             Divider()
+            Button("Support Snicker…", systemImage: "heart") { NSWorkspace.shared.open(Self.supportURL) }
             Button("Quit Snicker", systemImage: "power") { NSApp.terminate(nil) }
         } label: {
             Image(systemName: "ellipsis")
