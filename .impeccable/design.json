@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-24T19:27:56+00:00",
+  "generatedAt": "2026-09-24T20:27:24+00:00",
   "title": "Design System: Snicker",
   "extensions": {
     "colorMeta": {
@@ -193,20 +193,6 @@
           "#e6f2ff"
         ]
       },
-      "pink": {
-        "role": "secondary",
-        "displayName": "Snicker Pink",
-        "tonalRamp": [
-          "#4c000f",
-          "#87001b",
-          "#c10027",
-          "#fb0032",
-          "#ff375f",
-          "#ff718d",
-          "#ffabbc",
-          "#ffe6eb"
-        ]
-      },
       "night": {
         "role": "neutral",
         "displayName": "Night",
@@ -389,24 +375,64 @@
     ],
     "motion": [
       {
+        "name": "ease-ui",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Strong ease-out for UI responses: popover toggle, tile entrance, Copied badge."
+      },
+      {
         "name": "ease-out",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "Default easing for state transitions, drags settling, tile entrance."
+        "purpose": "State transitions, drags settling, story steps, FAQ chevron."
       },
       {
         "name": "ease-spring",
-        "value": "cubic-bezier(0.34, 1.3, 0.64, 1)",
-        "purpose": "Overshoot for the popover open, Copied badge and story popover."
+        "value": "cubic-bezier(0.34, 1.15, 0.64, 1)",
+        "purpose": "Slight overshoot for the story's Copied badge."
       },
       {
-        "name": "popover-open",
-        "value": "0.45s var(--ease-spring)",
-        "purpose": "Popover springs from its top-right origin; closes to scale 0.92 with 8px blur in 0.25s."
+        "name": "gsap-ease-out",
+        "value": "expo.out",
+        "purpose": "GSAP choreography default: intro, headline line reveals, fade-ins."
+      },
+      {
+        "name": "popover-toggle",
+        "value": "open 200ms var(--ease-ui); close 150ms var(--ease-ui) to scale 0.96, -6px, opacity out in 120ms",
+        "purpose": "The ⌘⌥V popover; no overshoot or blur because it is toggled often."
       },
       {
         "name": "tile-stagger",
-        "value": "0.45s var(--ease-out), 28ms per tile",
+        "value": "220ms var(--ease-ui), 28ms per tile",
         "purpose": "Only when a new result set arrives."
+      },
+      {
+        "name": "copied-pop",
+        "value": "180ms var(--ease-ui)",
+        "purpose": "Copied badge pops in place."
+      },
+      {
+        "name": "button-press",
+        "value": "scale(0.97) in 100ms",
+        "purpose": "Pill buttons on :active."
+      },
+      {
+        "name": "story-scrub",
+        "value": "ScrollTrigger scrub 0.6",
+        "purpose": "Pinned story timeline: open, type (scramble), copy, paste."
+      },
+      {
+        "name": "screenshot-settle",
+        "value": "rotateX 12-14deg / rotateY ±16-18deg to 0, scrub 0.6, top bottom to center center",
+        "purpose": "Real screenshots settle flat out of a 3D tilt, with parallax drift."
+      },
+      {
+        "name": "video-zoom",
+        "value": "scale 0.84 to 1, radius 40px to 20px, scrubbed",
+        "purpose": "The player grows to size as it arrives."
+      },
+      {
+        "name": "marquee",
+        "value": "40s linear loop; timeScale follows scroll velocity, clamp 1-6x, settles over 1.2s",
+        "purpose": "Reaction word band."
       },
       {
         "name": "dock-spring",
@@ -414,14 +440,14 @@
         "purpose": "Per-frame spring driving Dock icon magnification; off under reduced motion."
       },
       {
-        "name": "marquee",
-        "value": "40s linear infinite",
-        "purpose": "Reaction word band."
+        "name": "hover-gate",
+        "value": "@media (hover: hover) and (pointer: fine)",
+        "purpose": "All hover motion (button rise, tile lift, Play scale) is gated to fine hovering pointers."
       },
       {
         "name": "reduced-motion",
         "value": "prefers-reduced-motion: reduce",
-        "purpose": "All animation and transitions collapse; bob and marquee stop."
+        "purpose": "gsap.matchMedia reverts all choreography; CSS keeps short fades and drops movement."
       }
     ],
     "breakpoints": [
@@ -445,8 +471,8 @@
       "kind": "button",
       "refersTo": "button-primary",
       "description": "The one filled action per view (Download for Mac).",
-      "html": "<a class=\"ds-btn-primary\" href=\"#\"><svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 3v10m0 0 4-4m-4 4-4-4M4 16h12\"/></svg>Download for Mac</a>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 22px; border-radius: 999px; font: 500 17px/1 var(--font); color: #fff; background: var(--blue-fill); text-decoration: none; transition: transform 0.2s var(--ease-out), background-color 0.2s; } .ds-btn-primary svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; } .ds-btn-primary:hover { background: var(--blue-fill-hover); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }"
+      "html": "<a class=\"ds-btn-primary\" href=\"#\"><svg viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z\"/></svg>Download for Mac</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 22px; border-radius: 999px; font: 500 17px/1 var(--font); color: #fff; background: var(--blue-fill); text-decoration: none; transition: transform 0.2s var(--ease-out), background-color 0.2s; } .ds-btn-primary svg { width: 18px; height: 18px; fill: currentColor; } .ds-btn-primary:hover { background: var(--blue-fill-hover); } @media (hover: hover) and (pointer: fine) { .ds-btn-primary:hover { transform: translateY(-1px); } } .ds-btn-primary:active { transform: scale(0.97); transition-duration: 100ms; } .ds-btn-primary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }"
     },
     {
       "name": "Secondary Button",
@@ -494,7 +520,7 @@
       "refersTo": "popover",
       "description": "Signature light glass popover hanging from the menu bar icon, with solid-fill GIF tiles.",
       "html": "<div class=\"ds-popover\"><span class=\"ds-popover__arrow\"></span><div class=\"ds-popover__grid\"><button class=\"ds-tile\" style=\"--a:#ffb800\">😂</button><button class=\"ds-tile\" style=\"--a:#2f8cff\">🙏</button><button class=\"ds-tile\" style=\"--a:#8e6cf2\">😎</button><button class=\"ds-tile\" style=\"--a:#30c35c\">👍</button><button class=\"ds-tile\" style=\"--a:#ff8a00\">🤯</button><button class=\"ds-tile\" style=\"--a:#ff2d78\">❤️</button></div><footer class=\"ds-popover__footer\"><span>↑↓ choose · ⏎ copy</span><span>Powered by KLIPY</span></footer></div>",
-      "css": ".ds-popover { position: relative; width: 320px; margin-top: 12px; border-radius: 26px; background: var(--glass); backdrop-filter: blur(34px) saturate(1.8); -webkit-backdrop-filter: blur(34px) saturate(1.8); border: 1px solid var(--glass-edge); box-shadow: var(--shadow-window), inset 0 1px 0 var(--glass-lit); } .ds-popover__arrow { position: absolute; top: -10px; right: 34px; width: 22px; height: 11px; background: var(--glass); clip-path: polygon(50% 0, 100% 100%, 0 100%); } .ds-popover__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 10px 10px; } .ds-tile { aspect-ratio: 1; border: 0; border-radius: 12px; background: var(--a); font-size: 34px; cursor: pointer; transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out); } .ds-tile:hover { transform: scale(1.04); box-shadow: 0 10px 24px rgb(0 0 0 / 0.22); } .ds-tile:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; } .ds-popover__footer { display: flex; justify-content: space-between; padding: 10px 14px 12px; border-top: 1px solid var(--rule); font: 400 11px/1 var(--font); color: var(--ink-3); }"
+      "css": ".ds-popover { position: relative; width: 320px; margin-top: 12px; border-radius: 26px; background: var(--glass); backdrop-filter: blur(34px) saturate(1.8); -webkit-backdrop-filter: blur(34px) saturate(1.8); border: 1px solid var(--glass-edge); box-shadow: var(--shadow-window), inset 0 1px 0 var(--glass-lit); } .ds-popover__arrow { position: absolute; top: -10px; right: 34px; width: 22px; height: 11px; background: var(--glass); clip-path: polygon(50% 0, 100% 100%, 0 100%); } .ds-popover__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 10px 10px; } .ds-tile { aspect-ratio: 1; border: 0; border-radius: 12px; background: var(--a); font-size: 34px; cursor: pointer; transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out); } @media (hover: hover) and (pointer: fine) { .ds-tile:hover { transform: scale(1.04); box-shadow: 0 10px 24px rgb(0 0 0 / 0.22); } } .ds-tile:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; } .ds-popover__footer { display: flex; justify-content: space-between; padding: 10px 14px 12px; border-top: 1px solid var(--rule); font: 400 11px/1 var(--font); color: var(--ink-3); }"
     },
     {
       "name": "Window",
@@ -505,21 +531,22 @@
       "css": ".ds-window { width: 360px; border-radius: 14px; background: var(--surface); border: 1px solid var(--glass-edge); box-shadow: var(--shadow-window); overflow: hidden; font-family: var(--font); color: var(--ink); } .ds-window__bar { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 14px; font-size: 13px; font-weight: 600; color: var(--ink-3); border-bottom: 1px solid var(--rule); } .ds-lights { display: flex; gap: 7px; } .ds-lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; } .ds-lights i:nth-child(2) { background: #febc2e; } .ds-lights i:nth-child(3) { background: #28c840; } .ds-window__body { padding: 22px 28px; } .ds-window__body strong { font-size: 24px; font-weight: 600; letter-spacing: -0.035em; } .ds-window__body p { margin: 8px 0 0; color: var(--ink-2); font-size: 15px; }"
     },
     {
-      "name": "Pink Field",
+      "name": "White Band",
       "kind": "custom",
-      "refersTo": "field-pink",
-      "description": "Flat, full-bleed committed colour field with semibold headline; text is solid ink.",
-      "html": "<section class=\"ds-field-pink\"><h2>More than copy and paste.</h2><p>Right-click any GIF to copy its link, save it, or keep it as a favorite.</p></section>",
-      "css": ".ds-field-pink { padding: 64px 40px; background: var(--pink); color: var(--ink); font-family: var(--font); } .ds-field-pink h2 { margin: 0; font-size: 44px; font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; } .ds-field-pink p { margin: 20px 0 0; font-size: 20px; line-height: 1.45; max-width: 34em; }"
+      "refersTo": "field-white",
+      "description": "Full-bleed white field on the gray page with hairlines top and bottom; facts list with blue dot bullets.",
+      "html": "<section class=\"ds-field-white\"><h2>More than copy and paste.</h2><p class=\"ds-lead\">Right-click any GIF to copy its link, save it, or keep it as a favorite.</p><ul class=\"ds-facts\"><li>Copies both the file and the image data.</li><li>Favorites stay on your Mac.</li></ul></section>",
+      "css": ".ds-field-white { padding: 64px 40px; background: var(--surface); color: var(--ink); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); font-family: var(--font); } .ds-field-white h2 { margin: 0; font-size: 44px; font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; } .ds-lead { margin: 20px 0 0; font-size: 20px; line-height: 1.45; max-width: 34em; color: var(--ink-2); } .ds-facts { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 14px; } .ds-facts li { position: relative; padding-left: 22px; color: var(--ink-2); max-width: 58ch; } .ds-facts li::before { content: \"\"; position: absolute; left: 0; top: 0.62em; width: 8px; height: 8px; border-radius: 50%; background: var(--blue-fill); }"
     }
   ],
   "narrative": {
     "northStar": "The Light Desktop, Edited",
-    "overview": "The site is a Mac desktop in light mode with Snicker already running on it, and it reads like an Apple editorial product page. The ground is Apple's light gray (`paper`); a light translucent menu bar crosses the top; the live popover hangs from its menu bar icon; small GIF windows with traffic lights sit on the desktop and can be dragged. The page then moves in editorial beats rather than cards: a big reaction marquee, a pinned scroll story, and flat, fully committed colour fields in Snicker pink and near-black, then a full-bleed black field for the video.\n\nGlass is reserved for the system chrome a Mac already has in light mode: the menu bar, the popover and the Dock. Everything else is either flat paper, a white window, or a solid field. Type is Apple's system face at semibold display weight, big and tight. Motion springs where macOS springs (popover open, Copied badge, Dock magnification) and is otherwise quiet; all of it stops under reduced motion.",
+    "overview": "The site is a Mac desktop in light mode with Snicker already running on it, and it reads like an Apple editorial product page. The ground is Apple's light gray (`paper`); a light translucent menu bar crosses the top; the live popover hangs from its menu bar icon; small GIF windows with traffic lights sit on the desktop and can be dragged. The page then moves in editorial beats rather than cards: a big reaction marquee, a pinned scroll story, two real app screenshots overlapping like windows, then flat full-bleed fields: a white band on the gray page (the way Apple paces its product pages), a near-black field for the clipboard diagram, and a black field for the video.\n\nGlass is reserved for the system chrome a Mac already has in light mode: the menu bar, the popover and the Dock. Everything else is either flat paper, a white window, or a solid field. Type is Apple's system face at semibold display weight, big and tight. Filled-control blue is the only accent. Icons are Phosphor (MIT) fill glyphs on a 256 grid, never hand-drawn. Motion is choreographed with self-hosted GSAP 3.15 (`docs/vendor/gsap`, driven from `docs/motion.js`): an intro that tells the shortcut story, a scrubbed story, headlines revealed line by line, real screenshots settling out of a 3D tilt, a right-click menu, a clipboard diagram drawn on scroll, a video that zooms to size, and a marquee that follows scroll velocity. UI responses (the popover toggle, tile entrance, Copied badge) are fast and use a strong ease-out; all motion reverts to the static page under reduced motion.",
     "keyCharacteristics": [
       "Light only: `paper` ground, `ink` text, `color-scheme: light`.",
       "macOS light-mode glass (white 72% fill, 24-34px blur at 1.8 saturate, 8% black hairline, white inset top highlight, soft layered shadow) for menu bar, popover and Dock only.",
-      "Flat committed fields: one `pink` field, `night` fields; no gradients.",
+      "Flat full-bleed fields: white bands (`surface`) and `night` fields; no gradients.",
+      "One accent: `blue-fill` (#0071e3); `system-blue` only for rings and carets.",
       "SF Pro system stack at 600 for display sizes, negative tracking.",
       "macOS vocabulary as structure: menu bar, popover with arrow, context menu, window bars with traffic lights, keycaps, Dock.",
       "Pill controls everywhere a control is pressable."
@@ -532,12 +559,17 @@
       },
       {
         "name": "The Flat Field Rule",
-        "body": "A coloured section is one solid fill edge to edge (`pink` or `night`). No gradients anywhere: GIF stand-in tiles are single solid fills. The only gradient in the build is the marquee's edge-fade mask, which is transparency, not colour.",
+        "body": "A field is one solid fill edge to edge: a `surface` band with `rule` hairlines top and bottom, or `night`. No gradients anywhere: GIF stand-in tiles are single solid fills. The only gradient in the build is the marquee's edge-fade mask, which is transparency, not colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Accent Rule",
+        "body": "`blue-fill` is the only accent colour. There is no brand pink or red; it was removed by decision (\"the red isn't really part of our brand\"). Colour beyond blue lives only inside GIF content (the solid-fill emoji tiles) the paired functional icons on the black field, and the Dock's app-style tiles (ink, graphite, blue, orange, white).",
         "section": "colors"
       },
       {
         "name": "The Two Blues Rule",
-        "body": "White text sits on `blue-fill`. `system-blue` is for rings, outlines and carets only.",
+        "body": "White text sits on `blue-fill`. `system-blue` is for rings, outlines and the story's typing caret only.",
         "section": "colors"
       },
       {
@@ -552,23 +584,30 @@
       }
     ],
     "dos": [
-      "Do keep the ground `paper` and text `ink`; put strong colour only in full-bleed flat `pink` or `night` fields.",
+      "Do keep the ground `paper` and text `ink`; pace the page with full-bleed white bands and `night` fields.",
       "Do reserve glass (white 72% fill, 24-34px blur at 1.8 saturate, 1px `glass-edge`, `glass-lit` inset top) for macOS chrome: menu bar, popover, Dock.",
       "Do borrow structure from macOS itself (menu bar, popover, context menu, window bars with traffic lights, keycaps, Dock) instead of inventing section chrome.",
       "Do set display type in SF Pro at 600 with negative tracking (-0.035em to -0.045em).",
       "Do use `blue-fill` under any white text on blue, and `system-blue` for the 2px focus ring with 3px offset.",
       "Do make every pressable control a full pill.",
       "Do write macOS shortcut glyphs (⌘ ⌥ ⇧ ⏎) as real keycaps or menu shortcuts; they are the world's native notation.",
-      "Do keep text on the pink field solid `ink` so body copy passes 4.5:1.",
-      "Do stop all animation under `prefers-reduced-motion`, and keep scroll-driven effects progressive (content visible without them)."
+      "Do use Phosphor (MIT) icons, inlined as SVG.",
+      "Do set GSAP starting states with `gsap.set()` and animate with `.to()`; never `from()` on visible content.",
+      "Do drive scroll effects through ScrollTrigger or IntersectionObserver, and keep them progressive (content visible without GSAP).",
+      "Do keep UI responses short on the strong ease-out `cubic-bezier(0.23, 1, 0.32, 1)`: popover 200ms open, 150ms close.",
+      "Do gate hover motion behind `(hover: hover) and (pointer: fine)`.",
+      "Do revert all choreography under `prefers-reduced-motion` (inside `gsap.matchMedia`), keeping only short fades."
     ],
     "donts": [
       "Don't add a dark theme or a `prefers-color-scheme: dark` block; the site is light only by decision.",
+      "Don't add a second accent: no pink, red or brand colour beside `blue-fill`.",
       "Don't use gradients for colour: no gradient backgrounds, glows or two-stop GIF tiles. Transparency masks (the marquee edge fade) are the only exception.",
       "Don't put white text on `system-blue` (#0a84ff); it fails contrast.",
       "Don't add a second display typeface or uppercase tracked labels.",
       "Don't use hard, offset or coloured shadows; shadows are soft, layered and black.",
-      "Don't present emoji tiles as real GIFs; they are labelled illustrations."
+      "Don't present emoji tiles as real GIFs; they are labelled illustrations.",
+      "Don't attach scroll event listeners.",
+      "Don't hand-draw icons."
     ]
   }
 }
