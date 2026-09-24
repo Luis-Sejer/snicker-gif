@@ -28,36 +28,38 @@
     return { x, y, width: element.offsetWidth, height: element.offsetHeight };
   }
 
+  // Starting states are set explicitly with gsap.set() and animated with .to(). A from() inside a timeline gets
+  // its starting state reverted on the first tick, which showed content on a fast (cached) load and then
+  // blinked it away as each step began.
   function intro() {
     const popover = $("#demo");
     const wordmark = SplitText.create(".wordmark", { type: "chars", mask: "chars" });
+    const copyLines = [".promise", ".shortcut", ".actions", ".fineprint"];
     // The popover's CSS transitions serve the ⌘⌥V toggle; they would fight the intro tween.
-    gsap.set(popover, { transition: "none" });
+    gsap.set(popover, { transition: "none", autoAlpha: 0, scale: 0.94, y: -10, transformOrigin: "88% 0%" });
+    gsap.set(".desktop__icon", { autoAlpha: 0, y: 24, scale: 0.8 });
+    gsap.set(wordmark.chars, { yPercent: 110 });
+    gsap.set(copyLines, { autoAlpha: 0, y: 18 });
+    gsap.set(".demo-note", { autoAlpha: 0 });
+    gsap.set(".sticker", { autoAlpha: 0, y: -90, rotation: () => gsap.utils.random(-28, 28) });
+    root.classList.remove("intro");
 
     const timeline = gsap.timeline({
       defaults: { ease: EASE_OUT },
-      onStart: () => root.classList.remove("intro"),
       onComplete: () => {
         gsap.set(popover, { clearProps: "transition,transform,opacity,visibility" });
         gsap.set(".sticker", { clearProps: "transform,opacity,visibility" });
       },
     });
     timeline
-      .from(".desktop__icon", { y: 24, scale: 0.8, autoAlpha: 0, duration: 1 })
-      .from(wordmark.chars, { yPercent: 110, duration: 1, stagger: 0.045 }, "<0.1")
-      .from([".promise", ".shortcut", ".actions", ".fineprint"], { y: 18, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, "<0.3")
+      .to(".desktop__icon", { autoAlpha: 1, y: 0, scale: 1, duration: 1 })
+      .to(wordmark.chars, { yPercent: 0, duration: 1, stagger: 0.045 }, "<0.1")
+      .to(copyLines, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.08 }, "<0.3")
       // The shortcut, pressed key by key, is what opens the popover.
       .to(".keys kbd", { y: 3, duration: 0.07, stagger: 0.11, yoyo: true, repeat: 1, ease: "power1.inOut" }, "-=0.35")
-      .from(popover, { scale: 0.94, y: -10, autoAlpha: 0, duration: 0.5, ease: "back.out(1.2)", transformOrigin: "88% 0%" }, ">-0.05")
-      .from(".demo-note", { autoAlpha: 0, duration: 0.6 }, "<0.3")
-      .from(".sticker", {
-        y: -90,
-        rotation: () => gsap.utils.random(-28, 28),
-        autoAlpha: 0,
-        duration: 1.1,
-        ease: "back.out(1.7)",
-        stagger: 0.1,
-      }, "<-0.2");
+      .to(popover, { autoAlpha: 1, scale: 1, y: 0, duration: 0.5, ease: "back.out(1.2)" }, ">-0.05")
+      .to(".demo-note", { autoAlpha: 1, duration: 0.6 }, "<0.3")
+      .to(".sticker", { autoAlpha: 1, y: 0, rotation: 0, duration: 1.1, ease: "back.out(1.7)", stagger: 0.1 }, "<-0.2");
     return timeline;
   }
 
@@ -132,8 +134,8 @@
         type: "lines",
         mask: "lines",
         autoSplit: true,
-        onSplit: (split) => gsap.from(split.lines, {
-          yPercent: 105,
+        onSplit: (split) => gsap.fromTo(split.lines, { yPercent: 105 }, {
+          yPercent: 0,
           duration: 1.1,
           ease: EASE_OUT,
           stagger: 0.08,
@@ -141,34 +143,44 @@
         }),
       });
     });
-    ScrollTrigger.batch(".lead, .facts li, .faq details, .install__note", {
+    const fadeIns = ".lead, .facts li, .faq details, .install__note";
+    gsap.set(fadeIns, { autoAlpha: 0, y: 18 });
+    ScrollTrigger.batch(fadeIns, {
       start: "top 88%",
       once: true,
-      onEnter: (elements) => gsap.from(elements, { y: 18, autoAlpha: 0, duration: 0.8, ease: EASE_OUT, stagger: 0.06 }),
+      onEnter: (elements) => gsap.to(elements, { autoAlpha: 1, y: 0, duration: 0.8, ease: EASE_OUT, stagger: 0.06 }),
     });
   }
 
   function rightClick() {
+    gsap.set(".right-click__tile", { autoAlpha: 0, y: 30 });
+    gsap.set(".right-click .cursor", { autoAlpha: 0, x: -70, y: 50 });
+    gsap.set(".right-click .context-menu", { autoAlpha: 0, scale: 0.97, transformOrigin: "0% 0%" });
+    gsap.set(".right-click .context-menu__item", { autoAlpha: 0 });
     gsap.timeline({ scrollTrigger: { trigger: ".right-click", start: "top 75%", once: true } })
-      .from(".right-click__tile", { y: 30, autoAlpha: 0, duration: 0.8, ease: EASE_OUT })
-      .from(".right-click .cursor", { x: -70, y: 50, autoAlpha: 0, duration: 0.7, ease: "power3.inOut" }, "<0.2")
-      // The menu opens from the point that was clicked.
-      .from(".right-click .context-menu", { scale: 0.97, autoAlpha: 0, transformOrigin: "0% 0%", duration: 0.18, ease: "power3.out" }, ">-0.05")
-      .from(".right-click .context-menu__item", { autoAlpha: 0, duration: 0.15, stagger: 0.03 }, "<0.05");
+      .to(".right-click__tile", { autoAlpha: 1, y: 0, duration: 0.8, ease: EASE_OUT })
+      .to(".right-click .cursor", { autoAlpha: 1, x: 0, y: 0, duration: 0.7, ease: "power3.inOut" }, "<0.2")
+      // The menu opens from the point that was clicked, almost instantly, as on a Mac.
+      .to(".right-click .context-menu", { autoAlpha: 1, scale: 1, duration: 0.18, ease: "power3.out" }, ">-0.05")
+      .to(".right-click .context-menu__item", { autoAlpha: 1, duration: 0.15, stagger: 0.03 }, "<0.05");
   }
 
   function anatomy() {
     const stage = $(".anatomy__stage");
+    const hiddenLine = { clipPath: "inset(0 100% 0 0)" };
+    gsap.set(".anatomy__source", { autoAlpha: 0, scale: 0.9 });
+    gsap.set(".connector--fork, .connector--one, .connector--two", hiddenLine);
+    gsap.set(".layer--file, .layer--data, .chat--one, .chat--two", { autoAlpha: 0, x: -40 });
     const timeline = gsap.timeline({ scrollTrigger: { trigger: stage, start: "top 75%", end: "center 45%", scrub: 0.8 } });
     timeline
-      .from(".anatomy__source", { scale: 0.9, autoAlpha: 0, duration: 0.3 })
+      .to(".anatomy__source", { autoAlpha: 1, scale: 1, duration: 0.3 })
       // The copies travel along the lines: fork first, then each row.
-      .fromTo(".connector--fork", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.3, ease: "none" })
-      .from(".layer--file", { x: -40, autoAlpha: 0, duration: 0.3 }, "<0.15")
-      .from(".layer--data", { x: -40, autoAlpha: 0, duration: 0.3 }, "<0.05")
-      .fromTo(".connector--one, .connector--two", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.25, ease: "none" })
-      .from(".chat--one", { x: -40, autoAlpha: 0, duration: 0.3 }, "<0.1")
-      .from(".chat--two", { x: -40, autoAlpha: 0, duration: 0.3 }, "<0.05");
+      .to(".connector--fork", { clipPath: "inset(0 0% 0 0)", duration: 0.3, ease: "none" })
+      .to(".layer--file", { autoAlpha: 1, x: 0, duration: 0.3 }, "<0.15")
+      .to(".layer--data", { autoAlpha: 1, x: 0, duration: 0.3 }, "<0.05")
+      .to(".connector--one, .connector--two", { clipPath: "inset(0 0% 0 0)", duration: 0.25, ease: "none" })
+      .to(".chat--one", { autoAlpha: 1, x: 0, duration: 0.3 }, "<0.1")
+      .to(".chat--two", { autoAlpha: 1, x: 0, duration: 0.3 }, "<0.05");
   }
 
   function video() {
@@ -207,10 +219,15 @@
   // and not when a reload restored a scrolled position.
   const shouldPlayIntro = () => root.classList.contains("intro") && window.scrollY < 40;
 
+  // The intro runs once, outside gsap.matchMedia: ScrollTrigger reverts and restores matchMedia animations
+  // while it measures the page on load, and a restored timeline only re-applies the steps it has reached, so
+  // every later element would show at full opacity until its turn, then blink out.
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduceMotion && shouldPlayIntro()) intro();
+  else root.classList.remove("intro", "intro-skipped");
+
   const media = gsap.matchMedia();
   media.add("(prefers-reduced-motion: no-preference)", () => {
-    if (shouldPlayIntro()) intro();
-    else root.classList.remove("intro", "intro-skipped");
     story();
     headlineReveals();
     rightClick();
