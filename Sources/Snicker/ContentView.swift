@@ -135,7 +135,9 @@ struct ContentView: View {
             }
         }
         .scrollIndicators(.never) // a legacy scroller would steal a column's worth of gutter on the right
-        .scrollEdgeEffectStyle(.soft, for: [.top, .bottom])
+        .scrollEdgeEffectStyle(.soft, for: .top)
+        // A soft edge let the footer text sit on top of busy GIFs; the hard edge gives it a clear band.
+        .scrollEdgeEffectStyle(.hard, for: .bottom)
         .safeAreaInset(edge: .top, spacing: 4) { header }
         .safeAreaInset(edge: .bottom, spacing: 0) { footer }
         .overlay { emptyState }
