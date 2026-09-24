@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest an idea for Snicker
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to do?
+      description: Describe the problem or the moment where Snicker could help more.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How do you imagine it working?
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Anything you've tried instead?

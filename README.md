@@ -16,6 +16,7 @@
   <img src="https://img.shields.io/badge/SwiftUI-Liquid%20Glass-F05138?style=flat-square&logo=swift&logoColor=white" alt="SwiftUI with Liquid Glass">
   <img src="https://img.shields.io/badge/download-160%20KB-34c759?style=flat-square" alt="160 KB download">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/Luis-Sejer/snicker-gif?style=flat-square&color=bf5af2" alt="MIT license"></a>
+  <a href="https://github.com/Luis-Sejer/snicker-gif/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Luis-Sejer/snicker-gif/ci.yml?style=flat-square&label=build" alt="Build status"></a>
 </p>
 
 <p align="center">
@@ -39,11 +40,14 @@ It is also small and quiet: a native SwiftUI app of under 1 MB, with no account,
 - **Instant search** from anywhere with <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>, with Trending shown before you type
 - **Click to copy**, or **drag** a GIF straight into any app
 - **Pastes everywhere** — Teams, Slack, Discord, Messages, Mail
+- **Favorites and Recent**, one click away and kept between launches
+- **Search suggestions** as you type, plus quick picks for the reactions you use most
+- **Copy Link** for chats that unfurl GIF links, and **Save to Downloads**
+- **Keyboard first** — arrows to choose, <kbd>Return</kbd> to copy, <kbd>⌘</kbd> <kbd>D</kbd> to favorite
 - **Masonry grid** that shows every GIF at its real shape, animated
-- **Quick picks** for the reactions you use most: Thank you, LOL, Yes, No, Party…
-- **Keyboard first** — type and press <kbd>Enter</kbd> to copy the top result
+- **Launch at Login** and **Random File Names**, so pasted files don’t reveal what you searched for
 - **Liquid Glass** design that looks at home on macOS Tahoe and later
-- **Light and dark mode**, and it respects Reduce Motion
+- **Accessible** — VoiceOver, full keyboard control, Reduce Motion and Auto-play Animated Images
 
 ## Install
 
@@ -78,10 +82,16 @@ To have Snicker start with your Mac, add it under **System Settings → General 
 | Do this | To |
 |---|---|
 | <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the menu bar icon | open or close Snicker |
-| Type, or pick a quick pick | search (empty shows Trending) |
-| <kbd>Enter</kbd> | copy the top result |
+| Type, or pick a suggestion | search (empty shows Trending) |
+| <kbd>↑</kbd> <kbd>↓</kbd> | choose a GIF |
+| <kbd>Return</kbd> | copy the chosen GIF |
+| <kbd>⇧</kbd> <kbd>Return</kbd> | copy its link |
+| <kbd>⌘</kbd> <kbd>D</kbd> | add it to or remove it from Favorites |
 | Click a GIF | copy it and close |
 | Drag a GIF | drop it into any app |
+| Right-click a GIF | Copy GIF, Copy Link, Favorites, Save to Downloads, Open on KLIPY |
+
+Settings — Launch at Login, Random File Names and more — live in the **⋯** menu at the bottom right.
 
 ## How pasting works
 
@@ -94,10 +104,22 @@ When you copy a GIF, Snicker downloads it once to `~/Library/Caches/Snicker` and
 
 Each app picks the one it understands, so the GIF stays animated wherever you paste it.
 
+## Accessibility
+
+Snicker is built to work for everyone:
+
+- **VoiceOver** reads every GIF by its title, announces when something is copied, and offers Copy Link, Favorites and Save to Downloads as actions.
+- **Keyboard** control covers everything: search, choose, copy, copy the link and favorite without touching the mouse.
+- **Reduce Motion** turns off the hover zoom and bouncy effects.
+- **Auto-play Animated Images** is respected: when it’s off, a GIF only plays while you point at it or select it.
+- **Increase Contrast** and **Reduce Transparency** apply automatically through the system’s Liquid Glass materials.
+
+Found something that doesn’t work with your setup? Please [open an issue](https://github.com/Luis-Sejer/snicker-gif/issues/new/choose).
+
 ## Privacy
 
 - Your searches go to KLIPY to find GIFs, and nowhere else.
-- If you add your own KLIPY key, it is stored locally in Snicker’s preferences.
+- Favorites, recents, settings and any KLIPY key you add are stored locally in Snicker’s preferences.
 - No analytics, no tracking, no account.
 
 ## Build from source
@@ -118,6 +140,10 @@ Source builds don’t include a KLIPY key, so on first launch Snicker asks for o
 | `./build.sh install` | builds, installs to `~/Applications` and launches |
 | `./release.sh 1.4.0` | tags a release; GitHub Actions builds and publishes it |
 | `docs/src/render.sh` | re-renders the icon, README artwork and launch video |
+
+## Contributing
+
+Bug reports, ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started, and the [changelog](CHANGELOG.md) for what’s new.
 
 ## Credits
 

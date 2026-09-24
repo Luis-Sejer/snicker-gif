@@ -27,4 +27,8 @@ jobs:
       - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" build/Snicker.zip --title "Snicker ${GITHUB_REF_NAME#v}" --generate-notes
+        run: |
+          # The release notes are this version's section of CHANGELOG.md.
+          VERSION=${GITHUB_REF_NAME#v}
+          awk -v version="$VERSION" '/^## \[/ { inside = index($0, "[" version "]") > 0; next } inside' CHANGELOG.md > build/notes.md
+          gh release create "$GITHUB_REF_NAME" build/Snicker.zip --title "Snicker $VERSION" --notes-file build/notes.md

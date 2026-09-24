@@ -1,0 +1,45 @@
+name: Bug report
+description: Something in Snicker doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Press ⌘⌥V
+        2. Search for …
+        3. …
+    validations:
+      required: true
+  - type: input
+    id: snicker-version
+    attributes:
+      label: Snicker version
+      description: In Finder, select Snicker and press ⌘I.
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      placeholder: "macOS 27.0"
+    validations:
+      required: true
+  - type: input
+    id: target-app
+    attributes:
+      label: App you pasted or dropped into (if relevant)
+      placeholder: "Microsoft Teams, Slack, …"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or anything else
