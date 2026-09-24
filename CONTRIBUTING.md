@@ -30,6 +30,7 @@ Source builds don’t include a KLIPY key, so Snicker asks for one on first laun
 | `Sources/Snicker/ContentView.swift` | The popover: search, grid, tiles, settings and welcome screen |
 | `Sources/Snicker/Klipy.swift` | The GIF model, the KLIPY API and clipboard/file handling |
 | `Sources/Snicker/Library.swift` | Favorites and recents |
+| `Resources/` | Files bundled into the app by `build.sh` (KLIPY's logo) |
 | `Tests/SnickerTests/` | Tests for decoding, file naming and the library |
 | `docs/index.html`, `site.css`, `site.js`, `motion.js` | The website (GitHub Pages), with GSAP in `docs/vendor/gsap/` |
 | `docs/src/` | HTML sources and scripts for the icon, README artwork and launch video |

@@ -268,8 +268,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
-            Text("Powered by KLIPY")
-                .foregroundStyle(.secondary)
+            klipyAttribution
             settingsMenu
         }
         .font(.caption)
@@ -277,6 +276,31 @@ struct ContentView: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
     }
+
+    /// KLIPY's official mark, tinted like other secondary text so it suits light and dark mode.
+    @ViewBuilder
+    private var klipyAttribution: some View {
+        if let mark = Self.klipyMark {
+            Image(nsImage: mark)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 9)
+                .foregroundStyle(.secondary)
+                .accessibilityLabel("Powered by KLIPY")
+        } else {
+            Text("Powered by KLIPY")
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    /// Bundled by build.sh; a bare `swift build` has no bundle, so the view falls back to text.
+    private static let klipyMark: NSImage? = {
+        guard let url = Bundle.main.url(forResource: "powered-by-klipy", withExtension: "png"),
+              let image = NSImage(contentsOf: url) else { return nil }
+        image.isTemplate = true
+        return image
+    }()
 
     private var settingsMenu: some View {
         Menu {

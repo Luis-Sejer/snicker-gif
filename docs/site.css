@@ -478,6 +478,12 @@ main { padding-top: var(--menubar); }
   color: var(--ink-3);
 }
 
+/* KLIPY's official "Powered by KLIPY" mark, per their attribution guidelines. */
+.popover__klipy { height: 10px; width: auto; align-self: center; }
+.site-footer__klipy { display: block; margin: 8px 0 4px; }
+.site-footer__klipy img { height: 14px; width: auto; opacity: 0.75; }
+.site-footer__klipy:hover img { opacity: 1; }
+
 .demo-note { margin: 14px 4px 0; font-size: 13px; color: var(--ink-3); max-width: 420px; }
 
 /* ——— Marquee ——— */
