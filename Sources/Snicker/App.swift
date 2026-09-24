@@ -30,6 +30,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
         // Size up front: letting SwiftUI report it after showing makes the popover grow up under the menu bar.
         hostingController.sizingOptions = []
+        NSApp.mainMenu = Self.editMenu()
         popover.behavior = .transient
         popover.contentSize = Layout.popoverSize
         popover.contentViewController = hostingController
@@ -37,6 +38,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hotKey = HotKey(keyCode: UInt32(kVK_ANSI_V), modifiers: UInt32(cmdKey | optionKey)) { [weak self] in
             self?.togglePopover()
         }
+    }
+
+    /// Menu bar apps get no main menu, and without an Edit menu ⌘V, ⌘C and friends do nothing in text fields.
+    /// It is never shown; it only supplies the key equivalents.
+    private static func editMenu() -> NSMenu {
+        let edit = NSMenu(title: "Edit")
+        edit.addItem(withTitle: "Undo", action: Selector(("undo:")), keyEquivalent: "z")
+        edit.addItem(withTitle: "Redo", action: Selector(("redo:")), keyEquivalent: "Z")
+        edit.addItem(.separator())
+        edit.addItem(withTitle: "Cut", action: #selector(NSText.cut(_:)), keyEquivalent: "x")
+        edit.addItem(withTitle: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+        edit.addItem(withTitle: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
+        edit.addItem(withTitle: "Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+
+        let editItem = NSMenuItem()
+        editItem.submenu = edit
+        let mainMenu = NSMenu()
+        mainMenu.addItem(NSMenuItem()) // the first item is always the app menu
+        mainMenu.addItem(editItem)
+        return mainMenu
     }
 
     /// The app icon's two tilted cards as a template image, so it tints with the menu bar like an SF Symbol.
