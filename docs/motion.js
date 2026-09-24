@@ -187,13 +187,16 @@
     // The two windows drift at different speeds, so they read as depth on a desktop.
     // They start slightly tilted back in 3D and settle flat as they reach the middle of the screen.
     const settle = { trigger: ".real__stage", start: "top bottom", end: "center center", scrub: 0.6 };
-    const drift = { trigger: ".real__stage", start: "top bottom", end: "bottom top", scrub: true };
-    gsap.set(".real__shot--messages", { rotationX: 14, rotationY: -16, yPercent: 6, transformOrigin: "50% 60%" });
-    gsap.set(".real__shot--popover", { rotationX: 12, rotationY: 18, yPercent: 14, transformOrigin: "50% 60%" });
-    gsap.to(".real__shot--messages", { rotationX: 0, rotationY: 0, ease: "power2.out", scrollTrigger: settle });
-    gsap.to(".real__shot--popover", { rotationX: 0, rotationY: 0, ease: "power2.out", scrollTrigger: { ...settle } });
-    gsap.to(".real__shot--messages", { yPercent: -6, ease: "none", scrollTrigger: drift });
-    gsap.to(".real__shot--popover", { yPercent: -10, ease: "none", scrollTrigger: { ...drift } });
+    gsap.set(".real__shot--glass", { rotationX: 12, rotationY: 16, transformOrigin: "50% 60%" });
+    gsap.set(".real__shot--messages", { rotationX: 14, rotationY: -18, transformOrigin: "50% 60%" });
+    gsap.to(".real__shot--glass", { rotationX: 0, rotationY: 0, ease: "power2.out", scrollTrigger: settle });
+    gsap.to(".real__shot--messages", { rotationX: 0, rotationY: 0, ease: "power2.out", scrollTrigger: { ...settle } });
+    // On wider screens the windows also drift at different depths; on phones they stay put so they never collide.
+    if (window.matchMedia("(min-width: 901px)").matches) {
+      const drift = { trigger: ".real__stage", start: "top bottom", end: "bottom top", scrub: true };
+      gsap.fromTo(".real__shot--glass", { yPercent: 4 }, { yPercent: -4, ease: "none", scrollTrigger: drift });
+      gsap.fromTo(".real__shot--messages", { yPercent: 14 }, { yPercent: -10, ease: "none", scrollTrigger: { ...drift } });
+    }
   }
 
   function video() {

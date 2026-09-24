@@ -516,11 +516,12 @@ main { padding-top: var(--menubar); }
   gap: clamp(32px, 6vw, 96px);
   align-items: center;
 }
-.real__stage { position: relative; min-height: 760px; perspective: 1400px; }
-/* The screenshots carry their own macOS window shadows (transparent PNG captures). */
+.real__stage { position: relative; min-height: 720px; perspective: 1400px; }
 .real__shot { position: absolute; height: auto; }
-.real__shot--messages { right: 0; top: 0; width: min(62%, 400px); }
-.real__shot--popover { left: 0; top: 120px; width: min(58%, 380px); z-index: 1; }
+/* A slice of a real desktop: the menu bar and the glass popover over the wallpaper. */
+.real__shot--glass { left: 0; top: 0; width: min(76%, 540px); border-radius: 18px; box-shadow: var(--shadow-window); }
+/* The Messages capture carries its own macOS window shadow (transparent PNG). It sits on top, like the window you paste into. */
+.real__shot--messages { right: 0; top: 150px; width: min(46%, 300px); z-index: 1; }
 
 /* ——— Committed fields ——— */
 
@@ -822,8 +823,10 @@ img.dock__icon { object-fit: contain; transform: scale(1.22); }
 
 @media (max-width: 900px) {
   .real { grid-template-columns: 1fr; }
-  .real__stage { min-height: 0; display: grid; justify-items: center; gap: 12px; }
-  .real__shot { position: static; width: min(100%, 380px) !important; }
+  /* Phones: the desktop slice runs full width and Messages overlaps its corner, smaller. */
+  .real__stage { min-height: 0; padding-bottom: 22%; }
+  .real__shot--glass { position: relative; width: 100%; }
+  .real__shot--messages { top: auto; bottom: 0; right: -2%; width: 46%; }
 }
 
 @media (max-width: 720px) {
