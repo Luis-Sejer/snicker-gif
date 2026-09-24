@@ -224,7 +224,7 @@ main { padding-top: var(--menubar); }
   border: 0;
   transition: transform 0.2s var(--ease-out), background-color 0.2s;
 }
-.button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.button svg { width: 18px; height: 18px; }
 .button--primary { color: #fff; background: var(--blue-fill); }
 .button--primary:hover { color: #fff; background: var(--blue-fill-hover); transform: translateY(-1px); text-decoration: none; }
 .button--secondary { color: var(--ink); background: var(--tint-strong); }
@@ -339,7 +339,7 @@ main { padding-top: var(--menubar); }
   border: 1px solid transparent;
 }
 .search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgb(10 132 255 / 0.25); }
-.search__icon { width: 16px; height: 16px; flex: none; fill: none; stroke: var(--ink-3); stroke-width: 1.9; stroke-linecap: round; }
+.search__icon { width: 17px; height: 17px; flex: none; color: var(--ink-3); }
 .search input {
   flex: 1;
   min-width: 0;
@@ -351,11 +351,9 @@ main { padding-top: var(--menubar); }
 }
 .search input::placeholder { color: var(--ink-3); }
 .search input::-webkit-search-cancel-button { display: none; }
-.search__clear { display: grid; padding: 0; border: 0; background: none; cursor: pointer; }
+.search__clear { display: grid; padding: 0; border: 0; background: none; color: var(--ink-3); cursor: pointer; }
 .search__clear[hidden] { display: none; }
-.search__clear svg { width: 16px; height: 16px; }
-.search__clear circle { fill: var(--ink-3); }
-.search__clear path { stroke: var(--surface); stroke-width: 1.7; stroke-linecap: round; }
+.search__clear svg { width: 17px; height: 17px; }
 
 .chips { display: flex; gap: 6px; padding: 10px 10px 8px; overflow-x: auto; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
@@ -437,9 +435,9 @@ main { padding-top: var(--menubar); }
   opacity: 0;
   transition: opacity 0.15s;
 }
-.tile__star svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linejoin: round; }
+.tile__star svg { width: 13px; height: 13px; color: #fff; }
 .tile:hover .tile__star, .tile.is-favorite .tile__star, .tile.is-selected .tile__star { opacity: 1; }
-.tile.is-favorite .tile__star svg { fill: #ffd60a; stroke: #ffd60a; }
+.tile.is-favorite .tile__star svg { color: #ffd60a; }
 
 .tile__copied {
   position: absolute;
@@ -582,9 +580,9 @@ section { position: relative; }
 }
 .layer { display: flex; align-items: center; gap: 12px; padding: 14px 18px; font-size: 15px; color: #a1a1a6; }
 .layer b { display: block; color: #f5f5f7; font-size: 16px; }
-.layer svg { width: 30px; height: 30px; flex: none; fill: none; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
-.layer--file svg { stroke: var(--orange); }
-.layer--data svg { stroke: var(--purple); }
+.layer svg { width: 30px; height: 30px; flex: none; }
+.layer--file svg { color: var(--orange); }
+.layer--data svg { color: var(--purple); }
 
 .chat { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; align-items: center; padding: 14px 16px; }
 .chat__title { grid-column: 1 / -1; margin: 0; font-size: 12px; font-weight: 600; color: #a1a1a6; }
@@ -592,20 +590,6 @@ section { position: relative; }
 .chat__gif { grid-row: 2 / 4; grid-column: 2; width: 110px; aspect-ratio: 4 / 3; border-radius: 12px; display: grid; place-items: center; background: var(--a); font-size: 44px; }
 .chat__via { align-self: end; font-size: 15px; font-weight: 600; color: #d1d1d6; margin: 0; }
 
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .layer, .chat {
-      animation: split-in linear both;
-      animation-timeline: view();
-      animation-range: entry 10% cover 40%;
-    }
-    .layer--file { --from: translate(-80px, 30px); }
-    .layer--data { --from: translate(-80px, -30px); }
-    .chat { --from: translate(-60px, 0); }
-    .chat--two { animation-range: entry 20% cover 45%; }
-  }
-}
-@keyframes split-in { from { opacity: 0; transform: var(--from, none) scale(0.92); filter: blur(6px); } }
 
 /* ——— Windows: info, player, terminal ——— */
 
@@ -842,7 +826,9 @@ img.dock__icon { object-fit: contain; transform: scale(1.22); }
 
 /* ——— The story: a pinned scene that plays the whole flow as you scroll ——— */
 
-.story { height: 420vh; border-top: 1px solid var(--rule); }
+.story { position: relative; height: 420vh; border-top: 1px solid var(--rule); }
+/* Marker p sits where the story has scrolled p quarters of its range, measured at the middle of the screen. */
+.story__marker { position: absolute; left: 0; width: 1px; height: 1px; top: calc(var(--p) * (100% - 100svh) / 4 + 50svh); pointer-events: none; }
 .story__sticky {
   position: sticky;
   top: var(--menubar);
@@ -935,7 +921,7 @@ img.dock__icon { object-fit: contain; transform: scale(1.22); }
   transition: opacity 0.3s var(--ease-out), transform 0.45s var(--ease-spring);
 }
 .scene-search { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: var(--radius-control); background: var(--tint); font-size: 15px; }
-.scene-search svg { width: 14px; height: 14px; fill: none; stroke: var(--ink-3); stroke-width: 1.9; stroke-linecap: round; }
+.scene-search svg { width: 15px; height: 15px; color: var(--ink-3); }
 .scene-query:empty::before { content: "Search KLIPY"; color: var(--ink-3); }
 .scene-caret { width: 2px; height: 18px; background: var(--blue); margin-left: -6px; animation: caret 1s steps(2) infinite; }
 @keyframes caret { 50% { opacity: 0; } }
@@ -959,13 +945,22 @@ img.dock__icon { object-fit: contain; transform: scale(1.22); }
   transition: opacity 0.2s, transform 0.4s var(--ease-spring);
 }
 
-/* Step 0: the popover opens. Step 1: "party" is typed and the results change. Step 2: a GIF is copied. Step 3: it lands in the chat. */
-.story[data-step="0"] .scene-pop, .story[data-step="1"] .scene-pop, .story[data-step="2"] .scene-pop { opacity: 1; transform: none; }
-.story[data-step="1"] .scene-grid--trending, .story[data-step="2"] .scene-grid--trending { opacity: 0; }
-.story[data-step="1"] .scene-grid--party, .story[data-step="2"] .scene-grid--party { opacity: 1; }
-.story[data-step="2"] .scene-tile--target { transform: scale(1.06); box-shadow: 0 10px 24px rgb(0 0 0 / 0.25), inset 0 0 0 2.5px var(--blue); }
-.story[data-step="2"] .scene-copied { opacity: 1; transform: none; }
-.story[data-step="3"] .scene-gif { opacity: 1; transform: none; }
+/* Without GSAP (or with Reduce Motion) CSS plays each step. Step 0: the popover opens. Step 1: "party" is typed
+   and the results change. Step 2: a GIF is copied. Step 3: it lands in the chat. */
+.story:not(.is-scrubbed)[data-step="0"] .scene-pop, .story:not(.is-scrubbed)[data-step="1"] .scene-pop, .story:not(.is-scrubbed)[data-step="2"] .scene-pop { opacity: 1; transform: none; }
+.story:not(.is-scrubbed)[data-step="1"] .scene-grid--trending, .story:not(.is-scrubbed)[data-step="2"] .scene-grid--trending { opacity: 0; }
+.story:not(.is-scrubbed)[data-step="1"] .scene-grid--party, .story:not(.is-scrubbed)[data-step="2"] .scene-grid--party { opacity: 1; }
+.story:not(.is-scrubbed)[data-step="2"] .scene-tile--target { transform: scale(1.06); box-shadow: 0 10px 24px rgb(0 0 0 / 0.25), inset 0 0 0 2.5px var(--blue); }
+.story:not(.is-scrubbed)[data-step="2"] .scene-copied { opacity: 1; transform: none; }
+.story:not(.is-scrubbed)[data-step="3"] .scene-gif { opacity: 1; transform: none; }
+/* GSAP owns the scene's motion, so CSS transitions must not fight it. */
+.story.is-scrubbed .scene-pop, .story.is-scrubbed .scene-grid, .story.is-scrubbed .scene-tile, .story.is-scrubbed .scene-copied, .story.is-scrubbed .scene-gif { transition: none; }
+.story.is-scrubbed .scene-grid--party { opacity: 1; }
+.scene-cursor { position: absolute; left: 0; top: 0; z-index: 3; width: 22px; opacity: 0; pointer-events: none; filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.3)); }
+
+/* The intro reveals these; hidden until it starts. */
+.intro .desktop__copy, .intro .demo-anchor, .intro .stickers { visibility: hidden; }
+.marquee.is-driven .marquee__track { animation: none; }
 
 @media (max-width: 900px) {
   .story { height: 380vh; }

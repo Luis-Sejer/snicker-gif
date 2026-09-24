@@ -15,8 +15,20 @@
   <meta property="og:image" content="https://luis-sejer.github.io/snicker-gif/assets/hero.png">
   <meta property="og:url" content="https://luis-sejer.github.io/snicker-gif/">
   <meta name="twitter:card" content="summary_large_image">
+  <script>
+    // Hide the hero until the GSAP intro takes it over, so nothing flashes first. Shows it anyway after 2.5s.
+    if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+      document.documentElement.classList.add("intro");
+      setTimeout(() => document.documentElement.classList.remove("intro"), 2500);
+    }
+  </script>
   <link rel="stylesheet" href="site.css">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js" defer></script>
   <script src="site.js" defer></script>
+  <script src="motion.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -67,7 +79,7 @@
         </p>
         <div class="actions">
           <a class="button button--primary" href="https://github.com/Luis-Sejer/snicker-gif/releases/latest/download/Snicker.zip">
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0 4-4m-4 4-4-4M4 16h12"/></svg>
+            <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M228,144v64a12,12,0,0,1-12,12H40a12,12,0,0,1-12-12V144a12,12,0,0,1,24,0v52H204V144a12,12,0,0,1,24,0Zm-108.49,8.49a12,12,0,0,0,17,0l40-40a12,12,0,0,0-17-17L140,115V32a12,12,0,0,0-24,0v83L96.49,95.51a12,12,0,0,0-17,17Z"/></svg>
             Download for Mac
           </a>
           <button class="command" type="button" data-copy="curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install.sh | sh" aria-label="Copy the install command">
@@ -82,11 +94,11 @@
         <section class="popover" id="demo" aria-label="Snicker demo: search and copy GIFs">
           <span class="popover__arrow" aria-hidden="true"></span>
           <div class="search">
-            <svg class="search__icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="6.8" cy="6.8" r="5"/><path d="M10.6 10.6 14.5 14.5"/></svg>
+            <svg class="search__icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
             <label class="visually-hidden" for="demo-search">Search GIFs</label>
             <input id="demo-search" type="search" placeholder="Search KLIPY" autocomplete="off" spellcheck="false" aria-describedby="demo-help">
             <button class="search__clear" type="button" id="demo-clear" hidden aria-label="Clear search">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5"/><path d="M5.3 5.3l5.4 5.4M10.7 5.3l-5.4 5.4"/></svg>
+              <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm37.66,130.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
             </button>
           </div>
           <div class="chips" id="demo-chips" role="group" aria-label="Browse"></div>
@@ -110,6 +122,10 @@
     </div>
 
     <section class="story" id="how" aria-labelledby="story-title" data-step="-1">
+      <span class="story__marker" style="--p:0" aria-hidden="true"></span>
+      <span class="story__marker" style="--p:1" aria-hidden="true"></span>
+      <span class="story__marker" style="--p:2" aria-hidden="true"></span>
+      <span class="story__marker" style="--p:3" aria-hidden="true"></span>
       <div class="story__sticky">
         <div class="story__copy">
           <h2 id="story-title" class="visually-hidden">How it works</h2>
@@ -131,7 +147,7 @@
             <div class="scene-chat__compose">Message #design-team</div>
           </div>
           <div class="scene-pop">
-            <span class="scene-search"><svg viewBox="0 0 16 16"><circle cx="6.8" cy="6.8" r="5"/><path d="M10.6 10.6 14.5 14.5"/></svg><span class="scene-query" data-text="party"></span><span class="scene-caret"></span></span>
+            <span class="scene-search"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg><span class="scene-query" data-text="party"></span><span class="scene-caret"></span></span>
             <span class="scene-grid scene-grid--trending"><span class="scene-tile" style="--a:#ffb800"><span>😂</span></span><span class="scene-tile" style="--a:#2f8cff"><span>🙏</span></span><span class="scene-tile" style="--a:#8e6cf2"><span>😎</span></span><span class="scene-tile" style="--a:#30c35c"><span>👍</span></span><span class="scene-tile" style="--a:#ff8a00"><span>🤯</span></span><span class="scene-tile" style="--a:#ff2d78"><span>❤️</span></span></span>
             <span class="scene-grid scene-grid--party"><span class="scene-tile" style="--a:#ff6a3d"><span>🎉</span></span><span class="scene-tile scene-tile--target" style="--a:#8e6cf2"><span>🥳</span><b class=scene-copied>Copied</b></span><span class="scene-tile" style="--a:#30c35c"><span>🕺</span></span><span class="scene-tile" style="--a:#e8364f"><span>🍾</span></span><span class="scene-tile" style="--a:#2f8cff"><span>🪩</span></span><span class="scene-tile" style="--a:#ff2d92"><span>💃</span></span></span>
           </div>
@@ -182,11 +198,11 @@
             <span class="anatomy__label">You click a GIF</span>
           </div>
           <div class="layer layer--file">
-            <svg viewBox="0 0 20 20"><path d="M5 2.5h6.5L15 6v11.5H5z"/><path d="M11.5 2.5V6H15"/></svg>
+            <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM152,88V44l44,44Z"/></svg>
             <span><b>File</b> laughing.gif</span>
           </div>
           <div class="layer layer--data">
-            <svg viewBox="0 0 20 20"><rect x="2.5" y="4" width="15" height="12" rx="2"/><path d="m5 13 3.5-4 3 3 2-2 2.5 3"/></svg>
+            <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM48,48H208v77.38l-24.69-24.7a16,16,0,0,0-22.62,0L53.37,208H48ZM80,96a16,16,0,1,1,16,16A16,16,0,0,1,80,96Z"/></svg>
             <span><b>Image data</b> GIF</span>
           </div>
           <div class="chat chat--one">
@@ -236,7 +252,7 @@
             <a href="assets/snicker-launch.mp4">Download the launch video</a>
           </video>
           <button class="player__play" id="launch-play" type="button" aria-label="Play the launch video, with sound">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+            <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"/></svg>
             <span>Play with sound</span>
           </button>
         </div>
@@ -295,23 +311,23 @@
       <img class="dock__icon" src="assets/icon.png" alt="">
     </a>
     <a class="dock__item" href="#menu" tabindex="-1" data-label="Features">
-      <span class="dock__icon dock__tile" style="--tile:#ff375f"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#fff"/></svg></span>
+      <span class="dock__icon dock__tile" style="--tile:#ff375f"><svg viewBox="0 0 256 256" fill="#fff" aria-hidden="true"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></span>
     </a>
     <a class="dock__item" href="#why" tabindex="-1" data-label="Pastes anywhere">
-      <span class="dock__icon dock__tile" style="--tile:#1d1d1f"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"><rect x="8" y="4" width="11" height="14" rx="2"/><path d="M5.5 7.5v11A1.5 1.5 0 0 0 7 20h9"/></svg></span>
+      <span class="dock__icon dock__tile" style="--tile:#1d1d1f"><svg viewBox="0 0 256 256" fill="#fff" aria-hidden="true"><path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32Zm-8,128H176V88a8,8,0,0,0-8-8H96V48H208Z"/></svg></span>
     </a>
     <a class="dock__item" href="#watch" tabindex="-1" data-label="Watch the video">
-      <span class="dock__icon dock__tile" style="--tile:#0071e3"><svg viewBox="0 0 24 24"><path d="M9.5 7v10l8-5z" fill="#fff"/></svg></span>
+      <span class="dock__icon dock__tile" style="--tile:#0071e3"><svg viewBox="0 0 256 256" fill="#fff" aria-hidden="true"><path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"/></svg></span>
     </a>
     <a class="dock__item" href="#install" tabindex="-1" data-label="Install">
-      <span class="dock__icon dock__tile" style="--tile:#2b2b2e"><svg viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 8 4 4-4 4M12 16h6"/></svg></span>
+      <span class="dock__icon dock__tile" style="--tile:#2b2b2e"><svg viewBox="0 0 256 256" fill="#34c759" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm-91,94.25-40,32a8,8,0,1,1-10-12.5L107.19,128,75,102.25a8,8,0,1,1,10-12.5l40,32a8,8,0,0,1,0,12.5ZM176,168H136a8,8,0,0,1,0-16h40a8,8,0,0,1,0,16Z"/></svg></span>
     </a>
     <a class="dock__item" href="#faq" tabindex="-1" data-label="Questions">
-      <span class="dock__icon dock__tile" style="--tile:#ff9f0a"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9.2 9.2a2.9 2.9 0 1 1 4.2 2.6c-.9.5-1.4 1.1-1.4 2.2"/><circle cx="12" cy="17.3" r=".6" fill="#fff"/></svg></span>
+      <span class="dock__icon dock__tile" style="--tile:#ff9f0a"><svg viewBox="0 0 256 256" fill="#fff" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z"/></svg></span>
     </a>
     <span class="dock__divider"></span>
     <a class="dock__item" href="https://github.com/Luis-Sejer/snicker-gif" tabindex="-1" data-label="Source on GitHub">
-      <span class="dock__icon dock__tile dock__tile--light" style="--tile:#ffffff"><svg viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 8-4 4 4 4M15 8l4 4-4 4M13.5 5.5l-3 13"/></svg></span>
+      <span class="dock__icon dock__tile dock__tile--light" style="--tile:#ffffff"><svg viewBox="0 0 256 256" fill="#1d1d1f" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM92.8,145.6a8,8,0,1,1-9.6,12.8l-32-24a8,8,0,0,1,0-12.8l32-24a8,8,0,0,1,9.6,12.8L69.33,128Zm58.89-71.4-32,112a8,8,0,1,1-15.38-4.4l32-112a8,8,0,0,1,15.38,4.4Zm53.11,60.2-32,24a8,8,0,0,1-9.6-12.8L186.67,128,163.2,110.4a8,8,0,1,1,9.6-12.8l32,24a8,8,0,0,1,0,12.8Z"/></svg></span>
     </a>
   </nav>
 </body>

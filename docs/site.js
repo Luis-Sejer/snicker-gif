@@ -37,10 +37,11 @@ const COPIED_LINGER_MS = 900;
 const ENTRANCE_MS = 1200;
 
 const ICONS = {
-  star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>',
-  clock: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm.75 3.5v3.19l2.28 2.28-1.06 1.06L7.25 8.3V4.5h1.5Z"/></svg>',
-  flame: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8.6 1c.4 2.2-.7 3.3-1.6 4.4C6 6.6 5 7.8 5 9.7 5 12.1 6.4 15 9 15c2.3 0 4-1.9 4-4.6 0-2.3-1.2-3.4-2.1-4.6.1 1.2-.3 2.1-1.1 2.6C10.2 5.8 10 3 8.6 1Z"/></svg>',
-  check: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5" fill="#fff"/><path d="M4.6 8.2l2.2 2.2 4.6-4.8" fill="none" stroke="#b86a00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  // Phosphor icons (phosphoricons.com, MIT).
+  star: '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg>',
+  clock: '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm56,112H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48a8,8,0,0,1,0,16Z"/></svg>',
+  flame: '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M143.38,17.85a8,8,0,0,0-12.63,3.41l-22,60.41L84.59,58.26a8,8,0,0,0-11.93.89C51,87.53,40,116.08,40,144a88,88,0,0,0,176,0C216,84.55,165.21,36,143.38,17.85Zm40.51,135.49a57.6,57.6,0,0,1-46.56,46.55A7.65,7.65,0,0,1,136,200a8,8,0,0,1-1.32-15.89c16.57-2.79,30.63-16.85,33.44-33.45a8,8,0,0,1,15.78,2.68Z"/></svg>',
+  check: '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>',
 };
 
 const state = {
@@ -427,11 +428,14 @@ new ResizeObserver(aimArrow).observe(document.querySelector(".menubar__extras"))
 render();
 aimArrow();
 
-// ——— The story: scroll position picks the step; CSS plays each step's scene ———
+// ——— The story: which step is showing ———
+// Four markers sit at 0, 25, 50 and 75% of the story's scroll range; the step is how many have passed the
+// middle of the screen. IntersectionObserver only wakes up when one crosses, so nothing runs per scroll frame.
+// motion.js plays the scene with GSAP; without it (or with Reduce Motion) CSS plays each step's scene.
 
 const story = $("#how");
 const query = story.querySelector(".scene-query");
-const STORY_STEPS = 4;
+const markers = [...story.querySelectorAll(".story__marker")];
 const TYPE_INTERVAL_MS = 90;
 let storyStep = -1;
 let typing = 0;
@@ -448,17 +452,18 @@ function typeQuery(text) {
 }
 
 function updateStory() {
-  const box = story.getBoundingClientRect();
-  const scrollable = box.height - window.innerHeight;
-  const progress = Math.min(Math.max(-box.top / scrollable, 0), 0.999);
-  const next = box.top > window.innerHeight * 0.35 ? -1 : Math.floor(progress * STORY_STEPS);
+  const middle = window.innerHeight / 2;
+  const next = markers.filter((marker) => marker.getBoundingClientRect().top < middle).length - 1;
   if (next === storyStep) return;
-  if (next >= 1 && storyStep < 1) typeQuery(query.dataset.text);
-  if (next < 1) { clearInterval(typing); query.textContent = ""; }
+  // With GSAP driving the scene, it types the query itself.
+  if (!story.classList.contains("is-scrubbed")) {
+    if (next >= 1 && storyStep < 1) typeQuery(query.dataset.text);
+    if (next < 1) { clearInterval(typing); query.textContent = ""; }
+  }
   storyStep = next;
   story.dataset.step = String(next);
 }
 
-window.addEventListener("scroll", updateStory, { passive: true });
-window.addEventListener("resize", updateStory);
-updateStory();
+// The top half of the screen: a marker enters it exactly when it crosses the middle.
+const storyObserver = new IntersectionObserver(updateStory, { rootMargin: "0px 0px -50% 0px" });
+markers.forEach((marker) => storyObserver.observe(marker));
