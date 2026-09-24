@@ -506,6 +506,23 @@ main { padding-top: var(--menubar); }
 .marquee__track i { font-style: normal; font-size: 0.8em; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
+/* ——— The real thing: two real screenshots, overlapping like windows on a desktop ——— */
+
+.real {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(96px, 16vh, 180px) var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+}
+.real__stage { position: relative; min-height: 760px; }
+/* The screenshots carry their own macOS window shadows (transparent PNG captures). */
+.real__shot { position: absolute; height: auto; }
+.real__shot--messages { right: 0; top: 0; width: min(62%, 400px); }
+.real__shot--popover { left: 0; top: 120px; width: min(58%, 380px); z-index: 1; }
+
 /* ——— Committed fields ——— */
 
 section { position: relative; }
@@ -800,6 +817,12 @@ img.dock__icon { object-fit: contain; transform: scale(1.22); }
   .connector { display: none; }
   .menu-section { grid-template-columns: 1fr; }
   .right-click { min-height: 340px; }
+}
+
+@media (max-width: 900px) {
+  .real { grid-template-columns: 1fr; }
+  .real__stage { min-height: 0; display: grid; justify-items: center; gap: 12px; }
+  .real__shot { position: static; width: min(100%, 380px) !important; }
 }
 
 @media (max-width: 720px) {

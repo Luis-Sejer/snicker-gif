@@ -183,6 +183,15 @@
       .to(".chat--two", { autoAlpha: 1, x: 0, duration: 0.3 }, "<0.05");
   }
 
+  function realShots() {
+    // The two windows drift at different speeds, so they read as depth on a desktop.
+    const scrub = { trigger: ".real__stage", start: "top bottom", end: "bottom top", scrub: true };
+    gsap.set(".real__shot--messages", { yPercent: 6 });
+    gsap.set(".real__shot--popover", { yPercent: 14 });
+    gsap.to(".real__shot--messages", { yPercent: -6, ease: "none", scrollTrigger: scrub });
+    gsap.to(".real__shot--popover", { yPercent: -10, ease: "none", scrollTrigger: { ...scrub } });
+  }
+
   function video() {
     // The player grows to full size as it arrives, focusing the section on the film.
     gsap.fromTo(".watch .player",
@@ -230,6 +239,7 @@
   media.add("(prefers-reduced-motion: no-preference)", () => {
     story();
     headlineReveals();
+    realShots();
     rightClick();
     anatomy();
     video();
