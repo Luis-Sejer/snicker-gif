@@ -15,6 +15,10 @@ VIDEO_SECONDS=15
 # The still hero is the moment "Copied" has just appeared.
 "$CHROME" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=2 \
     --window-size=1280,720 --screenshot="$PWD/$ASSETS/hero.png" "file://$PWD/anim.html?t=7.2" 2>/dev/null
+# The video poster is the payoff: the GIF has just landed in the chat.
+"$CHROME" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=1.5 \
+    --window-size=1280,720 --screenshot="$PWD/build/poster.png" "file://$PWD/anim.html?t=10.4" 2>/dev/null
+sips -s format jpeg -s formatOptions 82 build/poster.png --out "$ASSETS/poster.jpg" >/dev/null
 node frames.mjs "file://$PWD/anim.html" build/frames $FPS $VIDEO_SECONDS 1.5
 
 # Sound cues and voiceover lines are placed on the beats defined at the top of anim.html (in ms).
@@ -42,4 +46,4 @@ ffmpeg -v error -y -framerate $FPS -i build/frames/%04d.png \
 rm -rf build/webp && mkdir -p build/webp
 ffmpeg -v error -i "$ASSETS/snicker-launch.mp4" -vf "fps=20,scale=1280:-1:flags=lanczos" build/webp/%04d.png
 img2webp -loop 0 -lossy -q 70 -m 4 -d 50 build/webp/*.png -o "$ASSETS/hero.webp" >/dev/null
-echo "Rendered icon.png, hero.png, hero.webp and snicker-launch.mp4 into docs/assets"
+echo "Rendered icon.png, hero.png, hero.webp, poster.jpg and snicker-launch.mp4 into docs/assets"

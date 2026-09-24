@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>GIF search in your Mac menu bar.</strong><br>
-  Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>, click a GIF, paste it anywhere — including Microsoft Teams.
+  Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>, find the perfect reaction, and paste it anywhere.
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/macOS-26%2B-111?style=flat-square&logo=apple&logoColor=white" alt="macOS 26 or later">
   <img src="https://img.shields.io/badge/Apple%20Silicon-native-111?style=flat-square" alt="Apple Silicon">
   <img src="https://img.shields.io/badge/SwiftUI-Liquid%20Glass-F05138?style=flat-square&logo=swift&logoColor=white" alt="SwiftUI with Liquid Glass">
-  <img src="https://img.shields.io/badge/download-160%20KB-34c759?style=flat-square" alt="160 KB download">
+  <img src="https://img.shields.io/badge/download-1.2%20MB-34c759?style=flat-square" alt="1.2 MB download">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/Luis-Sejer/snicker-gif?style=flat-square&color=bf5af2" alt="MIT license"></a>
   <a href="https://github.com/Luis-Sejer/snicker-gif/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Luis-Sejer/snicker-gif/ci.yml?style=flat-square&label=build" alt="Build status"></a>
 </p>
@@ -31,9 +31,9 @@
 
 ## Why Snicker
 
-Most GIF pickers put the GIF on the clipboard as image data. Slack and Discord accept that; **Microsoft Teams does not** — it wants a file. Snicker puts both on the clipboard at once, so one ⌘V works everywhere.
+The perfect reaction is one shortcut away. Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> from any app, type, and click — the GIF is on your clipboard before the conversation moves on.
 
-It is also small and quiet: a native SwiftUI app of under 1 MB, with no account, no setup, no Dock icon, and nothing to do until you press the shortcut.
+It is small and quiet: a native SwiftUI app of about 2 MB, with no account, no setup, no Dock icon, and nothing to do until you press the shortcut. And it pastes where other GIF pickers don’t, including Microsoft Teams.
 
 ## Features
 

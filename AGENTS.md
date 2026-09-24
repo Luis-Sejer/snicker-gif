@@ -59,3 +59,7 @@ Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response deco
 ## README artwork
 
 The hero image, the looping WebP and the launch video all come from one timeline in `docs/src/anim.html`, driven by `?t=<seconds>`. The beats are constants at the top of its script; `render.sh` places the sound effects and voiceover on the same beats (in ms). The artwork is a drawing of the real UI, so keep it in sync when the UI changes.
+
+## Website
+
+`docs/index.html` (+ `site.css`, `site.js`) is the GitHub Pages site. Plain static files, no build step. Its design direction lives in `.impeccable/surfaces/docs-index-html.md` and `PRODUCT.md`; the live popover demo in `site.js` must only show features the app really has. It carries `<meta name="robots" content="noindex">` until launch; remove it when the repo goes public.

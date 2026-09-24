@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snicker — GIF search in your Mac menu bar</title>
+  <meta name="description" content="Press ⌘⌥V, find the perfect reaction, and paste it anywhere. A free, open-source GIF search for the Mac menu bar.">
+  <meta name="theme-color" content="#120d24">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/icon.png">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Snicker — GIF search in your Mac menu bar">
+  <meta property="og:description" content="Press ⌘⌥V, find the perfect reaction, paste it anywhere.">
+  <meta property="og:image" content="https://luis-sejer.github.io/snicker-gif/assets/hero.png">
+  <meta property="og:url" content="https://luis-sejer.github.io/snicker-gif/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="site.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="menubar">
+    <nav class="menubar__menus" aria-label="Sections">
+      <a class="menubar__app" href="#top">Snicker</a>
+      <a href="#menu">Features</a>
+      <a href="#why">Pastes anywhere</a>
+      <a href="#watch">Watch</a>
+      <a href="#install">Install</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/Luis-Sejer/snicker-gif">GitHub</a>
+    </nav>
+    <div class="menubar__extras">
+      <button class="menubar__snicker" id="menubar-toggle" type="button" aria-controls="demo" aria-expanded="true" aria-label="Snicker demo (⌘⌥V)">
+        <svg viewBox="0 0 24 18" width="24" height="18" aria-hidden="true">
+          <defs>
+            <mask id="menubar-cut" maskUnits="userSpaceOnUse" x="-12" y="-9" width="24" height="18">
+              <rect x="-12" y="-9" width="24" height="18" fill="#fff"/>
+              <text x="0" y="0.4" text-anchor="middle" dominant-baseline="middle" font-family="system-ui" font-weight="900" font-size="6.8" letter-spacing=".2" fill="#000">GIF</text>
+            </mask>
+          </defs>
+          <rect x="-6.5" y="-4.5" width="13" height="9" rx="2.3" fill="currentColor" fill-opacity=".45" transform="translate(13.4 6.9) rotate(-12)"/>
+          <g transform="translate(11.6 10.3) rotate(6)"><rect x="-7.5" y="-5" width="15" height="10" rx="2.3" fill="currentColor" mask="url(#menubar-cut)"/></g>
+        </svg>
+      </button>
+      <time class="menubar__clock" id="clock"></time>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="desktop" id="top" aria-labelledby="title">
+      <div class="desktop__copy">
+        <img class="desktop__icon" src="assets/icon.png" alt="" width="112" height="112">
+        <h1 id="title" class="wordmark">Snicker</h1>
+        <p class="promise">The perfect reaction, <strong>one shortcut away</strong>. Search GIFs from your menu bar and paste them anywhere.</p>
+        <p class="shortcut">
+          <span class="keys" aria-hidden="true"><kbd>⌘</kbd><kbd>⌥</kbd><kbd>V</kbd></span>
+          <span class="shortcut__hint">Try it here. The demo on the right is live.</span>
+        </p>
+        <div class="actions">
+          <a class="button button--primary" href="https://github.com/Luis-Sejer/snicker-gif/releases/latest/download/Snicker.zip">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0 4-4m-4 4-4-4M4 16h12"/></svg>
+            Download for Mac
+          </a>
+          <button class="command" type="button" data-copy="curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install.sh | sh" aria-label="Copy the install command">
+            <code>curl -fsSL …/install.sh | sh</code>
+            <span class="command__action">Copy</span>
+          </button>
+        </div>
+        <p class="fineprint">Free and open source · macOS 26 or later · Apple Silicon</p>
+      </div>
+
+      <div class="demo-anchor">
+        <section class="popover" id="demo" aria-label="Snicker demo: search and copy GIFs">
+          <span class="popover__arrow" aria-hidden="true"></span>
+          <div class="search">
+            <svg class="search__icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="6.8" cy="6.8" r="5"/><path d="M10.6 10.6 14.5 14.5"/></svg>
+            <label class="visually-hidden" for="demo-search">Search GIFs</label>
+            <input id="demo-search" type="search" placeholder="Search GIFs" autocomplete="off" spellcheck="false"
+              aria-describedby="demo-help">
+            <button class="search__clear" type="button" id="demo-clear" hidden aria-label="Clear search">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5"/><path d="M5.3 5.3l5.4 5.4M10.7 5.3l-5.4 5.4"/></svg>
+            </button>
+          </div>
+          <div class="chips" id="demo-chips" role="group" aria-label="Browse"></div>
+          <div class="grid" id="demo-grid" role="list" aria-label="GIFs"></div>
+          <p class="grid__empty" id="demo-empty" hidden></p>
+          <footer class="popover__footer">
+            <span id="demo-help">↑↓ choose · ⏎ copy · ⌘D favorite</span>
+            <span class="popover__klipy">Powered by KLIPY</span>
+          </footer>
+          <p class="visually-hidden" aria-live="polite" id="demo-status"></p>
+        </section>
+        <p class="demo-note">An illustration of the app. Clicking copies the emoji, so paste it anywhere to see.</p>
+      </div>
+    </section>
+
+    <section class="menu-section" id="menu" aria-labelledby="menu-title">
+      <div class="menu-section__copy">
+        <h2 id="menu-title">More than copy and paste.</h2>
+        <p>Right-click any GIF to copy its link, save it or keep it as a favorite. Everything else is one keystroke away.</p>
+        <ul class="facts">
+          <li><b>Favorites and Recent.</b> One click at the top, kept between launches.</li>
+          <li><b>Search suggestions.</b> Start typing “hap” and get “happy birthday”.</li>
+          <li><b>Random file names.</b> Pasted files don’t reveal what you searched for.</li>
+          <li><b>Drag and drop.</b> Pull a GIF straight into any app.</li>
+          <li><b>Launch at Login.</b> Turn it on in Snicker’s ⋯ menu and it’s always ready.</li>
+        </ul>
+      </div>
+      <div class="right-click" role="img" aria-label="Right-clicking a GIF in Snicker opens a menu with Copy GIF, Copy Link, Add to Favorites, Save to Downloads and Open on KLIPY.">
+        <div class="tile tile--hero right-click__tile" style="--a:#30d158;--b:#0a7d5a"><span class="tile__emoji">🙌</span></div>
+        <svg class="cursor" viewBox="0 0 26 34" aria-hidden="true"><path d="M3 2 L3 26 L9 20.5 L13 30 L17 28.3 L13.2 19 L21.5 19 Z" fill="#000" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+        <div class="context-menu">
+          <div class="context-menu__item"><span>Copy GIF</span><kbd>⏎</kbd></div>
+          <div class="context-menu__item context-menu__item--active"><span>Copy Link</span><kbd>⇧⏎</kbd></div>
+          <div class="context-menu__item"><span>Add to Favorites</span><kbd>⌘D</kbd></div>
+          <hr>
+          <div class="context-menu__item"><span>Save to Downloads</span></div>
+          <div class="context-menu__item"><span>Open on KLIPY</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="anatomy" id="why" aria-labelledby="why-title">
+      <div class="anatomy__intro">
+        <h2 id="why-title">Pastes where others don’t.</h2>
+        <p>Every chat app wants a GIF a little differently. Snicker puts two copies on the clipboard at once, the file and the image, so each app takes the one it understands, and the GIF arrives animated. Even in Microsoft Teams, where most GIF pickers fail.</p>
+      </div>
+      <div class="anatomy__stage" aria-hidden="true">
+        <svg class="connector connector--fork" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 C 50 50, 50 25, 100 25"/><path d="M0 50 C 50 50, 50 75, 100 75"/></svg>
+        <svg class="connector connector--one" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 H100"/></svg>
+        <svg class="connector connector--two" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 H100"/></svg>
+        <div class="anatomy__source">
+          <div class="tile tile--hero" style="--a:#ffd60a;--b:#ff7a00"><span class="tile__emoji">😂</span></div>
+          <span class="anatomy__label">You click a GIF</span>
+        </div>
+          <div class="layer layer--file">
+            <svg viewBox="0 0 20 20"><path d="M5 2.5h6.5L15 6v11.5H5z"/><path d="M11.5 2.5V6H15"/></svg>
+            <span><b>File</b> laughing.gif</span>
+          </div>
+          <div class="layer layer--data">
+            <svg viewBox="0 0 20 20"><rect x="2.5" y="4" width="15" height="12" rx="2"/><path d="m5 13 3.5-4 3 3 2-2 2.5 3"/></svg>
+            <span><b>Image data</b> GIF</span>
+          </div>
+          <div class="chat chat--one">
+            <p class="chat__title">Teams</p>
+            <p class="chat__msg">Release is out 🚀</p>
+            <div class="chat__gif" style="--a:#ffd60a;--b:#ff7a00"><span>😂</span></div>
+            <p class="chat__via">Teams takes the file.</p>
+          </div>
+          <div class="chat chat--two">
+            <p class="chat__title">Slack · Discord · Messages</p>
+            <p class="chat__msg">Party time?</p>
+            <div class="chat__gif" style="--a:#ffd60a;--b:#ff7a00"><span>😂</span></div>
+            <p class="chat__via">These take the image data.</p>
+          </div>
+      </div>
+    </section>
+
+    <section class="craft" aria-labelledby="craft-title">
+      <div class="info-window">
+        <div class="window-bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span>Snicker Info</span></div>
+        <div class="info-window__head">
+          <img src="assets/icon.png" alt="" width="64" height="64">
+          <div>
+            <h2 id="craft-title">Built like a Mac app should be.</h2>
+            <p>Native SwiftUI with Liquid Glass. No account, no tracking, no Dock icon.</p>
+          </div>
+        </div>
+        <dl class="info">
+          <div><dt>Kind</dt><dd>Menu bar app</dd></div>
+          <div><dt>Download</dt><dd>1.2 MB</dd></div>
+          <div><dt>Requires</dt><dd>macOS 26 or later, Apple Silicon</dd></div>
+          <div><dt>Price</dt><dd>Free</dd></div>
+          <div><dt>License</dt><dd>MIT, open source</dd></div>
+          <div><dt>Accessibility</dt><dd>VoiceOver, full keyboard control, Reduce Motion, Auto-play Animated Images</dd></div>
+          <div><dt>Privacy</dt><dd>Searches go to KLIPY to find GIFs. Nothing else leaves your Mac.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="watch" id="watch" aria-labelledby="watch-title">
+      <h2 id="watch-title">Fifteen seconds, start to paste.</h2>
+      <div class="player">
+        <div class="window-bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span>snicker-launch.mp4</span></div>
+        <div class="player__stage">
+          <video id="launch-video" preload="none" playsinline poster="assets/poster.jpg" width="1280" height="720">
+            <source src="assets/snicker-launch.mp4" type="video/mp4">
+            <a href="assets/snicker-launch.mp4">Download the launch video</a>
+          </video>
+          <button class="player__play" id="launch-play" type="button" aria-label="Play the launch video, with sound">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+            <span>Play with sound</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="install" id="install" aria-labelledby="install-title">
+      <h2 id="install-title">Install in one line.</h2>
+      <div class="terminal">
+        <div class="window-bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span>Terminal</span></div>
+        <div class="terminal__body">
+          <code><span class="terminal__prompt" aria-hidden="true">~ %</span> curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install.sh | sh</code>
+          <button class="button button--glass" type="button" data-copy="curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install.sh | sh">Copy command</button>
+        </div>
+      </div>
+      <p class="install__note">It installs Snicker into your Applications folder, with no admin password, and opens it. Run it again any time to update. Prefer clicking? <a href="https://github.com/Luis-Sejer/snicker-gif/releases/latest/download/Snicker.zip">Download the zip</a> instead.</p>
+    </section>
+
+    <section class="faq" id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Questions</h2>
+      <details>
+        <summary>Does it really work in Microsoft Teams?</summary>
+        <p>Yes. Teams only accepts a GIF pasted as a file, and Snicker always puts the file on the clipboard alongside the image data, so the GIF arrives animated.</p>
+      </details>
+      <details>
+        <summary>Is it free?</summary>
+        <p>Yes. Snicker is free and open source under the MIT license.</p>
+      </details>
+      <details>
+        <summary>Why does macOS say it can’t verify the developer?</summary>
+        <p>Snicker isn’t notarized with a paid Apple developer account. The install command avoids the warning. If you downloaded the zip, open System Settings → Privacy &amp; Security, scroll down and click <b>Open Anyway</b>.</p>
+      </details>
+      <details>
+        <summary>Where do the GIFs come from?</summary>
+        <p>From <a href="https://klipy.com">KLIPY</a>’s GIF library. Your searches go to KLIPY and nowhere else.</p>
+      </details>
+      <details>
+        <summary>Which Macs does it run on?</summary>
+        <p>Macs with Apple Silicon running macOS 26 or later.</p>
+      </details>
+      <details>
+        <summary>How do I start it automatically?</summary>
+        <p>Open Snicker’s ⋯ menu and turn on <b>Launch at Login</b>.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <img src="assets/icon.png" alt="" width="32" height="32">
+    <p>Snicker by <a href="https://github.com/Luis-Sejer">Luis Sejer Oliver</a> · <a href="https://github.com/Luis-Sejer/snicker-gif">Source on GitHub</a> · <a href="https://github.com/Luis-Sejer/snicker-gif/blob/main/LICENSE">MIT license</a></p>
+    <p class="site-footer__credits">GIFs powered by KLIPY. Launch video voiceover and sound by ElevenLabs.</p>
+  </footer>
+</body>
+</html>

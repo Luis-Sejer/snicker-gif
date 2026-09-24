@@ -3,3 +3,7 @@ build/
 *.app
 .DS_Store
 Sources/Snicker/BundledKey.swift
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/config.local.json
+.impeccable/questions/

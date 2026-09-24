@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-24T15:31:49+00:00",
+  "title": "Design System: Snicker",
+  "extensions": {
+    "colorMeta": {
+      "night": {
+        "role": "neutral",
+        "displayName": "Dusk Night",
+        "tonalRamp": [
+          "#120d24",
+          "#1c1438",
+          "#312361",
+          "#45328b",
+          "#5a41b4",
+          "#7e69c9",
+          "#a596d9",
+          "#cbc3e9"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Frost White",
+        "tonalRamp": [
+          "#201636",
+          "#37275e",
+          "#4e3785",
+          "#6548ad",
+          "#876fc3",
+          "#ab9ad5",
+          "#cfc5e7",
+          "#f0edf8"
+        ]
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Lavender Mist",
+        "tonalRamp": [
+          "#211c30",
+          "#393154",
+          "#514677",
+          "#6a5a9b",
+          "#8b7eb4",
+          "#aea5ca",
+          "#d1cbe1",
+          "#f1eff6"
+        ]
+      },
+      "ink-tertiary": {
+        "role": "neutral",
+        "displayName": "Dim Lavender",
+        "tonalRamp": [
+          "#221f2e",
+          "#3c3550",
+          "#554b71",
+          "#6e6293",
+          "#8f85ad",
+          "#b0a9c6",
+          "#d2cede",
+          "#f1f0f5"
+        ]
+      },
+      "system-blue": {
+        "role": "primary",
+        "displayName": "System Blue",
+        "tonalRamp": [
+          "#00264c",
+          "#004285",
+          "#005ebd",
+          "#007af5",
+          "#3399ff",
+          "#70b7ff",
+          "#add6ff",
+          "#e5f2ff"
+        ]
+      },
+      "blue-fill": {
+        "role": "primary",
+        "displayName": "Filled Control Blue",
+        "tonalRamp": [
+          "#00264c",
+          "#004285",
+          "#005ebd",
+          "#007af5",
+          "#3399ff",
+          "#70b8ff",
+          "#add6ff",
+          "#e5f2ff"
+        ]
+      },
+      "blue-fill-hover": {
+        "role": "primary",
+        "displayName": "Filled Control Blue, Hover",
+        "tonalRamp": [
+          "#00264c",
+          "#004285",
+          "#005ebd",
+          "#007af5",
+          "#3399ff",
+          "#70b8ff",
+          "#add6ff",
+          "#e5f2ff"
+        ]
+      },
+      "system-pink": {
+        "role": "secondary",
+        "displayName": "System Pink",
+        "tonalRamp": [
+          "#4c000f",
+          "#85001b",
+          "#bd0026",
+          "#f50031",
+          "#ff335c",
+          "#ff708d",
+          "#ffadbe",
+          "#ffe5eb"
+        ]
+      },
+      "system-orange": {
+        "role": "tertiary",
+        "displayName": "System Orange",
+        "tonalRamp": [
+          "#4c2f00",
+          "#855100",
+          "#bd7300",
+          "#f59500",
+          "#ffaf33",
+          "#ffc770",
+          "#ffdfad",
+          "#fff5e5"
+        ]
+      },
+      "system-purple": {
+        "role": "tertiary",
+        "displayName": "System Purple",
+        "tonalRamp": [
+          "#310647",
+          "#550a7b",
+          "#790eaf",
+          "#9d12e3",
+          "#b642f0",
+          "#cc7bf5",
+          "#e2b3f9",
+          "#f6e7fd"
+        ]
+      },
+      "link-sky": {
+        "role": "neutral",
+        "displayName": "Sky Link",
+        "tonalRamp": [
+          "#00234c",
+          "#003e85",
+          "#0058bd",
+          "#0072f5",
+          "#3392ff",
+          "#70b2ff",
+          "#add3ff",
+          "#e5f1ff"
+        ]
+      },
+      "glass": {
+        "role": "neutral",
+        "displayName": "Glass"
+      },
+      "glass-strong": {
+        "role": "neutral",
+        "displayName": "Strong Glass"
+      },
+      "glass-edge": {
+        "role": "neutral",
+        "displayName": "Glass Edge"
+      },
+      "glass-lit": {
+        "role": "neutral",
+        "displayName": "Glass Lit"
+      },
+      "glass-fill": {
+        "role": "neutral",
+        "displayName": "Glass Fill"
+      },
+      "menubar-glass": {
+        "role": "neutral",
+        "displayName": "Menu Bar Glass"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The Snicker wordmark only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings, balanced wrap."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Hero promise line, max 30ch."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Section intros and FAQ questions (600)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, 15px inside panes."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Window bars, menu bar, chat titles, footers; sentence case."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Shell commands only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "window-float",
+        "value": "0 30px 80px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / 0.2)",
+        "purpose": "Popover and windows (0.42 on windows); context menu uses 0 30px 70px."
+      },
+      {
+        "name": "layer-float",
+        "value": "0 16px 40px rgb(0 0 0 / 0.3)",
+        "purpose": "Anatomy layers and chat panes."
+      },
+      {
+        "name": "control-lift",
+        "value": "0 8px 20px rgb(0 0 0 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.28)",
+        "purpose": "Primary button at rest."
+      },
+      {
+        "name": "control-lift-hover",
+        "value": "0 12px 26px rgb(0 0 0 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.28)",
+        "purpose": "Primary button hover, with 1px rise."
+      },
+      {
+        "name": "keycap",
+        "value": "inset 0 -3px 0 rgb(0 0 0 / 0.22), 0 6px 16px rgb(0 0 0 / 0.25)",
+        "purpose": "Keycap bevel; pressed state sinks 3px to inset 0 -1px 0."
+      },
+      {
+        "name": "tile-hover",
+        "value": "0 10px 24px rgb(0 0 0 / 0.35)",
+        "purpose": "GIF tile hover lift."
+      },
+      {
+        "name": "focus-glow",
+        "value": "0 0 0 3px rgb(10 132 255 / 0.3)",
+        "purpose": "Search field focus, with System Blue edge at 80%."
+      },
+      {
+        "name": "glass-blur-window",
+        "value": "backdrop-filter: blur(30px) saturate(1.7-1.8)",
+        "purpose": "Windows and menus; popover uses blur(34px) saturate(1.8)."
+      },
+      {
+        "name": "glass-blur-control",
+        "value": "backdrop-filter: blur(20px) saturate(1.6)",
+        "purpose": "Command pill, layers (24px), menu bar (24px, 1.7)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default for hovers, presses, closes, tile entry."
+      },
+      {
+        "name": "ease-spring",
+        "value": "cubic-bezier(0.34, 1.4, 0.64, 1)",
+        "purpose": "Overshoot for the popover opening (0.45s) and the Copied badge pop (0.4s)."
+      },
+      {
+        "name": "tile-stagger",
+        "value": "tile-in 0.45s, delay index x 28ms",
+        "purpose": "GIF tiles rising in."
+      },
+      {
+        "name": "wallpaper-drift",
+        "value": "drift 40s ease-in-out infinite alternate",
+        "purpose": "Slow wallpaper drift."
+      },
+      {
+        "name": "scroll-split",
+        "value": "animation-timeline: view(); range entry 10% cover 40%",
+        "purpose": "Anatomy layers and chats split in; progressive, content visible without it."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "all animation and transition durations to 0.01ms",
+        "purpose": "Everything stops under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "1080px"
+      },
+      {
+        "name": "phone",
+        "value": "720px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled action per view (Download).",
+      "html": "<div class=\"ds-wall\"><a class=\"ds-btn-primary\" href=\"#\"><svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 3v10m0 0 4-4m-4 4-4-4M4 16h12\"/></svg>Download for Mac</a></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-btn-primary{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 22px;border-radius:var(--radius-control);font:600 16px/1 var(--font);text-decoration:none;color:#fff;background:var(--blue-fill);box-shadow:0 8px 20px rgb(0 0 0 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.28);transition:transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background-color 0.2s;} .ds-btn-primary svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;} .ds-btn-primary:hover{background:var(--blue-fill-hover);transform:translateY(-1px);box-shadow:0 12px 26px rgb(0 0 0 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.28);} .ds-btn-primary:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}"
+    },
+    {
+      "name": "Glass Button",
+      "kind": "button",
+      "refersTo": "button-glass",
+      "description": "Secondary action on a pane (Copy command).",
+      "html": "<div class=\"ds-wall\"><button class=\"ds-btn-glass\" type=\"button\">Copy command</button></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-btn-glass{display:inline-flex;align-items:center;height:48px;padding:0 22px;border-radius:var(--radius-control);font:600 16px/1 var(--font);color:#fff;background:rgb(255 255 255 / 0.12);border:1px solid rgb(255 255 255 / 0.2);cursor:pointer;transition:background-color 0.2s;} .ds-btn-glass:hover{background:rgb(255 255 255 / 0.2);} .ds-btn-glass:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}"
+    },
+    {
+      "name": "Command Line",
+      "kind": "button",
+      "refersTo": "command-copy",
+      "description": "Copyable shell command as a glass pill with a nested Copy pill.",
+      "html": "<div class=\"ds-wall\"><button class=\"ds-command\" type=\"button\"><code>curl -fsSL …/install.sh | sh</code><span class=\"ds-command-action\">Copy</span></button></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-command{display:inline-flex;align-items:center;gap:12px;height:48px;padding:0 8px 0 18px;border-radius:var(--radius-control);border:1px solid var(--glass-edge);background:var(--glass);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);color:var(--ink-2);cursor:pointer;font:500 14px/1 var(--mono);} .ds-command code{font:inherit;} .ds-command-action{font:600 13px/1 var(--font);color:#fff;padding:9px 12px;border-radius:var(--radius-control);background:rgb(255 255 255 / 0.12);} .ds-command:hover .ds-command-action{background:rgb(255 255 255 / 0.22);} .ds-command:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "Glass pill search inside the popover.",
+      "html": "<div class=\"ds-wall\"><label class=\"ds-search\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><circle cx=\"6.8\" cy=\"6.8\" r=\"5\"/><path d=\"M10.6 10.6 14.5 14.5\"/></svg><input type=\"search\" placeholder=\"Search GIFs\"></label></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-search{display:flex;align-items:center;gap:9px;width:320px;height:40px;padding:0 12px 0 14px;border-radius:var(--radius-control);background:rgb(255 255 255 / 0.1);border:1px solid rgb(255 255 255 / 0.14);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.15);} .ds-search:focus-within{border-color:rgb(10 132 255 / 0.8);box-shadow:0 0 0 3px rgb(10 132 255 / 0.3);} .ds-search svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--ink-3);stroke-width:1.9;stroke-linecap:round;} .ds-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#fff;font:400 17px/1 var(--font);} .ds-search input::placeholder{color:var(--ink-3);}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Category filter pills; pressed fills with control blue.",
+      "html": "<div class=\"ds-wall\"><button class=\"ds-chip\" aria-pressed=\"true\">Trending</button> <button class=\"ds-chip\" aria-pressed=\"false\">Happy</button> <button class=\"ds-chip\" aria-pressed=\"false\">Thanks</button></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-chip{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:var(--radius-control);border:1px solid rgb(255 255 255 / 0.14);background:rgb(255 255 255 / 0.1);color:#fff;font:500 12px/1 var(--font);cursor:pointer;transition:background-color 0.15s;} .ds-chip:hover{background:rgb(255 255 255 / 0.18);} .ds-chip[aria-pressed=\"true\"]{background:var(--blue-fill);border-color:#3d9dff;} .ds-chip:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}"
+    },
+    {
+      "name": "Menu Bar",
+      "kind": "nav",
+      "refersTo": "menubar",
+      "description": "Fixed translucent macOS menu bar as site navigation.",
+      "html": "<div class=\"ds-wall\" style=\"padding:0;height:120px\"><nav class=\"ds-menubar\"><div class=\"ds-menus\"><a class=\"ds-app\" href=\"#\">Snicker</a><a href=\"#\">Features</a><a href=\"#\">Install</a><a href=\"#\">FAQ</a></div><span class=\"ds-clock\">Thu 9:41</span></nav></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-menubar{height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgb(20 16 36 / 0.42);backdrop-filter:blur(24px) saturate(1.7);-webkit-backdrop-filter:blur(24px) saturate(1.7);font:13.5px var(--font);} .ds-menus{display:flex;gap:2px;} .ds-menus a{color:rgb(255 255 255 / 0.92);text-decoration:none;padding:3px 10px;border-radius:6px;} .ds-menus a:hover{background:rgb(255 255 255 / 0.16);color:#fff;} .ds-menus a:focus-visible{outline:2px solid var(--blue);outline-offset:3px;} .ds-app{font-weight:700;} .ds-clock{color:#fff;font-weight:500;font-variant-numeric:tabular-nums;}"
+    },
+    {
+      "name": "Window",
+      "kind": "card",
+      "refersTo": "window",
+      "description": "Glass window with traffic-light bar; chrome for info, player and terminal panes.",
+      "html": "<div class=\"ds-wall\"><div class=\"ds-window\"><div class=\"ds-window-bar\"><span class=\"ds-lights\"><i></i><i></i><i></i></span><span>Terminal</span></div><div class=\"ds-window-body\"><code><span class=\"ds-prompt\">~ %</span> curl -fsSL …/install.sh | sh</code></div></div></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-window{max-width:520px;border-radius:18px;background:var(--glass-strong);border:1px solid var(--glass-edge);backdrop-filter:blur(30px) saturate(1.7);-webkit-backdrop-filter:blur(30px) saturate(1.7);box-shadow:0 30px 80px rgb(0 0 0 / 0.42), inset 0 1px 0 var(--glass-lit);overflow:hidden;} .ds-window-bar{display:flex;align-items:center;gap:12px;height:40px;padding:0 14px;font:600 13px var(--font);color:var(--ink-3);border-bottom:1px solid rgb(255 255 255 / 0.08);} .ds-lights{display:flex;gap:7px;} .ds-lights i{width:12px;height:12px;border-radius:50%;background:#ff5f57;} .ds-lights i:nth-child(2){background:#febc2e;} .ds-lights i:nth-child(3){background:#28c840;} .ds-window-body{padding:22px 24px;} .ds-window-body code{font:500 15px/1.6 var(--mono);color:#e8e4f4;} .ds-prompt{color:#34c759;margin-right:6px;}"
+    },
+    {
+      "name": "Context Menu",
+      "kind": "custom",
+      "refersTo": "context-menu",
+      "description": "macOS right-click menu with shortcut glyphs and a blue active row.",
+      "html": "<div class=\"ds-wall\"><div class=\"ds-menu\"><div class=\"ds-item\"><span>Copy GIF</span><kbd>⏎</kbd></div><div class=\"ds-item ds-item-active\"><span>Copy Link</span><kbd>⇧⏎</kbd></div><div class=\"ds-item\"><span>Add to Favorites</span><kbd>⌘D</kbd></div><hr><div class=\"ds-item\"><span>Save to Downloads</span></div></div></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-menu{width:250px;padding:6px;border-radius:14px;background:var(--glass-strong);border:1px solid var(--glass-edge);backdrop-filter:blur(30px) saturate(1.8);-webkit-backdrop-filter:blur(30px) saturate(1.8);box-shadow:0 30px 70px rgb(0 0 0 / 0.45), inset 0 1px 0 var(--glass-lit);font:15px var(--font);color:var(--ink);} .ds-menu hr{border:0;height:1px;background:rgb(255 255 255 / 0.12);margin:5px 10px;} .ds-item{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-radius:7px;} .ds-item:hover,.ds-item-active{background:var(--blue-fill);} .ds-item kbd{font-family:var(--font);color:var(--ink-3);font-size:14px;letter-spacing:0.08em;} .ds-item-active kbd,.ds-item:hover kbd{color:rgb(255 255 255 / 0.85);}"
+    },
+    {
+      "name": "GIF Tile",
+      "kind": "custom",
+      "refersTo": "popover",
+      "description": "Emoji-on-gradient illustration tile with sheen, hover lift, selection ring and favourite star.",
+      "html": "<div class=\"ds-wall\"><button class=\"ds-tile\" style=\"--a:#ffd60a;--b:#ff7a00\"><span class=\"ds-emoji\">😂</span><span class=\"ds-star\"><svg viewBox=\"0 0 12 12\"><path d=\"M6 1l1.5 3.2 3.5.4-2.6 2.4.7 3.5L6 8.8 2.9 10.5l.7-3.5L1 4.6l3.5-.4z\"/></svg></span></button></div>",
+      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-tile{position:relative;display:grid;place-items:center;width:130px;height:104px;border:0;padding:0;border-radius:var(--radius-tile);background:linear-gradient(135deg, var(--a), var(--b));cursor:pointer;overflow:hidden;transition:transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);} .ds-tile::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgb(255 255 255 / 0.16), transparent 50%);pointer-events:none;} .ds-tile:hover{transform:scale(1.04);box-shadow:0 10px 24px rgb(0 0 0 / 0.35);} .ds-tile:focus-visible{outline:none;box-shadow:inset 0 0 0 2.5px var(--blue);} .ds-emoji{font-size:42px;line-height:1;} .ds-star{position:absolute;top:6px;right:6px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgb(255 255 255 / 0.22);border:1px solid rgb(255 255 255 / 0.3);opacity:0;transition:opacity 0.15s;} .ds-star svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:1.4;stroke-linejoin:round;} .ds-tile:hover .ds-star,.ds-tile:focus-visible .ds-star{opacity:1;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Running Desktop",
+    "overview": "The site is a Mac desktop at dusk, and Snicker is already running on it. A fixed wallpaper of the app icon's colors blooms behind everything; a translucent menu bar crosses the top; every surface that holds content is a pane of Liquid Glass floating over that wallpaper: blurred, saturated, lit along its top edge by a hairline. Sections are not bands or cards but windows, menus and popovers a Mac user already knows, so the page demonstrates the product instead of describing it.\n\nThe type is Apple's own system face with tight display tracking, because the product's look is pinned to Apple's. Colour comes from two sources only: the wallpaper and Apple's system accents. Density is low and generous; motion is springy where macOS springs (popover open, copy confirmation) and otherwise quiet, and it all stops under reduced motion.",
+    "keyCharacteristics": [
+      "Fixed dusk wallpaper (four radial blooms over near-black violet) under every surface.",
+      "Glass panes: translucent fill, backdrop blur 20-34px with saturate 1.6-1.8, 1px white hairline edge, inset top highlight.",
+      "macOS vocabulary as structure: menu bar, popover with arrow, context menu, window bars with traffic lights, keycaps.",
+      "SF Pro system stack, heavy weights, negative tracking at display sizes.",
+      "Pill controls everywhere a control is pressable."
+    ],
+    "rules": [
+      {
+        "name": "The Wallpaper Is the Palette Rule",
+        "body": "Surfaces never carry their own brand colour. They are translucent, and colour arrives from the wallpaper behind them. A solid coloured section background breaks the world.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Blues Rule",
+        "body": "Text on blue sits on `blue-fill`. `system-blue` is for rings and outlines only.",
+        "section": "colors"
+      },
+      {
+        "name": "The System Voice Rule",
+        "body": "One family for everything but shell commands. Hierarchy is weight (400 to 800) and negative tracking, never a second display face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lit Edge Rule",
+        "body": "Every floating glass pane has a 1px `glass-edge` border and, when it is a window or menu, an inset `glass-lit` top highlight. Glass without an edge reads as a smudge.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put every content surface on glass over the fixed wallpaper: translucent fill, backdrop blur 20-34px with saturate 1.6-1.8, 1px `glass-edge`.",
+      "Do borrow structure from macOS itself (menu bar, popover, context menu, window bar with traffic lights, keycaps) instead of inventing section chrome.",
+      "Do use `blue-fill` under any white text on blue, and `system-blue` for the 2px focus ring with 3px offset.",
+      "Do make every pressable control a full pill.",
+      "Do write macOS shortcut glyphs (⌘ ⌥ ⇧ ⏎) as real keycaps or menu shortcuts; they are the world's native notation.",
+      "Do stop all animation under `prefers-reduced-motion`, and keep scroll-driven effects progressive (content visible without them)."
+    ],
+    "donts": [
+      "Don't give a section an opaque coloured background; colour comes from the wallpaper through glass.",
+      "Don't put white text on `system-blue` (#0a84ff); it fails contrast.",
+      "Don't add a second display typeface or uppercase tracked labels; hierarchy is SF Pro weight and tracking.",
+      "Don't use hard, offset or coloured shadows; shadows are large, soft and black.",
+      "Don't present emoji tiles as real GIFs; they are labelled illustrations."
+    ]
+  }
+}
