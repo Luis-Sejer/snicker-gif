@@ -134,7 +134,7 @@ cd snicker-gif
 ./build.sh install
 ```
 
-Source builds don’t include a KLIPY key, so on first launch Snicker asks for one. Keys are free from KLIPY’s [developer portal](https://docs.klipy.com). To build one in instead, set `SNICKER_KLIPY_KEY` or put the key in `~/.config/snicker/klipy-key`; it is written into the app at build time and never committed.
+Source builds ask for your own free KLIPY key on first launch; get one from KLIPY’s [developer portal](https://docs.klipy.com).
 
 | Script | What it does |
 |---|---|
