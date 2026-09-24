@@ -48,7 +48,7 @@
       .from([".promise", ".shortcut", ".actions", ".fineprint"], { y: 18, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, "<0.3")
       // The shortcut, pressed key by key, is what opens the popover.
       .to(".keys kbd", { y: 3, duration: 0.07, stagger: 0.11, yoyo: true, repeat: 1, ease: "power1.inOut" }, "-=0.35")
-      .from(popover, { scale: 0.9, y: -12, autoAlpha: 0, duration: 0.8, ease: "back.out(1.4)", transformOrigin: "88% 0%" }, ">-0.05")
+      .from(popover, { scale: 0.94, y: -10, autoAlpha: 0, duration: 0.5, ease: "back.out(1.2)", transformOrigin: "88% 0%" }, ">-0.05")
       .from(".demo-note", { autoAlpha: 0, duration: 0.6 }, "<0.3")
       .from(".sticker", {
         y: -90,
@@ -106,7 +106,7 @@
     });
     timeline
       // 1. The shortcut opens the popover.
-      .to(popover, { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.4)" }, 0)
+      .to(popover, { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.1)" }, 0)
       // 2. "party" is typed and the grid reshuffles.
       .to(query, { duration: 0.7, scrambleText: { text: query.dataset.text, chars: "lowerCase", speed: 0.5 } }, 1)
       .to(trending, { autoAlpha: 0, scale: 0.8, duration: 0.35, stagger: 0.04 }, 1.2)
@@ -115,7 +115,7 @@
       .fromTo(cursor,
         { autoAlpha: 0, x: () => scene.offsetWidth * 0.95, y: () => scene.offsetHeight * 0.9 },
         { autoAlpha: 1, x: () => targetCenter().x, y: () => targetCenter().y, duration: 0.55, ease: "power3.inOut" }, 2)
-      .to(target, { scale: 0.93, duration: 0.08, ease: "power1.in" }, 2.55)
+      .to(target, { scale: 0.94, duration: 0.1, ease: "power2.out" }, 2.55)
       .to(target, { scale: 1.06, duration: 0.25, ease: "back.out(3)" }, 2.63)
       .to(copied, { autoAlpha: 1, scale: 1, duration: 0.25, ease: "back.out(2)" }, 2.63)
       // 4. The popover closes and the GIF lands in the chat.
@@ -153,8 +153,8 @@
       .from(".right-click__tile", { y: 30, autoAlpha: 0, duration: 0.8, ease: EASE_OUT })
       .from(".right-click .cursor", { x: -70, y: 50, autoAlpha: 0, duration: 0.7, ease: "power3.inOut" }, "<0.2")
       // The menu opens from the point that was clicked.
-      .from(".right-click .context-menu", { scale: 0.85, autoAlpha: 0, transformOrigin: "0% 0%", duration: 0.45, ease: "back.out(1.6)" }, ">-0.05")
-      .from(".right-click .context-menu__item", { x: -6, autoAlpha: 0, duration: 0.3, stagger: 0.04 }, "<0.1");
+      .from(".right-click .context-menu", { scale: 0.97, autoAlpha: 0, transformOrigin: "0% 0%", duration: 0.18, ease: "power3.out" }, ">-0.05")
+      .from(".right-click .context-menu__item", { autoAlpha: 0, duration: 0.15, stagger: 0.03 }, "<0.05");
   }
 
   function anatomy() {
@@ -203,9 +203,14 @@
     return () => strip.classList.remove("is-driven");
   }
 
+  // Play the intro only on a fresh view of the top of the page: not after the fallback already showed it,
+  // and not when a reload restored a scrolled position.
+  const shouldPlayIntro = () => root.classList.contains("intro") && window.scrollY < 40;
+
   const media = gsap.matchMedia();
   media.add("(prefers-reduced-motion: no-preference)", () => {
-    intro();
+    if (shouldPlayIntro()) intro();
+    else root.classList.remove("intro", "intro-skipped");
     story();
     headlineReveals();
     rightClick();

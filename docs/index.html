@@ -16,17 +16,20 @@
   <meta property="og:url" content="https://luis-sejer.github.io/snicker-gif/">
   <meta name="twitter:card" content="summary_large_image">
   <script>
-    // Hide the hero until the GSAP intro takes it over, so nothing flashes first. Shows it anyway after 2.5s.
-    if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
-      document.documentElement.classList.add("intro");
-      setTimeout(() => document.documentElement.classList.remove("intro"), 2500);
+    // Hide the hero until the GSAP intro takes it over, so nothing flashes first. If GSAP is slow, show the page
+    // after 2.5s and mark the intro as skipped, so it never plays over content you've already seen.
+    // A reload that restores a scrolled position skips it too.
+    if (matchMedia("(prefers-reduced-motion: no-preference)").matches && !location.hash) {
+      const root = document.documentElement;
+      root.classList.add("intro");
+      setTimeout(() => { if (root.classList.contains("intro")) root.classList.replace("intro", "intro-skipped"); }, 2500);
     }
   </script>
   <link rel="stylesheet" href="site.css">
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js" defer></script>
+  <script src="vendor/gsap/gsap.min.js" defer></script>
+  <script src="vendor/gsap/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/gsap/SplitText.min.js" defer></script>
+  <script src="vendor/gsap/ScrambleTextPlugin.min.js" defer></script>
   <script src="site.js" defer></script>
   <script src="motion.js" defer></script>
 </head>
