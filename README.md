@@ -1,63 +1,125 @@
-# Snicker — GIF search in your Mac menu bar
+<p align="center">
+  <img src="docs/assets/icon.png" width="128" alt="Snicker app icon">
+</p>
 
-Snicker is a menu bar GIF search for macOS. Press **⌘⌥V**, type, and click a GIF to copy it, or drag it straight into a chat.
+<h1 align="center">Snicker</h1>
 
-Pasting works in **Microsoft Teams** as well as Slack, Discord, Messages and Mail: the clipboard gets the GIF both as a file (what Teams needs) and as raw GIF data (what the others use).
+<p align="center">
+  <strong>GIF search in your Mac menu bar.</strong><br>
+  Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>, click a GIF, paste it anywhere — including Microsoft Teams.
+</p>
 
-Requires **macOS 26 or later** on Apple Silicon.
+<p align="center">
+  <a href="https://github.com/Luis-Sejer/snicker-gif/releases/latest"><img src="https://img.shields.io/github/v/release/Luis-Sejer/snicker-gif?style=flat-square&color=ff375f&label=release" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/macOS-26%2B-111?style=flat-square&logo=apple&logoColor=white" alt="macOS 26 or later">
+  <img src="https://img.shields.io/badge/Apple%20Silicon-native-111?style=flat-square" alt="Apple Silicon">
+  <img src="https://img.shields.io/badge/SwiftUI-Liquid%20Glass-F05138?style=flat-square&logo=swift&logoColor=white" alt="SwiftUI with Liquid Glass">
+  <img src="https://img.shields.io/badge/download-160%20KB-34c759?style=flat-square" alt="160 KB download">
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Luis-Sejer/snicker-gif?style=flat-square&color=bf5af2" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Luis-Sejer/snicker-gif/releases/latest/download/Snicker.zip"><img src="https://img.shields.io/badge/Download%20for%20macOS-Snicker.zip-0a84ff?style=for-the-badge&logo=apple&logoColor=white" alt="Download Snicker for macOS"></a>
+</p>
+
+<p align="center">
+  <img src="docs/assets/hero.png" alt="Snicker's glass popover open from the menu bar, showing a grid of party GIFs with one marked Copied">
+</p>
+
+## Why Snicker
+
+Most GIF pickers put the GIF on the clipboard as image data. Slack and Discord accept that; **Microsoft Teams does not** — it wants a file. Snicker puts both on the clipboard at once, so one ⌘V works everywhere.
+
+It is also small and quiet: a native SwiftUI app of under 1 MB, with no account, no Dock icon, and nothing running until you press the shortcut.
+
+## Features
+
+- **Instant search** from anywhere with <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>, with Trending shown before you type
+- **Click to copy**, or **drag** a GIF straight into any app
+- **Pastes everywhere** — Teams, Slack, Discord, Messages, Mail
+- **Masonry grid** that shows every GIF at its real shape, animated
+- **Quick picks** for the reactions you use most: Thank you, LOL, Yes, No, Party…
+- **Keyboard first** — type and press <kbd>Enter</kbd> to copy the top result
+- **Liquid Glass** design that looks at home on macOS Tahoe and later
+- **Light and dark mode**, and it respects Reduce Motion
 
 ## Install
 
 Paste this into Terminal:
 
 ```sh
-gh api repos/Luis-Sejer/snicker-gif/contents/install.sh -H "Accept: application/vnd.github.raw" | sh
-```
-
-This needs the [GitHub CLI](https://cli.github.com) signed in to an account with access to this repository. Once the repository is public, plain `curl` works instead:
-
-```sh
 curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install.sh | sh
 ```
 
-Run the same command again to update.
+It installs Snicker into `~/Applications` (no admin password needed) and launches it. Run it again any time to update.
 
 <details>
-<summary>Install by hand instead</summary>
+<summary><strong>Install by hand</strong></summary>
 
-1. Download `Snicker.zip` from the latest [release](https://github.com/Luis-Sejer/snicker-gif/releases/latest) and unzip it.
-2. Move `Snicker.app` to `Applications` (or `~/Applications` if you are not an admin).
-3. Open it. macOS will say it can't verify the developer, because Snicker is not notarized with a paid Apple developer account.
-4. Go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**.
+1. Download [`Snicker.zip`](https://github.com/Luis-Sejer/snicker-gif/releases/latest/download/Snicker.zip) and unzip it.
+2. Move `Snicker.app` to your Applications folder.
+3. Open it. macOS will say it can’t verify the developer, because Snicker isn’t notarized with a paid Apple developer account.
+4. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway**.
 
 </details>
 
-## First run
+## Getting started
 
-Snicker searches [KLIPY](https://klipy.com)'s GIF library, which needs a free API key:
+Snicker searches the [KLIPY](https://klipy.com) GIF library, which needs a free API key:
 
-1. Create an account and an app on KLIPY's developer portal ([docs.klipy.com](https://docs.klipy.com)) and copy the API key.
-2. Press ⌘⌥V (or click the **GIF** icon in the menu bar) and paste the key.
+1. Sign up on KLIPY’s [developer portal](https://docs.klipy.com), add a platform, and copy your API key.
+2. Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the **GIF** icon in the menu bar, and paste the key.
 
-The key is stored locally. Change it later from the **⋯** menu.
-
-To start Snicker automatically, add it under **System Settings → General → Login Items**.
+That’s it. To have Snicker start with your Mac, add it under **System Settings → General → Login Items**.
 
 ## Usage
 
-| Action | Result |
+| Do this | To |
 |---|---|
-| ⌘⌥V or the menu bar icon | open or close |
-| type, or pick a suggestion | search (Trending when empty) |
-| Enter | copy the first result |
-| click | copy and close |
-| drag | drop the GIF file into any app |
+| <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the menu bar icon | open or close Snicker |
+| Type, or pick a quick pick | search (empty shows Trending) |
+| <kbd>Enter</kbd> | copy the top result |
+| Click a GIF | copy it and close |
+| Drag a GIF | drop it into any app |
+
+## How pasting works
+
+When you copy a GIF, Snicker downloads it once to `~/Library/Caches/Snicker` and writes two things to the clipboard:
+
+| Clipboard type | For apps that |
+|---|---|
+| A file URL pointing at the `.gif` | expect a file, like Microsoft Teams |
+| The raw GIF data (`com.compuserve.gif`) | take image data, like Slack and Discord |
+
+Each app picks the one it understands, so the GIF stays animated wherever you paste it.
+
+## Privacy
+
+- Your searches go to KLIPY to find GIFs, and nowhere else.
+- Your API key is stored locally in Snicker’s preferences.
+- No analytics, no tracking, no account.
 
 ## Build from source
 
-Needs only the Xcode Command Line Tools (`xcode-select --install`).
+You need macOS 26 or later and the Xcode Command Line Tools (`xcode-select --install`). Full Xcode is not required.
 
 ```sh
-./build.sh install   # build, install to ~/Applications and launch
-./release.sh 1.1.0   # tag, build and publish a GitHub release
+git clone https://github.com/Luis-Sejer/snicker-gif.git
+cd snicker-gif
+./build.sh install
 ```
+
+| Script | What it does |
+|---|---|
+| `./build.sh` | builds `build/Snicker.app` |
+| `./build.sh install` | builds, installs to `~/Applications` and launches |
+| `./release.sh 1.2.0` | tags, builds and publishes a GitHub release |
+| `docs/src/render.sh` | re-renders the icon and README artwork |
+
+## Credits
+
+GIFs are provided by [KLIPY](https://klipy.com). Inspired by [QuickGif](https://quickgif.app).
+
+## License
+
+[MIT](LICENSE) © Luis Sejer Oliver
