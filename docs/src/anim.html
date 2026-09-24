@@ -76,8 +76,9 @@ html,body{margin:0;width:1280px;height:720px;overflow:hidden;font-family:system-
  <div class="keys"><div class="key">⌘</div><div class="key">⌥</div><div class="key">V</div></div></div>
 <div id="stage"></div>
 <script>
+const STAR_SVG=`<svg width="11" height="11" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
 const MAG=`<svg width="16" height="16" viewBox="0 0 16 16"><circle cx="6.8" cy="6.8" r="5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M10.6 10.6 14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,XM=`<svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7.5" fill="currentColor"/><path d="M5.3 5.3l5.4 5.4M10.7 5.3l-5.4 5.4" stroke="#2a2640" stroke-width="1.7" stroke-linecap="round"/></svg>`,CHK=`<svg width="15" height="15" viewBox="0 0 16 16" style="vertical-align:-2px;margin-right:5px"><circle cx="8" cy="8" r="7.5" fill="#fff"/><path d="M4.6 8.2l2.2 2.2 4.6-4.8" fill="none" stroke="#b86a00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const t=parseFloat(new URLSearchParams(location.search).get('t')||'6.2');
+const t=parseFloat(new URLSearchParams(location.search).get('t')||'7.2');
 const clamp=(x)=>Math.min(1,Math.max(0,x)), prog=(a,d)=>clamp((t-a)/d);
 const easeOut=(x)=>1-Math.pow(1-x,3), easeInOut=(x)=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
 const back=(x)=>{const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
@@ -87,35 +88,36 @@ const TRENDING=[[['😂','#ffd60a','#ff7a00',104],['🙏','#64d2ff','#0a4bd6',15
 const PARTY=[[['🎉','#ff9f0a','#ff375f',92],['🕺','#30d158','#0a7d5a',150],['🥳','#5e5ce6','#bf5af2',100],['🍾','#ff453a','#8e1b4c',130]],
  [['🪩','#64d2ff','#0a4bd6',140],['😂','#ffd60a','#ff7a00',104],['💃','#ff2d92','#6a1b9a',160]],
  [['🎊','#bf5af2','#3a1c8c',110],['🙌','#34c759','#1d6f42',96],['🔥','#ff9f0a','#c2410c',140],['🎈','#0a84ff','#5e5ce6',100]]];
-const TYPE_AT=2.6, SWAP_AT=3.6, CLICK_AT=5.8, CLOSE_AT=6.6, CHAT_AT=7.0, PASTE_AT=8.4, REPLY_AT=9.6, OUT_AT=11.4, END=12;
+// Beats of the 15s timeline; render.sh times the sound effects and voiceover to the same moments.
+const OPEN_AT=1.0, TRENDING_AT=1.2, TYPE_AT=3.7, SWAP_AT=4.7, POINT_AT=5.4, CLICK_AT=6.8, CLOSE_AT=8.0, CHAT_AT=8.4, KEYS_AT=9.0, PASTE_AT=9.8, REPLY_AT=11.0, OUT_AT=13.8, END=15;
 const stage=document.getElementById('stage');
 // keycaps press as the shortcut fires
 document.querySelectorAll('.key').forEach((k,i)=>{ if(t>=0.5+i*0.1&&t<1.05) k.classList.add('down') });
-const party=t>=SWAP_AT, set=party?PARTY:TRENDING, setStart=party?SWAP_AT:1.2;
+const party=t>=SWAP_AT, set=party?PARTY:TRENDING, setStart=party?SWAP_AT:TRENDING_AT;
 const query='party'.slice(0,Math.max(0,Math.min(5,Math.floor((t-TYPE_AT)/0.16)+1)));
 const caret=(t>=TYPE_AT&&t<TYPE_AT+0.9)||Math.floor(t*2)%2===0;
-if(t>=1&&t<CLOSE_AT+0.3){
-  const o=back(prog(1,0.4)), c=easeOut(prog(CLOSE_AT,0.25));
+if(t>=OPEN_AT&&t<CLOSE_AT+0.3){
+  const o=back(prog(OPEN_AT,0.4)), c=easeOut(prog(CLOSE_AT,0.25));
   const sc=(0.9+0.1*o)*(1-0.05*c), op=clamp(o*1.4)*(1-c);
   let tiles='', n=0;
   set.forEach((col,ci)=>{ tiles+='<div class="col">'; col.forEach((g,ri)=>{
     const p=easeOut(prog(setStart+(n++)*0.035,0.3)), bob=Math.sin((t*5)+n)*4, rot=Math.sin(t*4+n*1.7)*6;
-    const target=party&&ci===1&&ri===1, hover=target&&t>=5.25, copied=target&&t>=CLICK_AT;
+    const target=party&&ci===1&&ri===1, hover=target&&t>=POINT_AT+0.85, copied=target&&t>=CLICK_AT;
     const hs=hover?1.04:1;
-    tiles+=`<div class="t${copied?' dimmed':''}${ci===0&&ri===0&&party?' ring':''}" id="${target?'target':''}" style="height:${g[3]}px;background:linear-gradient(135deg,${g[1]},${g[2]});opacity:${p};transform:translateY(${(1-p)*12}px) scale(${(0.95+0.05*p)*hs});${hover?'z-index:3;box-shadow:0 10px 24px rgba(0,0,0,.35);':''}"><span class="e" style="transform:translateY(${bob}px) rotate(${rot}deg)">${g[0]}</span>${copied?`<span class="copied" style="transform:scale(${back(prog(CLICK_AT,0.3))})">${CHK}Copied</span>`:''}</div>`;
+    tiles+=`<div class="t${copied?' dimmed':''}${ci===0&&ri===0&&party?' ring':''}" id="${target?'target':''}" style="height:${g[3]}px;background:linear-gradient(135deg,${g[1]},${g[2]});opacity:${p};transform:translateY(${(1-p)*12}px) scale(${(0.95+0.05*p)*hs});${hover?'z-index:3;box-shadow:0 10px 24px rgba(0,0,0,.35);':''}"><span class="e" style="transform:translateY(${bob}px) rotate(${rot}deg)">${g[0]}</span>${hover&&!copied?`<span style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:12px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;z-index:3">${STAR_SVG}</span>`:''}${copied?`<span class="copied" style="transform:scale(${back(prog(CLICK_AT,0.3))})">${CHK}Copied</span>`:''}</div>`;
   }); tiles+='</div>' });
   const chip=(label,on)=>`<span class="chip${on?' on':''}">${label}</span>`;
   stage.innerHTML+=`<div class="arrow" style="left:1106px;opacity:${op}"></div>
   <div class="pop" style="opacity:${op};transform:scale(${sc})">
    <div class="search"><span class="mag">${MAG}</span>${query?`<span>${query}</span>`:'<span style="opacity:.45">Search GIFs</span>'}${caret?'<span class="caret"'+(query?'':' style="margin-left:-98px"')+'></span>':''}${query?`<span class="x">${XM}</span>`:''}</div>
-   <div class="chips">${chip('🔥 Trending',!party)}${chip('Thank you')}${chip('LOL')}${chip('Yes')}${chip('Party',party)}${chip('Wow')}</div>
+   <div class="chips">${chip('⭐ Favorites')}${chip('🕘 Recent')}${chip('🔥 Trending',!query)}${(query.length>=3?['party time','party hard','party animal']:['Thank you','LOL','Yes','Party']).map(c=>chip(c)).join('')}</div>
    <div class="grid">${tiles}</div>
-   <div class="footer"><span class="hint">Click to copy · Drag into any app · ⌘⌥V</span><span class="klipy">Powered by KLIPY</span><span class="dots">•••</span></div>
+   <div class="footer"><span class="hint">⏎ copy · ⇧⏎ link · ⌘D favorite</span><span class="klipy">Powered by KLIPY</span><span class="dots">•••</span></div>
   </div>`;
 }
-if(t>=4.4&&t<CLOSE_AT+0.1){
+if(t>=POINT_AT&&t<CLOSE_AT+0.1){
   const tr=document.getElementById('target').getBoundingClientRect();
-  const m=easeInOut(prog(4.4,0.9)), x=1215+(tr.left+tr.width*0.55-1215)*m, y=700+(tr.top+tr.height*0.6-700)*m;
+  const m=easeInOut(prog(POINT_AT,0.9)), x=1215+(tr.left+tr.width*0.55-1215)*m, y=700+(tr.top+tr.height*0.6-700)*m;
   const press=t>=CLICK_AT-0.05&&t<CLICK_AT+0.12?0.85:1;
   stage.innerHTML+=`<svg class="cursor" viewBox="0 0 26 34" style="left:${x}px;top:${y}px;transform:scale(${press});transform-origin:0 0"><path d="M3 2 L3 26 L9 20.5 L13 30 L17 28.3 L13.2 19 L21.5 19 Z" fill="#000" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>`;
 }
@@ -133,9 +135,9 @@ if(t>=CHAT_AT){
    </div>
    <div class="compose"><span>Message #design-team</span></div>
   </div>`;
-  if(t>=7.7&&t<PASTE_AT+0.5){
-    const k=easeOut(prog(7.7,0.25))*(1-prog(PASTE_AT+0.2,0.3)), down=t>=8.1&&t<PASTE_AT+0.1;
-    stage.innerHTML+=`<div class="paste" style="left:994px;top:230px;opacity:${k}"><div class="key${down?' down':''}">⌘</div><div class="key${t>=8.2&&t<PASTE_AT+0.1?' down':''}">V</div></div>`;
+  if(t>=KEYS_AT&&t<PASTE_AT+0.5){
+    const k=easeOut(prog(KEYS_AT,0.25))*(1-prog(PASTE_AT+0.2,0.3)), down=t>=KEYS_AT+0.4&&t<PASTE_AT+0.1;
+    stage.innerHTML+=`<div class="paste" style="left:994px;top:230px;opacity:${k}"><div class="key${down?' down':''}">⌘</div><div class="key${t>=KEYS_AT+0.5&&t<PASTE_AT+0.1?' down':''}">V</div></div>`;
   }
 }
 </script></body></html>

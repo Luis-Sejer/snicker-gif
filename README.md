@@ -147,7 +147,7 @@ Bug reports, ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBU
 
 ## Credits
 
-GIFs are provided by [KLIPY](https://klipy.com). Launch video sound effects by [ElevenLabs](https://elevenlabs.io). Inspired by [QuickGif](https://quickgif.app).
+GIFs are provided by [KLIPY](https://klipy.com). Launch video voiceover and sound effects by [ElevenLabs](https://elevenlabs.io). Inspired by [QuickGif](https://quickgif.app).
 
 ## License
 
