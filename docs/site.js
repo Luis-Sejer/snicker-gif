@@ -1,5 +1,5 @@
 // The live popover demo: search, chips, favorites, keyboard, and ⌘⌥V to toggle.
-// Tiles are emoji-on-gradient illustrations; clicking one copies the emoji.
+// Tiles are emoji on solid colour, standing in for GIFs; clicking one copies the emoji.
 
 const LIBRARY = [
   { emoji: "😂", tags: "lol laugh funny haha trending", a: "#ffd60a", b: "#ff7a00", h: 104 },
@@ -115,7 +115,7 @@ function buildGrid(gifs) {
     tile.dataset.id = gif.id;
     tile.dataset.index = String(index);
     tile.setAttribute("role", "listitem");
-    tile.style.cssText = `--a:${gif.a};--b:${gif.b};--i:${index};--speed:${1.2 + (index % 5) * 0.25}s;height:${gif.h}px`;
+    tile.style.cssText = `--a:${gif.a};--i:${index};--speed:${1.2 + (index % 5) * 0.25}s;height:${gif.h}px`;
     tile.innerHTML = `<span class="tile__emoji" aria-hidden="true">${gif.emoji}</span>
       <span class="tile__star" aria-hidden="true">${ICONS.star}</span>`;
     tile.addEventListener("click", (event) => {

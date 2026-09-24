@@ -1,63 +1,252 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-24T15:31:49+00:00",
+  "generatedAt": "2026-09-24T19:27:56+00:00",
   "title": "Design System: Snicker",
   "extensions": {
     "colorMeta": {
-      "night": {
+      "paper": {
         "role": "neutral",
-        "displayName": "Dusk Night",
+        "displayName": "Desktop Gray",
         "tonalRamp": [
-          "#120d24",
-          "#1c1438",
-          "#312361",
-          "#45328b",
-          "#5a41b4",
-          "#7e69c9",
-          "#a596d9",
-          "#cbc3e9"
+          "#22222a",
+          "#3c3c4b",
+          "#56566b",
+          "#70708c",
+          "#9090a6",
+          "#b0b0c0",
+          "#d0d0da",
+          "#f1f1f4"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Window White",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
         ]
       },
       "ink": {
         "role": "neutral",
-        "displayName": "Frost White",
+        "displayName": "Ink",
         "tonalRamp": [
-          "#201636",
-          "#37275e",
-          "#4e3785",
-          "#6548ad",
-          "#876fc3",
-          "#ab9ad5",
-          "#cfc5e7",
-          "#f0edf8"
+          "#252528",
+          "#414146",
+          "#5d5d64",
+          "#797982",
+          "#97979e",
+          "#b6b6ba",
+          "#d4d4d7",
+          "#f2f2f3"
         ]
       },
       "ink-secondary": {
         "role": "neutral",
-        "displayName": "Lavender Mist",
+        "displayName": "Graphite",
         "tonalRamp": [
-          "#211c30",
-          "#393154",
-          "#514677",
-          "#6a5a9b",
-          "#8b7eb4",
-          "#aea5ca",
-          "#d1cbe1",
-          "#f1eff6"
+          "#262627",
+          "#424245",
+          "#5f5f62",
+          "#7b7b80",
+          "#99999d",
+          "#b7b7b9",
+          "#d4d4d6",
+          "#f2f2f2"
         ]
       },
       "ink-tertiary": {
         "role": "neutral",
-        "displayName": "Dim Lavender",
+        "displayName": "Slate",
         "tonalRamp": [
-          "#221f2e",
-          "#3c3550",
-          "#554b71",
-          "#6e6293",
-          "#8f85ad",
-          "#b0a9c6",
-          "#d2cede",
-          "#f1f0f5"
+          "#252527",
+          "#424245",
+          "#5e5e63",
+          "#7b7b80",
+          "#99999d",
+          "#b6b6ba",
+          "#d4d4d6",
+          "#f2f2f3"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ],
+        "canonical": "rgb(0 0 0 / 0.1)"
+      },
+      "tint": {
+        "role": "neutral",
+        "displayName": "Tint",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ],
+        "canonical": "rgb(0 0 0 / 0.05)"
+      },
+      "tint-strong": {
+        "role": "neutral",
+        "displayName": "Strong Tint",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ],
+        "canonical": "rgb(0 0 0 / 0.09)"
+      },
+      "glass": {
+        "role": "neutral",
+        "displayName": "Glass",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ],
+        "canonical": "rgb(255 255 255 / 0.72)"
+      },
+      "glass-edge": {
+        "role": "neutral",
+        "displayName": "Glass Edge",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ],
+        "canonical": "rgb(0 0 0 / 0.08)"
+      },
+      "glass-lit": {
+        "role": "neutral",
+        "displayName": "Glass Lit",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ],
+        "canonical": "rgb(255 255 255 / 0.9)"
+      },
+      "menubar-glass": {
+        "role": "neutral",
+        "displayName": "Menu Bar Glass",
+        "tonalRamp": [
+          "#21212b",
+          "#3b3b4c",
+          "#54546d",
+          "#6e6e8d",
+          "#8e8ea7",
+          "#afafc1",
+          "#d0d0da",
+          "#f1f1f4"
+        ],
+        "canonical": "rgb(246 246 248 / 0.72)"
+      },
+      "link": {
+        "role": "primary",
+        "displayName": "Link Blue",
+        "tonalRamp": [
+          "#00264c",
+          "#004387",
+          "#0061c1",
+          "#007efb",
+          "#379bff",
+          "#71b8ff",
+          "#abd5ff",
+          "#e6f2ff"
+        ]
+      },
+      "pink": {
+        "role": "secondary",
+        "displayName": "Snicker Pink",
+        "tonalRamp": [
+          "#4c000f",
+          "#87001b",
+          "#c10027",
+          "#fb0032",
+          "#ff375f",
+          "#ff718d",
+          "#ffabbc",
+          "#ffe6eb"
+        ]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Night",
+        "tonalRamp": [
+          "#232329",
+          "#3e3e49",
+          "#585869",
+          "#737388",
+          "#9292a3",
+          "#b2b2be",
+          "#d2d2d9",
+          "#f1f1f3"
+        ]
+      },
+      "night-surface": {
+        "role": "neutral",
+        "displayName": "Night Surface",
+        "tonalRamp": [
+          "#252528",
+          "#414146",
+          "#5d5d64",
+          "#797982",
+          "#97979e",
+          "#b6b6ba",
+          "#d4d4d7",
+          "#f2f2f3"
+        ]
+      },
+      "night-ink-secondary": {
+        "role": "neutral",
+        "displayName": "Night Secondary",
+        "tonalRamp": [
+          "#252527",
+          "#424245",
+          "#5e5e63",
+          "#7a7a81",
+          "#98989e",
+          "#b6b6ba",
+          "#d4d4d6",
+          "#f2f2f3"
         ]
       },
       "system-blue": {
@@ -65,13 +254,13 @@
         "displayName": "System Blue",
         "tonalRamp": [
           "#00264c",
-          "#004285",
-          "#005ebd",
-          "#007af5",
-          "#3399ff",
-          "#70b7ff",
-          "#add6ff",
-          "#e5f2ff"
+          "#004387",
+          "#0060c1",
+          "#007dfb",
+          "#379aff",
+          "#71b8ff",
+          "#abd5ff",
+          "#e6f2ff"
         ]
       },
       "blue-fill": {
@@ -79,41 +268,27 @@
         "displayName": "Filled Control Blue",
         "tonalRamp": [
           "#00264c",
-          "#004285",
-          "#005ebd",
-          "#007af5",
-          "#3399ff",
-          "#70b8ff",
-          "#add6ff",
-          "#e5f2ff"
+          "#004387",
+          "#0060c1",
+          "#007dfb",
+          "#379aff",
+          "#71b8ff",
+          "#abd5ff",
+          "#e6f2ff"
         ]
       },
       "blue-fill-hover": {
         "role": "primary",
-        "displayName": "Filled Control Blue, Hover",
+        "displayName": "Filled Control Blue Hover",
         "tonalRamp": [
           "#00264c",
-          "#004285",
-          "#005ebd",
-          "#007af5",
-          "#3399ff",
-          "#70b8ff",
-          "#add6ff",
-          "#e5f2ff"
-        ]
-      },
-      "system-pink": {
-        "role": "secondary",
-        "displayName": "System Pink",
-        "tonalRamp": [
-          "#4c000f",
-          "#85001b",
-          "#bd0026",
-          "#f50031",
-          "#ff335c",
-          "#ff708d",
-          "#ffadbe",
-          "#ffe5eb"
+          "#004387",
+          "#0060c1",
+          "#007dfb",
+          "#379aff",
+          "#71b8ff",
+          "#abd5ff",
+          "#e6f2ff"
         ]
       },
       "system-orange": {
@@ -121,13 +296,13 @@
         "displayName": "System Orange",
         "tonalRamp": [
           "#4c2f00",
-          "#855100",
-          "#bd7300",
-          "#f59500",
-          "#ffaf33",
-          "#ffc770",
-          "#ffdfad",
-          "#fff5e5"
+          "#875200",
+          "#c17500",
+          "#fb9900",
+          "#ffb037",
+          "#ffc771",
+          "#ffdeab",
+          "#fff5e6"
         ]
       },
       "system-purple": {
@@ -135,52 +310,14 @@
         "displayName": "System Purple",
         "tonalRamp": [
           "#310647",
-          "#550a7b",
-          "#790eaf",
-          "#9d12e3",
-          "#b642f0",
+          "#560a7d",
+          "#7c0eb3",
+          "#a112e9",
+          "#b745f0",
           "#cc7bf5",
-          "#e2b3f9",
+          "#e1b1f9",
           "#f6e7fd"
         ]
-      },
-      "link-sky": {
-        "role": "neutral",
-        "displayName": "Sky Link",
-        "tonalRamp": [
-          "#00234c",
-          "#003e85",
-          "#0058bd",
-          "#0072f5",
-          "#3392ff",
-          "#70b2ff",
-          "#add3ff",
-          "#e5f1ff"
-        ]
-      },
-      "glass": {
-        "role": "neutral",
-        "displayName": "Glass"
-      },
-      "glass-strong": {
-        "role": "neutral",
-        "displayName": "Strong Glass"
-      },
-      "glass-edge": {
-        "role": "neutral",
-        "displayName": "Glass Edge"
-      },
-      "glass-lit": {
-        "role": "neutral",
-        "displayName": "Glass Lit"
-      },
-      "glass-fill": {
-        "role": "neutral",
-        "displayName": "Glass Fill"
-      },
-      "menubar-glass": {
-        "role": "neutral",
-        "displayName": "Menu Bar Glass"
       }
     },
     "typographyMeta": {
@@ -190,23 +327,23 @@
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Section headings, balanced wrap."
+        "purpose": "Section headings; the same 600 voice scales up for the video title, marquee and story steps."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Hero promise line, max 30ch."
+        "purpose": "The hero promise."
       },
       "lead": {
         "displayName": "Lead",
-        "purpose": "Section intros and FAQ questions (600)."
+        "purpose": "Section intro paragraphs."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Running text, 15px inside panes."
+        "purpose": "Running text; 15px inside windows."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Window bars, menu bar, chat titles, footers; sentence case."
+        "purpose": "Window-bar titles, menu bar, footers. Sentence case."
       },
       "mono": {
         "displayName": "Mono",
@@ -215,91 +352,90 @@
     },
     "shadows": [
       {
-        "name": "window-float",
-        "value": "0 30px 80px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / 0.2)",
-        "purpose": "Popover and windows (0.42 on windows); context menu uses 0 30px 70px."
+        "name": "window",
+        "value": "0 24px 60px rgb(0 0 0 / 0.16), 0 2px 8px rgb(0 0 0 / 0.06)",
+        "purpose": "Popover, Dock, windows, dragged GIF window; glass adds inset 0 1px 0 var(--glass-lit)."
       },
       {
-        "name": "layer-float",
-        "value": "0 16px 40px rgb(0 0 0 / 0.3)",
-        "purpose": "Anatomy layers and chat panes."
+        "name": "small",
+        "value": "0 10px 24px rgb(0 0 0 / 0.14), 0 1px 3px rgb(0 0 0 / 0.08)",
+        "purpose": "Resting desktop GIF windows."
       },
       {
-        "name": "control-lift",
-        "value": "0 8px 20px rgb(0 0 0 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.28)",
-        "purpose": "Primary button at rest."
+        "name": "tile-lift",
+        "value": "0 10px 24px rgb(0 0 0 / 0.22)",
+        "purpose": "Hovered GIF tile."
       },
       {
-        "name": "control-lift-hover",
-        "value": "0 12px 26px rgb(0 0 0 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.28)",
-        "purpose": "Primary button hover, with 1px rise."
+        "name": "night-pane",
+        "value": "0 16px 40px rgb(0 0 0 / 0.4)",
+        "purpose": "Panes on the black field."
+      },
+      {
+        "name": "player",
+        "value": "0 40px 120px rgb(0 0 0 / 0.6)",
+        "purpose": "Video player in the full-bleed black field."
       },
       {
         "name": "keycap",
-        "value": "inset 0 -3px 0 rgb(0 0 0 / 0.22), 0 6px 16px rgb(0 0 0 / 0.25)",
-        "purpose": "Keycap bevel; pressed state sinks 3px to inset 0 -1px 0."
+        "value": "inset 0 -3px 0 var(--tint-strong), 0 4px 10px rgb(0 0 0 / 0.08)",
+        "purpose": "Keycap bevel; pressed sinks 3px."
       },
       {
-        "name": "tile-hover",
-        "value": "0 10px 24px rgb(0 0 0 / 0.35)",
-        "purpose": "GIF tile hover lift."
-      },
-      {
-        "name": "focus-glow",
-        "value": "0 0 0 3px rgb(10 132 255 / 0.3)",
-        "purpose": "Search field focus, with System Blue edge at 80%."
-      },
-      {
-        "name": "glass-blur-window",
-        "value": "backdrop-filter: blur(30px) saturate(1.7-1.8)",
-        "purpose": "Windows and menus; popover uses blur(34px) saturate(1.8)."
-      },
-      {
-        "name": "glass-blur-control",
-        "value": "backdrop-filter: blur(20px) saturate(1.6)",
-        "purpose": "Command pill, layers (24px), menu bar (24px, 1.7)."
+        "name": "icon-drop",
+        "value": "drop-shadow(0 14px 22px rgb(0 0 0 / 0.22))",
+        "purpose": "App icon art only (filter)."
       }
     ],
     "motion": [
       {
         "name": "ease-out",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "Default for hovers, presses, closes, tile entry."
+        "purpose": "Default easing for state transitions, drags settling, tile entrance."
       },
       {
         "name": "ease-spring",
-        "value": "cubic-bezier(0.34, 1.4, 0.64, 1)",
-        "purpose": "Overshoot for the popover opening (0.45s) and the Copied badge pop (0.4s)."
+        "value": "cubic-bezier(0.34, 1.3, 0.64, 1)",
+        "purpose": "Overshoot for the popover open, Copied badge and story popover."
+      },
+      {
+        "name": "popover-open",
+        "value": "0.45s var(--ease-spring)",
+        "purpose": "Popover springs from its top-right origin; closes to scale 0.92 with 8px blur in 0.25s."
       },
       {
         "name": "tile-stagger",
-        "value": "tile-in 0.45s, delay index x 28ms",
-        "purpose": "GIF tiles rising in."
+        "value": "0.45s var(--ease-out), 28ms per tile",
+        "purpose": "Only when a new result set arrives."
       },
       {
-        "name": "wallpaper-drift",
-        "value": "drift 40s ease-in-out infinite alternate",
-        "purpose": "Slow wallpaper drift."
+        "name": "dock-spring",
+        "value": "stiffness 1500, damping 120, 54px to 96px, cosine falloff over 150px",
+        "purpose": "Per-frame spring driving Dock icon magnification; off under reduced motion."
       },
       {
-        "name": "scroll-split",
-        "value": "animation-timeline: view(); range entry 10% cover 40%",
-        "purpose": "Anatomy layers and chats split in; progressive, content visible without it."
+        "name": "marquee",
+        "value": "40s linear infinite",
+        "purpose": "Reaction word band."
       },
       {
         "name": "reduced-motion",
-        "value": "all animation and transition durations to 0.01ms",
-        "purpose": "Everything stops under prefers-reduced-motion."
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "All animation and transitions collapse; bob and marquee stop."
       }
     ],
     "breakpoints": [
       {
-        "name": "stack",
-        "value": "1080px"
-      },
-      {
         "name": "phone",
         "value": "720px"
+      },
+      {
+        "name": "story-stack",
+        "value": "900px"
+      },
+      {
+        "name": "desktop",
+        "value": "1080px"
       }
     ]
   },
@@ -308,120 +444,130 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The one filled action per view (Download).",
-      "html": "<div class=\"ds-wall\"><a class=\"ds-btn-primary\" href=\"#\"><svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 3v10m0 0 4-4m-4 4-4-4M4 16h12\"/></svg>Download for Mac</a></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-btn-primary{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 22px;border-radius:var(--radius-control);font:600 16px/1 var(--font);text-decoration:none;color:#fff;background:var(--blue-fill);box-shadow:0 8px 20px rgb(0 0 0 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.28);transition:transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background-color 0.2s;} .ds-btn-primary svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;} .ds-btn-primary:hover{background:var(--blue-fill-hover);transform:translateY(-1px);box-shadow:0 12px 26px rgb(0 0 0 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.28);} .ds-btn-primary:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}"
+      "description": "The one filled action per view (Download for Mac).",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\"><svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 3v10m0 0 4-4m-4 4-4-4M4 16h12\"/></svg>Download for Mac</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 22px; border-radius: 999px; font: 500 17px/1 var(--font); color: #fff; background: var(--blue-fill); text-decoration: none; transition: transform 0.2s var(--ease-out), background-color 0.2s; } .ds-btn-primary svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; } .ds-btn-primary:hover { background: var(--blue-fill-hover); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }"
     },
     {
-      "name": "Glass Button",
+      "name": "Secondary Button",
       "kind": "button",
-      "refersTo": "button-glass",
-      "description": "Secondary action on a pane (Copy command).",
-      "html": "<div class=\"ds-wall\"><button class=\"ds-btn-glass\" type=\"button\">Copy command</button></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-btn-glass{display:inline-flex;align-items:center;height:48px;padding:0 22px;border-radius:var(--radius-control);font:600 16px/1 var(--font);color:#fff;background:rgb(255 255 255 / 0.12);border:1px solid rgb(255 255 255 / 0.2);cursor:pointer;transition:background-color 0.2s;} .ds-btn-glass:hover{background:rgb(255 255 255 / 0.2);} .ds-btn-glass:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}"
+      "refersTo": "button-secondary",
+      "description": "Quiet pill for secondary actions (Copy command).",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Copy command</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border: 0; border-radius: 999px; font: 500 17px/1 var(--font); color: var(--ink); background: var(--tint-strong); cursor: pointer; transition: background-color 0.2s; } .ds-btn-secondary:hover { background: var(--rule); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }"
     },
     {
       "name": "Command Line",
       "kind": "button",
       "refersTo": "command-copy",
-      "description": "Copyable shell command as a glass pill with a nested Copy pill.",
-      "html": "<div class=\"ds-wall\"><button class=\"ds-command\" type=\"button\"><code>curl -fsSL …/install.sh | sh</code><span class=\"ds-command-action\">Copy</span></button></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-command{display:inline-flex;align-items:center;gap:12px;height:48px;padding:0 8px 0 18px;border-radius:var(--radius-control);border:1px solid var(--glass-edge);background:var(--glass);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);color:var(--ink-2);cursor:pointer;font:500 14px/1 var(--mono);} .ds-command code{font:inherit;} .ds-command-action{font:600 13px/1 var(--font);color:#fff;padding:9px 12px;border-radius:var(--radius-control);background:rgb(255 255 255 / 0.12);} .ds-command:hover .ds-command-action{background:rgb(255 255 255 / 0.22);} .ds-command:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}"
+      "description": "Copyable install command with a nested Copy pill.",
+      "html": "<button class=\"ds-command\" type=\"button\"><code>curl -fsSL …/install.sh | sh</code><span class=\"ds-command__action\">Copy</span></button>",
+      "css": ".ds-command { display: inline-flex; align-items: center; gap: 12px; height: 48px; padding: 0 7px 0 18px; border-radius: 999px; border: 1px solid var(--glass-edge); background: var(--surface); color: var(--ink-2); cursor: pointer; font: 500 14px/1 var(--mono); } .ds-command code { font: inherit; } .ds-command__action { font: 600 13px/1 var(--font); color: var(--ink); padding: 10px 13px; border-radius: 999px; background: var(--tint); } .ds-command:hover .ds-command__action { background: var(--tint-strong); } .ds-command:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }"
     },
     {
       "name": "Search Field",
       "kind": "input",
       "refersTo": "search-field",
-      "description": "Glass pill search inside the popover.",
-      "html": "<div class=\"ds-wall\"><label class=\"ds-search\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><circle cx=\"6.8\" cy=\"6.8\" r=\"5\"/><path d=\"M10.6 10.6 14.5 14.5\"/></svg><input type=\"search\" placeholder=\"Search GIFs\"></label></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-search{display:flex;align-items:center;gap:9px;width:320px;height:40px;padding:0 12px 0 14px;border-radius:var(--radius-control);background:rgb(255 255 255 / 0.1);border:1px solid rgb(255 255 255 / 0.14);box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.15);} .ds-search:focus-within{border-color:rgb(10 132 255 / 0.8);box-shadow:0 0 0 3px rgb(10 132 255 / 0.3);} .ds-search svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--ink-3);stroke-width:1.9;stroke-linecap:round;} .ds-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#fff;font:400 17px/1 var(--font);} .ds-search input::placeholder{color:var(--ink-3);}"
+      "description": "The popover's pill search.",
+      "html": "<label class=\"ds-search\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><circle cx=\"6.8\" cy=\"6.8\" r=\"5\"/><path d=\"M10.6 10.6 14.5 14.5\"/></svg><input type=\"search\" placeholder=\"Search KLIPY\"></label>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 9px; width: 320px; height: 40px; padding: 0 12px 0 14px; border-radius: 999px; background: var(--tint); border: 1px solid transparent; } .ds-search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgb(10 132 255 / 0.25); } .ds-search svg { width: 16px; height: 16px; flex: none; fill: none; stroke: var(--ink-3); stroke-width: 1.9; stroke-linecap: round; } .ds-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: 400 17px/1 var(--font); } .ds-search input::placeholder { color: var(--ink-3); }"
     },
     {
       "name": "Chip",
       "kind": "chip",
       "refersTo": "chip",
-      "description": "Category filter pills; pressed fills with control blue.",
-      "html": "<div class=\"ds-wall\"><button class=\"ds-chip\" aria-pressed=\"true\">Trending</button> <button class=\"ds-chip\" aria-pressed=\"false\">Happy</button> <button class=\"ds-chip\" aria-pressed=\"false\">Thanks</button></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-chip{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:var(--radius-control);border:1px solid rgb(255 255 255 / 0.14);background:rgb(255 255 255 / 0.1);color:#fff;font:500 12px/1 var(--font);cursor:pointer;transition:background-color 0.15s;} .ds-chip:hover{background:rgb(255 255 255 / 0.18);} .ds-chip[aria-pressed=\"true\"]{background:var(--blue-fill);border-color:#3d9dff;} .ds-chip:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}"
+      "description": "Browse filters in the popover; pressed state fills blue.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-pressed=\"true\">Trending</button><button class=\"ds-chip\" aria-pressed=\"false\">Favorites</button><button class=\"ds-chip\" aria-pressed=\"false\">Recent</button></div>",
+      "css": ".ds-chips { display: flex; gap: 6px; } .ds-chip { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 0; border-radius: 999px; background: var(--tint); color: var(--ink); font: 500 12px/1 var(--font); cursor: pointer; transition: background-color 0.15s; } .ds-chip:hover { background: var(--tint-strong); } .ds-chip[aria-pressed=\"true\"] { background: var(--blue-fill); color: #fff; } .ds-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }"
     },
     {
       "name": "Menu Bar",
       "kind": "nav",
       "refersTo": "menubar",
-      "description": "Fixed translucent macOS menu bar as site navigation.",
-      "html": "<div class=\"ds-wall\" style=\"padding:0;height:120px\"><nav class=\"ds-menubar\"><div class=\"ds-menus\"><a class=\"ds-app\" href=\"#\">Snicker</a><a href=\"#\">Features</a><a href=\"#\">Install</a><a href=\"#\">FAQ</a></div><span class=\"ds-clock\">Thu 9:41</span></nav></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-menubar{height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgb(20 16 36 / 0.42);backdrop-filter:blur(24px) saturate(1.7);-webkit-backdrop-filter:blur(24px) saturate(1.7);font:13.5px var(--font);} .ds-menus{display:flex;gap:2px;} .ds-menus a{color:rgb(255 255 255 / 0.92);text-decoration:none;padding:3px 10px;border-radius:6px;} .ds-menus a:hover{background:rgb(255 255 255 / 0.16);color:#fff;} .ds-menus a:focus-visible{outline:2px solid var(--blue);outline-offset:3px;} .ds-app{font-weight:700;} .ds-clock{color:#fff;font-weight:500;font-variant-numeric:tabular-nums;}"
+      "description": "Light macOS menu bar glass across the top.",
+      "html": "<nav class=\"ds-menubar\"><div class=\"ds-menubar__menus\"><a class=\"ds-menubar__app\" href=\"#\">Snicker</a><a href=\"#\">Features</a><a href=\"#\">Install</a><a href=\"#\">FAQ</a></div><span class=\"ds-menubar__clock\">Thu 9:41</span></nav>",
+      "css": ".ds-menubar { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 14px; background: var(--menubar-bg); backdrop-filter: blur(24px) saturate(1.8); -webkit-backdrop-filter: blur(24px) saturate(1.8); border-bottom: 1px solid var(--rule); font: 400 13.5px/1 var(--font); color: var(--ink); } .ds-menubar__menus { display: flex; gap: 2px; } .ds-menubar a { color: var(--ink); text-decoration: none; padding: 3px 10px; border-radius: 6px; } .ds-menubar a:hover { background: var(--tint-strong); } .ds-menubar a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; } .ds-menubar__app { font-weight: 700; } .ds-menubar__clock { font-weight: 500; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Popover",
+      "kind": "custom",
+      "refersTo": "popover",
+      "description": "Signature light glass popover hanging from the menu bar icon, with solid-fill GIF tiles.",
+      "html": "<div class=\"ds-popover\"><span class=\"ds-popover__arrow\"></span><div class=\"ds-popover__grid\"><button class=\"ds-tile\" style=\"--a:#ffb800\">😂</button><button class=\"ds-tile\" style=\"--a:#2f8cff\">🙏</button><button class=\"ds-tile\" style=\"--a:#8e6cf2\">😎</button><button class=\"ds-tile\" style=\"--a:#30c35c\">👍</button><button class=\"ds-tile\" style=\"--a:#ff8a00\">🤯</button><button class=\"ds-tile\" style=\"--a:#ff2d78\">❤️</button></div><footer class=\"ds-popover__footer\"><span>↑↓ choose · ⏎ copy</span><span>Powered by KLIPY</span></footer></div>",
+      "css": ".ds-popover { position: relative; width: 320px; margin-top: 12px; border-radius: 26px; background: var(--glass); backdrop-filter: blur(34px) saturate(1.8); -webkit-backdrop-filter: blur(34px) saturate(1.8); border: 1px solid var(--glass-edge); box-shadow: var(--shadow-window), inset 0 1px 0 var(--glass-lit); } .ds-popover__arrow { position: absolute; top: -10px; right: 34px; width: 22px; height: 11px; background: var(--glass); clip-path: polygon(50% 0, 100% 100%, 0 100%); } .ds-popover__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 10px 10px; } .ds-tile { aspect-ratio: 1; border: 0; border-radius: 12px; background: var(--a); font-size: 34px; cursor: pointer; transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out); } .ds-tile:hover { transform: scale(1.04); box-shadow: 0 10px 24px rgb(0 0 0 / 0.22); } .ds-tile:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; } .ds-popover__footer { display: flex; justify-content: space-between; padding: 10px 14px 12px; border-top: 1px solid var(--rule); font: 400 11px/1 var(--font); color: var(--ink-3); }"
     },
     {
       "name": "Window",
       "kind": "card",
       "refersTo": "window",
-      "description": "Glass window with traffic-light bar; chrome for info, player and terminal panes.",
-      "html": "<div class=\"ds-wall\"><div class=\"ds-window\"><div class=\"ds-window-bar\"><span class=\"ds-lights\"><i></i><i></i><i></i></span><span>Terminal</span></div><div class=\"ds-window-body\"><code><span class=\"ds-prompt\">~ %</span> curl -fsSL …/install.sh | sh</code></div></div></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-window{max-width:520px;border-radius:18px;background:var(--glass-strong);border:1px solid var(--glass-edge);backdrop-filter:blur(30px) saturate(1.7);-webkit-backdrop-filter:blur(30px) saturate(1.7);box-shadow:0 30px 80px rgb(0 0 0 / 0.42), inset 0 1px 0 var(--glass-lit);overflow:hidden;} .ds-window-bar{display:flex;align-items:center;gap:12px;height:40px;padding:0 14px;font:600 13px var(--font);color:var(--ink-3);border-bottom:1px solid rgb(255 255 255 / 0.08);} .ds-lights{display:flex;gap:7px;} .ds-lights i{width:12px;height:12px;border-radius:50%;background:#ff5f57;} .ds-lights i:nth-child(2){background:#febc2e;} .ds-lights i:nth-child(3){background:#28c840;} .ds-window-body{padding:22px 24px;} .ds-window-body code{font:500 15px/1.6 var(--mono);color:#e8e4f4;} .ds-prompt{color:#34c759;margin-right:6px;}"
+      "description": "Opaque white Mac window with traffic-light bar (info, terminal, story chat).",
+      "html": "<div class=\"ds-window\"><div class=\"ds-window__bar\"><span class=\"ds-lights\"><i></i><i></i><i></i></span><span>Snicker Info</span></div><div class=\"ds-window__body\"><strong>A proper Mac app.</strong><p>Built in SwiftUI. No account, no tracking.</p></div></div>",
+      "css": ".ds-window { width: 360px; border-radius: 14px; background: var(--surface); border: 1px solid var(--glass-edge); box-shadow: var(--shadow-window); overflow: hidden; font-family: var(--font); color: var(--ink); } .ds-window__bar { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 14px; font-size: 13px; font-weight: 600; color: var(--ink-3); border-bottom: 1px solid var(--rule); } .ds-lights { display: flex; gap: 7px; } .ds-lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; } .ds-lights i:nth-child(2) { background: #febc2e; } .ds-lights i:nth-child(3) { background: #28c840; } .ds-window__body { padding: 22px 28px; } .ds-window__body strong { font-size: 24px; font-weight: 600; letter-spacing: -0.035em; } .ds-window__body p { margin: 8px 0 0; color: var(--ink-2); font-size: 15px; }"
     },
     {
-      "name": "Context Menu",
+      "name": "Pink Field",
       "kind": "custom",
-      "refersTo": "context-menu",
-      "description": "macOS right-click menu with shortcut glyphs and a blue active row.",
-      "html": "<div class=\"ds-wall\"><div class=\"ds-menu\"><div class=\"ds-item\"><span>Copy GIF</span><kbd>⏎</kbd></div><div class=\"ds-item ds-item-active\"><span>Copy Link</span><kbd>⇧⏎</kbd></div><div class=\"ds-item\"><span>Add to Favorites</span><kbd>⌘D</kbd></div><hr><div class=\"ds-item\"><span>Save to Downloads</span></div></div></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-menu{width:250px;padding:6px;border-radius:14px;background:var(--glass-strong);border:1px solid var(--glass-edge);backdrop-filter:blur(30px) saturate(1.8);-webkit-backdrop-filter:blur(30px) saturate(1.8);box-shadow:0 30px 70px rgb(0 0 0 / 0.45), inset 0 1px 0 var(--glass-lit);font:15px var(--font);color:var(--ink);} .ds-menu hr{border:0;height:1px;background:rgb(255 255 255 / 0.12);margin:5px 10px;} .ds-item{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-radius:7px;} .ds-item:hover,.ds-item-active{background:var(--blue-fill);} .ds-item kbd{font-family:var(--font);color:var(--ink-3);font-size:14px;letter-spacing:0.08em;} .ds-item-active kbd,.ds-item:hover kbd{color:rgb(255 255 255 / 0.85);}"
-    },
-    {
-      "name": "GIF Tile",
-      "kind": "custom",
-      "refersTo": "popover",
-      "description": "Emoji-on-gradient illustration tile with sheen, hover lift, selection ring and favourite star.",
-      "html": "<div class=\"ds-wall\"><button class=\"ds-tile\" style=\"--a:#ffd60a;--b:#ff7a00\"><span class=\"ds-emoji\">😂</span><span class=\"ds-star\"><svg viewBox=\"0 0 12 12\"><path d=\"M6 1l1.5 3.2 3.5.4-2.6 2.4.7 3.5L6 8.8 2.9 10.5l.7-3.5L1 4.6l3.5-.4z\"/></svg></span></button></div>",
-      "css": ":host{--ink:#f5f3fa;--ink-2:#c9c3dc;--ink-3:#a79fbf;--night:#120d24;--blue:#0a84ff;--blue-fill:#0066cc;--blue-fill-hover:#0071e3;--glass:rgb(38 34 52 / 0.55);--glass-strong:rgb(30 26 44 / 0.78);--glass-edge:rgb(255 255 255 / 0.16);--glass-lit:rgb(255 255 255 / 0.2);--radius-window:26px;--radius-control:999px;--radius-tile:12px;--ease-out:cubic-bezier(0.16, 1, 0.3, 1);--ease-spring:cubic-bezier(0.34, 1.4, 0.64, 1);--font:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;--mono:ui-monospace, 'SF Mono', Menlo, monospace;} .ds-wall{background:radial-gradient(ellipse 60% 70% at 10% 90%, #ff7a3d 0, transparent 60%),radial-gradient(ellipse 60% 70% at 90% 10%, #6a4bff 0, transparent 62%),#120d24;padding:24px;} .ds-tile{position:relative;display:grid;place-items:center;width:130px;height:104px;border:0;padding:0;border-radius:var(--radius-tile);background:linear-gradient(135deg, var(--a), var(--b));cursor:pointer;overflow:hidden;transition:transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);} .ds-tile::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgb(255 255 255 / 0.16), transparent 50%);pointer-events:none;} .ds-tile:hover{transform:scale(1.04);box-shadow:0 10px 24px rgb(0 0 0 / 0.35);} .ds-tile:focus-visible{outline:none;box-shadow:inset 0 0 0 2.5px var(--blue);} .ds-emoji{font-size:42px;line-height:1;} .ds-star{position:absolute;top:6px;right:6px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgb(255 255 255 / 0.22);border:1px solid rgb(255 255 255 / 0.3);opacity:0;transition:opacity 0.15s;} .ds-star svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:1.4;stroke-linejoin:round;} .ds-tile:hover .ds-star,.ds-tile:focus-visible .ds-star{opacity:1;}"
+      "refersTo": "field-pink",
+      "description": "Flat, full-bleed committed colour field with semibold headline; text is solid ink.",
+      "html": "<section class=\"ds-field-pink\"><h2>More than copy and paste.</h2><p>Right-click any GIF to copy its link, save it, or keep it as a favorite.</p></section>",
+      "css": ".ds-field-pink { padding: 64px 40px; background: var(--pink); color: var(--ink); font-family: var(--font); } .ds-field-pink h2 { margin: 0; font-size: 44px; font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; } .ds-field-pink p { margin: 20px 0 0; font-size: 20px; line-height: 1.45; max-width: 34em; }"
     }
   ],
   "narrative": {
-    "northStar": "The Running Desktop",
-    "overview": "The site is a Mac desktop at dusk, and Snicker is already running on it. A fixed wallpaper of the app icon's colors blooms behind everything; a translucent menu bar crosses the top; every surface that holds content is a pane of Liquid Glass floating over that wallpaper: blurred, saturated, lit along its top edge by a hairline. Sections are not bands or cards but windows, menus and popovers a Mac user already knows, so the page demonstrates the product instead of describing it.\n\nThe type is Apple's own system face with tight display tracking, because the product's look is pinned to Apple's. Colour comes from two sources only: the wallpaper and Apple's system accents. Density is low and generous; motion is springy where macOS springs (popover open, copy confirmation) and otherwise quiet, and it all stops under reduced motion.",
+    "northStar": "The Light Desktop, Edited",
+    "overview": "The site is a Mac desktop in light mode with Snicker already running on it, and it reads like an Apple editorial product page. The ground is Apple's light gray (`paper`); a light translucent menu bar crosses the top; the live popover hangs from its menu bar icon; small GIF windows with traffic lights sit on the desktop and can be dragged. The page then moves in editorial beats rather than cards: a big reaction marquee, a pinned scroll story, and flat, fully committed colour fields in Snicker pink and near-black, then a full-bleed black field for the video.\n\nGlass is reserved for the system chrome a Mac already has in light mode: the menu bar, the popover and the Dock. Everything else is either flat paper, a white window, or a solid field. Type is Apple's system face at semibold display weight, big and tight. Motion springs where macOS springs (popover open, Copied badge, Dock magnification) and is otherwise quiet; all of it stops under reduced motion.",
     "keyCharacteristics": [
-      "Fixed dusk wallpaper (four radial blooms over near-black violet) under every surface.",
-      "Glass panes: translucent fill, backdrop blur 20-34px with saturate 1.6-1.8, 1px white hairline edge, inset top highlight.",
-      "macOS vocabulary as structure: menu bar, popover with arrow, context menu, window bars with traffic lights, keycaps.",
-      "SF Pro system stack, heavy weights, negative tracking at display sizes.",
+      "Light only: `paper` ground, `ink` text, `color-scheme: light`.",
+      "macOS light-mode glass (white 72% fill, 24-34px blur at 1.8 saturate, 8% black hairline, white inset top highlight, soft layered shadow) for menu bar, popover and Dock only.",
+      "Flat committed fields: one `pink` field, `night` fields; no gradients.",
+      "SF Pro system stack at 600 for display sizes, negative tracking.",
+      "macOS vocabulary as structure: menu bar, popover with arrow, context menu, window bars with traffic lights, keycaps, Dock.",
       "Pill controls everywhere a control is pressable."
     ],
     "rules": [
       {
-        "name": "The Wallpaper Is the Palette Rule",
-        "body": "Surfaces never carry their own brand colour. They are translucent, and colour arrives from the wallpaper behind them. A solid coloured section background breaks the world.",
+        "name": "The Light Only Rule",
+        "body": "The site has one theme, light. There is no `prefers-color-scheme: dark` variant; dark mode was removed on purpose so one theme can be excellent. Darkness appears only as a deliberate `night` field.",
+        "section": "colors"
+      },
+      {
+        "name": "The Flat Field Rule",
+        "body": "A coloured section is one solid fill edge to edge (`pink` or `night`). No gradients anywhere: GIF stand-in tiles are single solid fills. The only gradient in the build is the marquee's edge-fade mask, which is transparency, not colour.",
         "section": "colors"
       },
       {
         "name": "The Two Blues Rule",
-        "body": "Text on blue sits on `blue-fill`. `system-blue` is for rings and outlines only.",
+        "body": "White text sits on `blue-fill`. `system-blue` is for rings, outlines and carets only.",
         "section": "colors"
       },
       {
-        "name": "The System Voice Rule",
-        "body": "One family for everything but shell commands. Hierarchy is weight (400 to 800) and negative tracking, never a second display face.",
+        "name": "The Semibold Voice Rule",
+        "body": "Display sizes are 600 with negative tracking; only the wordmark and the menu bar app name go to 700. One family for everything but shell commands.",
         "section": "typography"
       },
       {
-        "name": "The Lit Edge Rule",
-        "body": "Every floating glass pane has a 1px `glass-edge` border and, when it is a window or menu, an inset `glass-lit` top highlight. Glass without an edge reads as a smudge.",
+        "name": "The Glass Is Chrome Rule",
+        "body": "Glass is for what macOS itself renders as translucent chrome: the menu bar, the popover, the Dock (and the Dock label, the context menu, the Copied and Play badges). Content windows are opaque `surface`; sections are flat.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "Do put every content surface on glass over the fixed wallpaper: translucent fill, backdrop blur 20-34px with saturate 1.6-1.8, 1px `glass-edge`.",
-      "Do borrow structure from macOS itself (menu bar, popover, context menu, window bar with traffic lights, keycaps) instead of inventing section chrome.",
+      "Do keep the ground `paper` and text `ink`; put strong colour only in full-bleed flat `pink` or `night` fields.",
+      "Do reserve glass (white 72% fill, 24-34px blur at 1.8 saturate, 1px `glass-edge`, `glass-lit` inset top) for macOS chrome: menu bar, popover, Dock.",
+      "Do borrow structure from macOS itself (menu bar, popover, context menu, window bars with traffic lights, keycaps, Dock) instead of inventing section chrome.",
+      "Do set display type in SF Pro at 600 with negative tracking (-0.035em to -0.045em).",
       "Do use `blue-fill` under any white text on blue, and `system-blue` for the 2px focus ring with 3px offset.",
       "Do make every pressable control a full pill.",
       "Do write macOS shortcut glyphs (⌘ ⌥ ⇧ ⏎) as real keycaps or menu shortcuts; they are the world's native notation.",
+      "Do keep text on the pink field solid `ink` so body copy passes 4.5:1.",
       "Do stop all animation under `prefers-reduced-motion`, and keep scroll-driven effects progressive (content visible without them)."
     ],
     "donts": [
-      "Don't give a section an opaque coloured background; colour comes from the wallpaper through glass.",
+      "Don't add a dark theme or a `prefers-color-scheme: dark` block; the site is light only by decision.",
+      "Don't use gradients for colour: no gradient backgrounds, glows or two-stop GIF tiles. Transparency masks (the marquee edge fade) are the only exception.",
       "Don't put white text on `system-blue` (#0a84ff); it fails contrast.",
-      "Don't add a second display typeface or uppercase tracked labels; hierarchy is SF Pro weight and tracking.",
-      "Don't use hard, offset or coloured shadows; shadows are large, soft and black.",
+      "Don't add a second display typeface or uppercase tracked labels.",
+      "Don't use hard, offset or coloured shadows; shadows are soft, layered and black.",
       "Don't present emoji tiles as real GIFs; they are labelled illustrations."
     ]
   }
