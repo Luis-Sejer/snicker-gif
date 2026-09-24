@@ -38,8 +38,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Smooth scrolling starts after load (site.js adds .is-ready), so a link to #section jumps there instantly. */
+html.is-ready { scroll-behavior: smooth; }
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: calc(var(--menubar) + 24px);
   scrollbar-color: var(--tint-strong) var(--paper);
 }

@@ -470,13 +470,28 @@ markers.forEach((marker) => storyObserver.observe(marker));
 
 // ——— Links to a section (like #watch) ———
 // The browser starts scrolling to the section while the page is still loading, and GSAP measuring the page on
-// load cancels that scroll halfway. Once everything has settled, go there directly.
+// load can cancel that scroll halfway. Once everything has settled, set the position directly (not relying on
+// scrollIntoView's "instant", which some browsers ignore), check once more, then turn on smooth scrolling.
 const SECTION_JUMP_DELAY_MS = 60;
-if (location.hash) {
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-      target?.scrollIntoView({ block: "start", behavior: "instant" });
-    }, SECTION_JUMP_DELAY_MS);
-  });
+const SECTION_RECHECK_MS = 700;
+const MENUBAR_OFFSET = 56;
+let userScrolled = false;
+["wheel", "touchstart", "keydown", "mousedown"].forEach((type) =>
+  window.addEventListener(type, () => { userScrolled = true; }, { once: true, passive: true }));
+
+function jumpToHash() {
+  const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (!target || userScrolled) return;
+  const top = target.getBoundingClientRect().top + window.scrollY - MENUBAR_OFFSET;
+  if (Math.abs(window.scrollY - top) > 2) window.scrollTo(0, top);
 }
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    jumpToHash();
+    setTimeout(() => {
+      jumpToHash();
+      document.documentElement.classList.add("is-ready");
+    }, SECTION_RECHECK_MS);
+  }, SECTION_JUMP_DELAY_MS);
+});
