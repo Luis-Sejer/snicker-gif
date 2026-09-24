@@ -28,7 +28,7 @@
 <p align="center">
   <img src="docs/assets/hero.webp" alt="Snicker opening from the menu bar: searching for party, clicking a GIF, and pasting it into a team chat">
   <br>
-  <sub>▶ <a href="docs/assets/snicker-launch.mp4">Watch the launch video with sound</a></sub>
+  <sub>▶ <a href="https://luis-sejer.github.io/snicker-gif/#watch">Watch the launch video with sound</a></sub>
 </p>
 
 ## Why Snicker
