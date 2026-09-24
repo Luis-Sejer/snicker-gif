@@ -161,16 +161,27 @@ enum GifFile {
         .urls(for: .cachesDirectory, in: .userDomainMask)[0]
         .appendingPathComponent("Snicker")
 
-    /// Downloads once per GIF; the per-id folder keeps a readable file name without collisions.
+    /// Downloads the GIF so it can go on the clipboard as a file (Teams only pastes files). KLIPY's terms don't
+    /// allow keeping copies of their media, so only the file just copied or dragged is kept: every other one is
+    /// deleted. The per-id folder keeps a readable file name without collisions.
     static func download(_ gif: Gif, randomName: Bool) async throws -> URL {
         let folder = cacheDirectory.appendingPathComponent(gif.id)
         let file = folder.appendingPathComponent(gif.fileName(random: randomName))
-        if FileManager.default.fileExists(atPath: file.path) { return file }
-
-        let (temporaryFile, _) = try await URLSession.shared.download(from: gif.fullURL)
-        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-        try FileManager.default.moveItem(at: temporaryFile, to: file)
+        if !FileManager.default.fileExists(atPath: file.path) {
+            let (temporaryFile, _) = try await URLSession.shared.download(from: gif.fullURL)
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            try FileManager.default.moveItem(at: temporaryFile, to: file)
+        }
+        clearDownloads(keeping: folder)
         return file
+    }
+
+    /// Deletes downloaded GIFs, except the folder given (the one on the clipboard right now).
+    static func clearDownloads(keeping kept: URL? = nil) {
+        let folders = (try? FileManager.default.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: nil)) ?? []
+        for folder in folders where folder.standardizedFileURL != kept?.standardizedFileURL {
+            try? FileManager.default.removeItem(at: folder) // best effort: a leftover file is harmless and retried next time
+        }
     }
 
     /// Teams only pastes a file URL; Slack, Discord and Messages also take the raw GIF data. Write both.

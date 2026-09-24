@@ -14,4 +14,4 @@ You can expect an acknowledgement within a few days and a fix or a plan as soon 
 
 - Search terms are sent to [KLIPY](https://klipy.com) to find GIFs. Nothing else leaves your Mac.
 - Favorites, recents, settings and any API key you enter are stored locally in Snicker’s preferences.
-- Copied GIFs are cached in `~/Library/Caches/Snicker`.
+- The GIF you copied last is kept in `~/Library/Caches/Snicker` so it can be pasted; earlier ones are deleted.

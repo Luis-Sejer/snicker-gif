@@ -97,7 +97,7 @@ Launch at Login, Random File Names and the other settings are in the ⋯ menu at
 
 ## How pasting works
 
-When you copy a GIF, Snicker downloads it once to `~/Library/Caches/Snicker` and writes two things to the clipboard:
+When you copy a GIF, Snicker downloads it to `~/Library/Caches/Snicker` and writes two things to the clipboard. Only the GIF you copied last is kept there; the rest are deleted.
 
 | Clipboard type | For apps that |
 |---|---|

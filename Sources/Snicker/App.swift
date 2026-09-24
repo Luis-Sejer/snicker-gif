@@ -19,6 +19,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var hotKey: HotKey?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Nothing from a previous session is still on the clipboard, so no downloaded GIF needs to be kept.
+        GifFile.clearDownloads()
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = Self.statusIcon()
         statusItem.button?.setAccessibilityLabel("Snicker")
