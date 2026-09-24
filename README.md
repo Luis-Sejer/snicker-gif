@@ -23,7 +23,9 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/hero.png" alt="Snicker's glass popover open from the menu bar, showing a grid of party GIFs with one marked Copied">
+  <img src="docs/assets/hero.webp" alt="Snicker opening from the menu bar: searching for party, clicking a GIF, and pasting it into a team chat">
+  <br>
+  <sub>▶ <a href="docs/assets/snicker-launch.mp4">Watch the launch video with sound</a></sub>
 </p>
 
 ## Why Snicker
@@ -114,11 +116,11 @@ cd snicker-gif
 | `./build.sh` | builds `build/Snicker.app` |
 | `./build.sh install` | builds, installs to `~/Applications` and launches |
 | `./release.sh 1.2.0` | tags, builds and publishes a GitHub release |
-| `docs/src/render.sh` | re-renders the icon and README artwork |
+| `docs/src/render.sh` | re-renders the icon, README artwork and launch video |
 
 ## Credits
 
-GIFs are provided by [KLIPY](https://klipy.com). Inspired by [QuickGif](https://quickgif.app).
+GIFs are provided by [KLIPY](https://klipy.com). Launch video sound effects by [ElevenLabs](https://elevenlabs.io). Inspired by [QuickGif](https://quickgif.app).
 
 ## License
 

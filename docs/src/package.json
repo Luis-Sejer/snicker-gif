@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "description": "Renders Snicker's README artwork and launch video",
+  "type": "module",
+  "dependencies": {
+    "puppeteer-core": "^24"
+  }
+}
