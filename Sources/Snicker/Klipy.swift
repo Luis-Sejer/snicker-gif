@@ -179,7 +179,8 @@ enum GifFile {
     /// Deletes downloaded GIFs, except the folder given (the one on the clipboard right now).
     static func clearDownloads(keeping kept: URL? = nil) {
         let folders = (try? FileManager.default.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: nil)) ?? []
-        for folder in folders where folder.standardizedFileURL != kept?.standardizedFileURL {
+        // Compare folder names (each is a GIF id): URL equality is fooled by trailing slashes and path spelling.
+        for folder in folders where folder.lastPathComponent != kept?.lastPathComponent {
             try? FileManager.default.removeItem(at: folder) // best effort: a leftover file is harmless and retried next time
         }
     }
