@@ -37,16 +37,24 @@ enum Klipy {
 
         let (data, response) = try await URLSession.shared.data(from: components.url!)
         let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
-        guard statusCode == 200 else { throw KlipyError(statusCode: statusCode) }
+        guard statusCode == 200 else {
+            let message = (try? JSONDecoder().decode(ErrorResponse.self, from: data))?.errors.message.first
+            throw KlipyError(statusCode: statusCode, message: message)
+        }
         return try JSONDecoder().decode(SearchResponse.self, from: data).results.compactMap(\.gif)
     }
 }
 
+/// Klipy answers an invalid key with a 404 and a readable message, so prefer the message over the code.
 struct KlipyError: LocalizedError {
     let statusCode: Int
-    var errorDescription: String? {
-        statusCode == 401 || statusCode == 403 ? "Klipy rejected the API key" : "Klipy returned HTTP \(statusCode)"
-    }
+    let message: String?
+    var errorDescription: String? { message ?? "Klipy returned HTTP \(statusCode)" }
+}
+
+private struct ErrorResponse: Decodable {
+    let errors: Errors
+    struct Errors: Decodable { let message: [String] }
 }
 
 private struct SearchResponse: Decodable {
