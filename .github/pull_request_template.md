@@ -9,7 +9,7 @@
 
 ## Checklist
 
-- [ ] Builds with `./build.sh`
+- [ ] Builds with `./build.sh`, and tests pass (`swift test` with Xcode, or in CI)
 - [ ] Works with the keyboard and has VoiceOver labels for anything new
 - [ ] Respects Reduce Motion for any new animation
 - [ ] Added an entry under **Unreleased** in `CHANGELOG.md` (if users will notice)

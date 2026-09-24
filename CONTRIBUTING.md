@@ -30,6 +30,7 @@ Source builds don’t include a KLIPY key, so Snicker asks for one on first laun
 | `Sources/Snicker/ContentView.swift` | The popover: search, grid, tiles, settings and welcome screen |
 | `Sources/Snicker/Klipy.swift` | The GIF model, the KLIPY API and clipboard/file handling |
 | `Sources/Snicker/Library.swift` | Favorites and recents |
+| `Tests/SnickerTests/` | Tests for decoding, file naming and the library |
 | `docs/src/` | HTML sources and scripts for the icon, README artwork and launch video |
 
 ## Guidelines
@@ -42,7 +43,7 @@ Source builds don’t include a KLIPY key, so Snicker asks for one on first laun
 ## Pull requests
 
 1. Fork the repository and create a branch from `main`.
-2. Make your change and check it builds with `./build.sh`.
+2. Make your change and check it builds with `./build.sh`. If you have Xcode, run the tests with `swift test`; otherwise CI runs them on your pull request.
 3. Try it: `./build.sh install` builds, installs and launches your version.
 4. Add a line under **Unreleased** in [CHANGELOG.md](CHANGELOG.md) if users will notice the change.
 5. Open a pull request that explains what changed and why, with a screenshot for anything visual.

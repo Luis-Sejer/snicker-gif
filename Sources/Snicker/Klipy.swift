@@ -50,7 +50,12 @@ enum Klipy {
             apiKey: apiKey,
             parameters: ["limit": resultLimit, "media_filter": "gif,tinygif"].merging(trimmed.isEmpty ? [:] : ["q": trimmed]) { $1 }
         )
-        return try JSONDecoder().decode(SearchResponse.self, from: data).results.compactMap(\.gif)
+        return try decodeGifs(from: data)
+    }
+
+    /// Results without a GIF rendition are skipped rather than failing the whole page.
+    static func decodeGifs(from data: Data) throws -> [Gif] {
+        try JSONDecoder().decode(SearchResponse.self, from: data).results.compactMap(\.gif)
     }
 
     /// Completions for a partly typed query, like "hap" → "happy", "happy birthday".

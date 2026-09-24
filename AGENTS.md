@@ -14,13 +14,14 @@ A macOS menu bar app for finding and sharing GIFs. ⌘⌥V opens a popover; the 
 
 ```sh
 ./build.sh            # build build/Snicker.app (release config)
+swift test            # run the tests (needs full Xcode; CI runs them on every push)
 ./build.sh install    # build, install to ~/Applications, relaunch
 swift build           # quick compile check (needs Sources/Snicker/BundledKey.swift; run ./build.sh once first)
 docs/src/render.sh    # re-render icon, README hero and launch video (needs Chrome, Node, ffmpeg, img2webp)
 ./release.sh 1.1.0    # tag a release; GitHub Actions builds and publishes it
 ```
 
-There is no test suite. Verify a change by building it, and for anything visual, by running `./build.sh install` and asking the user for a screenshot: the sandboxed agent cannot capture the screen or send keystrokes, and offscreen snapshots do not render Liquid Glass.
+Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response decoding, file naming and favorites/recents storage. They need full Xcode, because XCTest and Swift Testing don't ship with the Command Line Tools; without Xcode, push and read the CI result (`gh run watch`). Test new logic there; views are verified by eye: run `./build.sh install` and ask the user for a screenshot, since the sandboxed agent cannot capture the screen or send keystrokes, and offscreen snapshots do not render Liquid Glass.
 
 ## Code map
 
@@ -30,6 +31,7 @@ There is no test suite. Verify a change by building it, and for anything visual,
 | `Sources/Snicker/ContentView.swift` | All UI: `ViewState`, search field, chips, masonry grid, `GifTile`, footer + settings menu, `WelcomeView` (API key entry), `AnimatedGif` (NSImageView wrapper) |
 | `Sources/Snicker/Klipy.swift` | `Gif` model, KLIPY API client (`fetch`, `autocomplete`), `GifFile` (download cache, clipboard, drag, save) |
 | `Sources/Snicker/Library.swift` | Favorites and recents, persisted as JSON in UserDefaults |
+| `Tests/SnickerTests/` | Swift Testing tests; `Library(defaults:)` takes a throwaway `UserDefaults` suite so tests never touch real data |
 | `Sources/Snicker/BundledKey.swift` | **Generated and gitignored.** Written by `build.sh`; never create, edit or commit it by hand |
 | `docs/src/` | HTML sources for the icon (`icon.html`) and the animated hero/launch video (`anim.html`), render scripts, ElevenLabs audio |
 
