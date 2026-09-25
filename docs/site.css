@@ -153,6 +153,8 @@ kbd { font-family: var(--font); }
 
 main { padding-top: var(--menubar); }
 
+/* The copy lines up with the 1200px column the sections below use, but the popover hugs the right edge at any width,
+   so it always hangs under its menu bar icon, like a real popover. */
 .desktop {
   position: relative;
   min-height: calc(100svh - var(--menubar));
@@ -160,9 +162,7 @@ main { padding-top: var(--menubar); }
   grid-template-columns: minmax(0, 1fr) 420px;
   column-gap: clamp(32px, 6vw, 120px);
   align-items: start;
-  padding: 0 var(--gutter) clamp(48px, 8vh, 96px);
-  max-width: 1440px;
-  margin: 0 auto;
+  padding: 0 var(--gutter) clamp(48px, 8vh, 96px) max(var(--gutter), calc((100vw - 1200px) / 2 + var(--gutter)));
 }
 
 .desktop__copy { position: relative; z-index: 2; align-self: center; padding-top: clamp(48px, 10vh, 120px); }
