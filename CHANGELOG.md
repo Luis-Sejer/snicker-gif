@@ -6,6 +6,11 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+
+- An uninstall command: add `-s -- --uninstall` to the install command. It keeps your favorites and settings.
+- Instructions for AI coding agents to install, check and uninstall Snicker, in `docs/install/agent.md`.
+
 ## [1.1.0] - 2026-09-28
 
 ### Added

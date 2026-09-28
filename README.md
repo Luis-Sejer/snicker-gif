@@ -81,6 +81,25 @@ Every release is built by [GitHub Actions](.github/workflows/release.yml) straig
 
 </details>
 
+### Install with your AI agent
+
+Using Claude Code, Codex, Cursor or another coding agent? Give it this:
+
+```text
+Install Snicker on this Mac and check it works, following
+https://github.com/Luis-Sejer/snicker-gif/blob/main/docs/install/agent.md
+```
+
+It checks your Mac can run Snicker, installs it and tells you how to use it. Ask it to uninstall Snicker the same way.
+
+### Uninstall
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install.sh | sh -s -- --uninstall
+```
+
+This removes the app and its GIF cache. Your favorites and settings stay, in case you come back. To remove them too, run `defaults delete dk.sejer.snicker`.
+
 ## Getting started
 
 Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the **GIF** icon in the menu bar, and start typing. There is nothing to set up and no account to create.

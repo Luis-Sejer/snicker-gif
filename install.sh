@@ -1,7 +1,20 @@
 #!/bin/sh
 # Installs or updates Snicker in ~/Applications from the latest GitHub release.
+# With --uninstall, removes the app and its GIF cache but keeps favorites and settings.
 set -e
 REPO=Luis-Sejer/snicker-gif
+BUNDLE_ID=dk.sejer.snicker
+
+if [ "$1" = "--uninstall" ]; then
+    if pkill -x Snicker; then sleep 1; fi
+    # The README's hand install puts it in /Applications instead.
+    rm -rf "$HOME/Applications/Snicker.app" "/Applications/Snicker.app"
+    rm -rf "$HOME/Library/Caches/Snicker" "$HOME/Library/Caches/$BUNDLE_ID"
+    echo "Snicker is uninstalled. Your favorites and settings are kept in case you come back."
+    echo "To remove them too, run: defaults delete $BUNDLE_ID"
+    exit 0
+fi
+
 DOWNLOAD_DIR=$(mktemp -d)
 trap 'rm -rf "$DOWNLOAD_DIR"' EXIT
 
