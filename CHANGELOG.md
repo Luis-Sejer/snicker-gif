@@ -6,6 +6,12 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-28
+
+### Added
+
+- Snicker tells you when a new version is out. Click Update to install it and reopen Snicker, or Later to be reminded tomorrow or the next time Snicker starts. It checks GitHub at most once a day.
+
 ## [1.0.1] - 2026-09-28
 
 ### Fixed
@@ -31,6 +37,7 @@ All notable changes to Snicker are documented here. The format is based on
 - The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
 - A Support Snicker… item in the ⋯ menu, linking to Ko-fi.
 
-[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Luis-Sejer/snicker-gif/releases/tag/v1.0.0

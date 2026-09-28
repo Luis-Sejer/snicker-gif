@@ -59,7 +59,7 @@ Paste this into Terminal:
 curl -fsSL https://raw.githubusercontent.com/Luis-Sejer/snicker-gif/main/install.sh | sh
 ```
 
-It installs Snicker and opens it. Run it again any time to update.
+It installs Snicker and opens it. When a new version is out, Snicker tells you and updates itself with one click.
 
 Every release is built by [GitHub Actions](.github/workflows/release.yml) straight from the tagged source, so what you download is exactly what is in this repository.
 
@@ -121,6 +121,7 @@ Found something that doesn’t work with your setup? Please [open an issue](http
 ## Privacy
 
 - Your searches go to KLIPY to find GIFs, and nowhere else.
+- Once a day, Snicker asks GitHub whether a new version is out. Nothing about you is sent.
 - Favorites, recents, settings and any KLIPY key you add are stored locally in Snicker’s preferences.
 - No analytics, no tracking, no account.
 

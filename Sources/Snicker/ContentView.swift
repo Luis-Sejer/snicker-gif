@@ -67,6 +67,7 @@ struct ContentView: View {
     @AppStorage("randomFileNames") private var randomFileNames = false
     @StateObject private var state = ViewState()
     @StateObject private var library = Library()
+    @StateObject private var updater = Updater()
     @FocusState private var searchFocused: Bool
 
     private static let supportURL = URL(string: "https://ko-fi.com/snickerapp")!
@@ -89,6 +90,7 @@ struct ContentView: View {
             state.copiedID = nil
             state.notice = nil
             state.isShown = true
+            updater.checkIfDue()
             if let closedAt = state.closedAt, Date().timeIntervalSince(closedAt) > Self.searchMemory {
                 startFresh()
             }
@@ -157,7 +159,14 @@ struct ContentView: View {
         // A soft edge let the footer text sit on top of busy GIFs; the hard edge gives it a clear band.
         .scrollEdgeEffectStyle(.hard, for: .bottom)
         .safeAreaInset(edge: .top, spacing: 4) { header }
-        .safeAreaInset(edge: .bottom, spacing: 0) { footer }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            VStack(spacing: 0) {
+                if updater.showsReminder {
+                    updateBanner
+                }
+                footer
+            }
+        }
         .overlay { emptyState }
         .task(id: "\(effectiveMode)|\(state.query)") {
             if effectiveMode == .klipy {
@@ -273,6 +282,46 @@ struct ContentView: View {
         } else {
             Button(action: action) { label }.buttonStyle(.glass).controlSize(.small)
         }
+    }
+
+    @ViewBuilder
+    private var updateBanner: some View {
+        HStack(spacing: 8) {
+            switch updater.phase {
+            case .idle:
+                Label("Snicker \(updater.availableVersion ?? "") is available", systemImage: "arrow.down.circle.fill")
+                    .foregroundStyle(.tint)
+                Spacer(minLength: 8)
+                Button("Later", action: updater.remindLater)
+                    .buttonStyle(.glass)
+                Button("Update", action: updater.install)
+                    .buttonStyle(.glassProminent)
+            case .installing:
+                ProgressView()
+                    .controlSize(.small)
+                Text("Updating… Snicker will reopen by itself.")
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 0)
+            case .failed:
+                Text("Couldn't update by itself. Download Snicker again from GitHub; it replaces this version.")
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 8)
+                Button("Open GitHub") { NSWorkspace.shared.open(Updater.releasesURL) }
+                    .buttonStyle(.glassProminent)
+            }
+        }
+        .font(.caption)
+        .controlSize(.small)
+        .padding(.leading, 12)
+        .padding(.trailing, 8)
+        .padding(.vertical, 8)
+        // Its own glass card: on the scroll edge alone, it disappeared into the GIFs behind it.
+        .glassEffect(.regular, in: .rect(cornerRadius: 16))
+        .padding(.horizontal, 10)
+        .padding(.top, 8)
+        .accessibilityElement(children: .contain)
     }
 
     private var footer: some View {
