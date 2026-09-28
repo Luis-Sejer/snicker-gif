@@ -6,6 +6,8 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-28
+
 ### Added
 
 - GIF search from the menu bar with <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>, showing Trending before you type.
@@ -20,3 +22,6 @@ All notable changes to Snicker are documented here. The format is based on
 - Near-zero CPU use while closed: GIFs only animate while the popover is open.
 - The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
 - A Support Snicker… item in the ⋯ menu, linking to Ko-fi.
+
+[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Luis-Sejer/snicker-gif/releases/tag/v1.0.0
