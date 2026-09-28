@@ -6,6 +6,14 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-28
+
+### Fixed
+
+- Snicker now closes when you click elsewhere after using a GIF's right-click menu. Before, it stayed open until you clicked the menu bar icon.
+- The search field is focused every time Snicker opens, so you can type right away.
+- Reopening Snicker more than 30 seconds after closing it starts fresh on Trending instead of showing your old search.
+
 ## [1.0.0] - 2026-09-28
 
 ### Added
@@ -23,5 +31,6 @@ All notable changes to Snicker are documented here. The format is based on
 - The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
 - A Support Snicker… item in the ⋯ menu, linking to Ko-fi.
 
-[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Luis-Sejer/snicker-gif/releases/tag/v1.0.0

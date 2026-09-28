@@ -22,6 +22,8 @@ final class ViewState: ObservableObject {
     /// The result Return copies, moved with the arrow keys.
     @Published var selectedIndex = 0
     @Published var hasNavigated = false
+    /// When the popover last closed, so a stale search can be dropped on the next open.
+    var closedAt: Date?
 
     var selectedGif: Gif? {
         gifs.indices.contains(selectedIndex) ? gifs[selectedIndex] : nil
@@ -71,6 +73,8 @@ struct ContentView: View {
     private static let quickPicks = ["Thank you", "LOL", "Yes", "No", "Wow", "Party", "Facepalm", "Good morning"]
     private static let searchDebounce: Duration = .milliseconds(300)
     private static let copiedLinger: Duration = .milliseconds(550)
+    /// Reopening soon after closing picks up where you left off; later, it starts fresh on Trending.
+    private static let searchMemory: TimeInterval = 30
 
     var body: some View {
         Group {
@@ -85,12 +89,25 @@ struct ContentView: View {
             state.copiedID = nil
             state.notice = nil
             state.isShown = true
-            searchFocused = true
+            if let closedAt = state.closedAt, Date().timeIntervalSince(closedAt) > Self.searchMemory {
+                startFresh()
+            }
+            // Still true from the last open, so setting it again would be a no-op: reset it first.
+            searchFocused = false
+            DispatchQueue.main.async { searchFocused = true }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSPopover.didCloseNotification)) { _ in
             state.isShown = false
+            state.closedAt = Date()
             state.hoveredID = nil
         }
+    }
+
+    private func startFresh() {
+        state.query = ""
+        state.mode = .klipy
+        state.selectedIndex = 0
+        state.hasNavigated = false
     }
 
     private var apiKey: String {

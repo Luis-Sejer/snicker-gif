@@ -17,6 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
     private var hotKey: HotKey?
+    private var outsideClickMonitor: Any?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Nothing from a previous session is still on the clipboard, so no downloaded GIF needs to be kept.
@@ -36,6 +37,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover.behavior = .transient
         popover.contentSize = Layout.popoverSize
         popover.contentViewController = hostingController
+
+        // A transient popover stops closing on outside clicks once a GIF's context menu has been open,
+        // so close it ourselves. Global monitors only see clicks in other apps, and need no permission for mouse events.
+        outsideClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
+            guard let popover = self?.popover, popover.isShown else { return }
+            popover.performClose(nil)
+        }
 
         hotKey = HotKey(keyCode: UInt32(kVK_ANSI_V), modifiers: UInt32(cmdKey | optionKey)) { [weak self] in
             self?.togglePopover()
