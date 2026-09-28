@@ -486,6 +486,8 @@ main { padding-top: var(--menubar); }
 .site-footer__klipy:hover img { opacity: 1; }
 
 .demo-note { margin: 14px 4px 0; font-size: 13px; color: var(--ink-3); max-width: 420px; }
+.demo-note a, .watch__note a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.watch__note { margin: 18px auto 0; max-width: 520px; text-align: center; font-size: 13px; color: rgb(255 255 255 / 0.62); }
 
 /* ——— Marquee ——— */
 

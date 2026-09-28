@@ -29,6 +29,14 @@
   <img src="docs/assets/hero.webp" alt="Snicker opening from the menu bar: searching for party, clicking a GIF, and pasting it into a team chat">
   <br>
   <sub>▶ <a href="https://luis-sejer.github.io/snicker-gif/#watch">Watch the launch video with sound</a></sub>
+  <br>
+  <sub>The animation, the video and the site's live demo are mock-ups that use emoji in place of GIFs. The real app shows real GIFs from KLIPY, as in the screenshot below.</sub>
+</p>
+
+<p align="center">
+  <img src="docs/assets/screens/search.webp" width="600" alt="The real Snicker popover open from the menu bar, showing GIFs from KLIPY for the search Download it">
+  <br>
+  <sub>The real app: searching for “Download it”.</sub>
 </p>
 
 ## Why Snicker
