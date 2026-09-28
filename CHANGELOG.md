@@ -6,10 +6,14 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-28
+
 ### Added
 
 - An uninstall command: add `-s -- --uninstall` to the install command. It keeps your favorites and settings.
 - Instructions for AI coding agents to install, check and uninstall Snicker, in `docs/install/agent.md`.
+- Right-click (or Control-click) the menu bar icon for the same menu as the ⋯ button.
+- An About Snicker window with the version, build number and links to support the creator and to GitHub.
 
 ## [1.1.0] - 2026-09-28
 
@@ -42,7 +46,8 @@ All notable changes to Snicker are documented here. The format is based on
 - The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
 - A Support Snicker… item in the ⋯ menu, linking to Ko-fi.
 
-[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Luis-Sejer/snicker-gif/releases/tag/v1.0.0

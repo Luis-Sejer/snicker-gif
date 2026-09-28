@@ -1,5 +1,4 @@
 import AppKit
-import ServiceManagement
 import SwiftUI
 
 /// View state lives here rather than in @State: from the macOS 27 SDK @State is a macro whose
@@ -60,17 +59,18 @@ enum Layout {
 
 struct ContentView: View {
     let close: () -> Void
+    let settingsMenu: SettingsMenu
 
     /// A key the user entered themselves; it takes precedence over the one built into release builds.
     @AppStorage(Klipy.apiKeyDefaultsKey) private var customApiKey = ""
     /// Name copied files like "GIF-3F9A2C71.gif" instead of after the GIF's title.
-    @AppStorage("randomFileNames") private var randomFileNames = false
-    @StateObject private var state = ViewState()
-    @StateObject private var library = Library()
+    @AppStorage(SettingsMenu.randomFileNamesKey) private var randomFileNames = false
+    /// Owned by the app delegate, which shares them with the menu bar icon's right-click menu.
+    @ObservedObject var state: ViewState
+    @ObservedObject var library: Library
     @StateObject private var updater = Updater()
     @FocusState private var searchFocused: Bool
 
-    private static let supportURL = URL(string: "https://ko-fi.com/snickerapp")!
     private static let quickPicks = ["Thank you", "LOL", "Yes", "No", "Wow", "Party", "Facepalm", "Good morning"]
     private static let searchDebounce: Duration = .milliseconds(300)
     private static let copiedLinger: Duration = .milliseconds(550)
@@ -335,7 +335,7 @@ struct ContentView: View {
             }
             Spacer(minLength: 8)
             klipyAttribution
-            settingsMenu
+            settingsButton
         }
         .font(.caption)
         .lineLimit(1)
@@ -368,50 +368,15 @@ struct ContentView: View {
         return image
     }()
 
-    private var settingsMenu: some View {
-        Menu {
-            Toggle("Launch at Login", isOn: launchAtLogin)
-            Toggle("Random File Names", isOn: $randomFileNames)
-            Divider()
-            Button("Clear Recent GIFs", systemImage: "clock.arrow.circlepath", action: library.clearRecents)
-                .disabled(library.recents.isEmpty)
-            Button("Use Your Own API Key…", systemImage: "key") {
-                state.apiKeyDraft = customApiKey
-                state.isEditingKey = true
-            }
-            if !customApiKey.isEmpty && !BundledKey.value.isEmpty {
-                Button("Use Built-in API Key", systemImage: "arrow.uturn.backward") { customApiKey = "" }
-            }
-            Divider()
-            Button("Support Snicker…", systemImage: "heart") { NSWorkspace.shared.open(Self.supportURL) }
-            Button("Quit Snicker", systemImage: "power") { NSApp.terminate(nil) }
-        } label: {
-            Image(systemName: "ellipsis")
-                .accessibilityLabel("Settings")
+    /// A plain button rather than a SwiftUI Menu, so it opens the same menu as right-clicking the menu bar icon.
+    private var settingsButton: some View {
+        Button("Settings", systemImage: "ellipsis") {
+            settingsMenu.make().popUp(positioning: nil, at: NSEvent.mouseLocation, in: nil)
         }
-        .menuIndicator(.hidden)
+        .labelStyle(.iconOnly)
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
         .fixedSize()
-    }
-
-    /// Reads the live login-item status, since it can also be changed in System Settings.
-    private var launchAtLogin: Binding<Bool> {
-        Binding(
-            get: { SMAppService.mainApp.status == .enabled },
-            set: { enabled in
-                do {
-                    if enabled {
-                        try SMAppService.mainApp.register()
-                    } else {
-                        try SMAppService.mainApp.unregister()
-                    }
-                } catch {
-                    state.notice = Notice(text: error.localizedDescription, isError: true)
-                }
-                state.objectWillChange.send() // the status lives outside SwiftUI; redraw the toggle
-            }
-        )
     }
 
     @ViewBuilder

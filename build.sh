@@ -6,6 +6,8 @@ cd "$(dirname "$0")"
 
 VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
 VERSION=${VERSION:-0.0.0}
+# The About panel shows it as the build number, so every copy traces back to its commit.
+BUILD=$(git rev-parse --short HEAD 2>/dev/null || echo local)
 
 # The KLIPY key is never committed. It comes from the environment or a file outside the repo, and is
 # written XOR-masked into a gitignored source file so it doesn't show up as plain text in the binary.
@@ -52,6 +54,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleName</key><string>Snicker</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>$VERSION</string>
+    <key>CFBundleVersion</key><string>$BUILD</string>
     <key>LSMinimumSystemVersion</key><string>26.0</string>
     <key>LSUIElement</key><true/>
 </dict>

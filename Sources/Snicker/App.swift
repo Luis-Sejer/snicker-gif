@@ -13,11 +13,15 @@ enum Main {
     }
 }
 
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
     private var hotKey: HotKey?
     private var outsideClickMonitor: Any?
+    private let state = ViewState()
+    private let library = Library()
+    private lazy var settingsMenu = SettingsMenu(state: state, library: library) { [weak self] in self?.showPopover() }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Nothing from a previous session is still on the clipboard, so no downloaded GIF needs to be kept.
@@ -26,10 +30,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.image = Self.statusIcon()
         statusItem.button?.setAccessibilityLabel("Snicker")
         statusItem.button?.target = self
-        statusItem.button?.action = #selector(togglePopover)
+        statusItem.button?.action = #selector(statusItemClicked)
+        statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
         let hostingController = NSHostingController(
-            rootView: ContentView(close: { [weak self] in self?.popover.performClose(nil) })
+            rootView: ContentView(
+                close: { [weak self] in self?.popover.performClose(nil) },
+                settingsMenu: settingsMenu,
+                state: state,
+                library: library
+            )
         )
         // Size up front: letting SwiftUI report it after showing makes the popover grow up under the menu bar.
         hostingController.sizingOptions = []
@@ -104,12 +114,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return image
     }
 
-    @objc private func togglePopover() {
-        guard let button = statusItem.button else { return }
-        if popover.isShown {
-            popover.performClose(nil)
+    /// Right-click (or Control-click) opens the settings menu, like other menu bar apps; a click toggles the popover.
+    @objc private func statusItemClicked() {
+        guard let event = NSApp.currentEvent, let button = statusItem.button else { return }
+        guard event.type == .rightMouseUp || event.modifierFlags.contains(.control) else {
+            togglePopover()
             return
         }
+        popover.performClose(nil)
+        settingsMenu.make().popUp(positioning: nil, at: NSPoint(x: 0, y: button.bounds.maxY + 5), in: button)
+    }
+
+    @objc private func togglePopover() {
+        if popover.isShown {
+            popover.performClose(nil)
+        } else {
+            showPopover()
+        }
+    }
+
+    private func showPopover() {
+        guard let button = statusItem.button, !popover.isShown else { return }
         NSApp.activate(ignoringOtherApps: true)
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         popover.contentViewController?.view.window?.makeKey()

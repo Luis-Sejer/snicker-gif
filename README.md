@@ -104,7 +104,7 @@ This removes the app and its GIF cache. Your favorites and settings stay, in cas
 
 Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the **GIF** icon in the menu bar, and start typing. There is nothing to set up and no account to create.
 
-To have Snicker start with your Mac, add it under **System Settings → General → Login Items**.
+To have Snicker start with your Mac, turn on **Launch at Login** in the ⋯ menu, or right-click the menu bar icon.
 
 ## Usage
 
@@ -152,7 +152,8 @@ Found something that doesn’t work with your setup? Please [open an issue](http
 - Favorites, recents, settings and any KLIPY key you add are stored locally in Snicker’s preferences.
 - No analytics, no tracking, no account.
 
-## Build from source
+<details>
+<summary><strong>Build from source</strong></summary>
 
 You need macOS 26 or later and the Xcode Command Line Tools (`xcode-select --install`). Full Xcode is not required.
 
@@ -170,6 +171,8 @@ Source builds ask for your own free KLIPY key on first launch; get one from KLIP
 | `./build.sh install` | builds, installs to `~/Applications` and launches |
 | `./release.sh 1.4.0` | tags a release; GitHub Actions builds and publishes it |
 | `docs/src/render.sh` | re-renders the icon, README artwork and launch video |
+
+</details>
 
 ## Contributing
 
