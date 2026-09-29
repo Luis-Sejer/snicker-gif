@@ -148,6 +148,7 @@ struct ContentView: View {
     @FocusState private var searchFocused: Bool
 
     private static let quickPicks = ["Thank you", "LOL", "Yes", "No", "Wow", "Party", "Facepalm", "Good morning"]
+    private static let bottomBarTint = 0.6
     private static let searchDebounce: Duration = .milliseconds(300)
     private static let copiedLinger: Duration = .milliseconds(550)
     /// Reopening soon after closing picks up where you left off; later, it starts fresh on Trending.
@@ -430,7 +431,9 @@ struct ContentView: View {
             }
             footer
         }
-        .glassEffect(.regular, in: .rect(cornerRadius: 16))
+        // Tinted with the window color: clear glass let busy GIFs show through the hints. It still adapts to
+        // light and dark mode, and Reduce Transparency makes it solid.
+        .glassEffect(.regular.tint(Color(nsColor: .windowBackgroundColor).opacity(Self.bottomBarTint)), in: .rect(cornerRadius: 16))
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
         .animation(reduceMotion ? .easeInOut(duration: 0.15) : .bouncy(duration: 0.4), value: showsUpdateBanner)

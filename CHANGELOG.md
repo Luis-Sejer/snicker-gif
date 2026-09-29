@@ -6,6 +6,12 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-09-29
+
+### Fixed
+
+- The shortcut hints and the ⋯ button at the bottom are easier to read over busy GIFs.
+
 ## [1.4.0] - 2026-09-29
 
 ### Added
@@ -78,7 +84,8 @@ All notable changes to Snicker are documented here. The format is based on
 - The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
 - A Support Snicker… item in the ⋯ menu, linking to Ko-fi.
 
-[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.1.0...v1.2.0
