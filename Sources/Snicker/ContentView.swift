@@ -4,8 +4,13 @@ import SwiftUI
 /// View state lives here rather than in @State: from the macOS 27 SDK @State is a macro whose
 /// plugin ships only with full Xcode, and this project should build with the Command Line Tools.
 final class ViewState: ObservableObject {
+    private static let lastModeKey = "lastMode"
+
     @Published var query = ""
-    @Published var mode: BrowseMode = .klipy
+    /// Remembered across launches for the "Last Used" start tab.
+    @Published var mode: BrowseMode = StartTab.current.mode ?? ViewState.lastMode {
+        didSet { UserDefaults.standard.set(mode.rawValue, forKey: Self.lastModeKey) }
+    }
     @Published var gifs: [Gif] = []
     @Published var suggestions: [String] = []
     @Published var isLoading = false
@@ -23,14 +28,52 @@ final class ViewState: ObservableObject {
     @Published var hasNavigated = false
     /// When the popover last closed, so a stale search can be dropped on the next open.
     var closedAt: Date?
+    /// Catches the popover's shortcuts while it is open.
+    var keyMonitor: Any?
+    /// Shown once, in place of the GIFs, after an update.
+    @Published var whatsNew: WhatsNew?
+
+    private static var lastMode: BrowseMode {
+        UserDefaults.standard.string(forKey: lastModeKey).flatMap(BrowseMode.init) ?? .klipy
+    }
 
     var selectedGif: Gif? {
         gifs.indices.contains(selectedIndex) ? gifs[selectedIndex] : nil
     }
 }
 
-enum BrowseMode: Equatable {
+enum BrowseMode: String, Equatable {
     case klipy, favorites, recents
+}
+
+/// What Snicker opens on: at launch, and when reopened after the search was forgotten.
+enum StartTab: String, CaseIterable {
+    case trending, favorites, recents, lastUsed
+
+    static let defaultsKey = "startTab"
+
+    static var current: StartTab {
+        UserDefaults.standard.string(forKey: defaultsKey).flatMap(StartTab.init) ?? .trending
+    }
+
+    var title: String {
+        switch self {
+        case .trending: "Trending"
+        case .favorites: "Favorites"
+        case .recents: "Recent"
+        case .lastUsed: "Last Used"
+        }
+    }
+
+    /// Nil for Last Used, which keeps whatever was open.
+    var mode: BrowseMode? {
+        switch self {
+        case .trending: .klipy
+        case .favorites: .favorites
+        case .recents: .recents
+        case .lastUsed: nil
+        }
+    }
 }
 
 /// A short message in the footer, like "Saved to Downloads" or an error.
@@ -60,11 +103,12 @@ enum Layout {
 struct ContentView: View {
     let close: () -> Void
     let settingsMenu: SettingsMenu
+    @ObservedObject var shortcuts: ShortcutStore
 
     /// A key the user entered themselves; it takes precedence over the one built into release builds.
     @AppStorage(Klipy.apiKeyDefaultsKey) private var customApiKey = ""
     /// Name copied files like "GIF-3F9A2C71.gif" instead of after the GIF's title.
-    @AppStorage(SettingsMenu.randomFileNamesKey) private var randomFileNames = false
+    @AppStorage(SettingKeys.randomFileNames) private var randomFileNames = false
     /// Owned by the app delegate, which shares them with the menu bar icon's right-click menu.
     @ObservedObject var state: ViewState
     @ObservedObject var library: Library
@@ -81,6 +125,8 @@ struct ContentView: View {
         Group {
             if apiKey.isEmpty || state.isEditingKey {
                 WelcomeView(customApiKey: $customApiKey, state: state, canCancel: !apiKey.isEmpty)
+            } else if let whatsNew = state.whatsNew {
+                WhatsNewView(whatsNew: whatsNew) { state.whatsNew = nil }
             } else {
                 browser
             }
@@ -91,6 +137,9 @@ struct ContentView: View {
             state.notice = nil
             state.isShown = true
             updater.checkIfDue()
+            if state.keyMonitor == nil {
+                state.keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: handleKey)
+            }
             if let closedAt = state.closedAt, Date().timeIntervalSince(closedAt) > Self.searchMemory {
                 startFresh()
             }
@@ -101,13 +150,15 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSPopover.didCloseNotification)) { _ in
             state.isShown = false
             state.closedAt = Date()
+            if let keyMonitor = state.keyMonitor { NSEvent.removeMonitor(keyMonitor) }
+            state.keyMonitor = nil
             state.hoveredID = nil
         }
     }
 
     private func startFresh() {
         state.query = ""
-        state.mode = .klipy
+        state.mode = StartTab.current.mode ?? state.mode
         state.selectedIndex = 0
         state.hasNavigated = false
     }
@@ -202,20 +253,7 @@ struct ContentView: View {
                 .textFieldStyle(.plain)
                 .font(.title3)
                 .focused($searchFocused)
-                .onSubmit { if let selected = state.selectedGif { copy(selected) } }
-                .onKeyPress(.downArrow) { moveSelection(by: 1) }
-                .onKeyPress(.upArrow) { moveSelection(by: -1) }
-                .onKeyPress(.return, phases: .down) { press in
-                    guard press.modifiers.contains(.shift), let selected = state.selectedGif else { return .ignored }
-                    copyLink(selected)
-                    return .handled
-                }
-                .onKeyPress(characters: CharacterSet(charactersIn: "d"), phases: .down) { press in
-                    guard press.modifiers.contains(.command), let selected = state.selectedGif else { return .ignored }
-                    library.toggleFavorite(selected)
-                    return .handled
-                }
-                .accessibilityHint("Use the up and down arrow keys to choose a GIF, Return to copy it, Shift-Return to copy its link, and Command-D to favorite it.")
+                .accessibilityHint("\(key(.selectNext)) and \(key(.selectPrevious)) choose a GIF, \(key(.copyGif)) copies it, \(key(.copyLink)) copies its link, and \(key(.toggleFavorite)) favorites it.")
             if state.isLoading {
                 ProgressView().controlSize(.small)
             } else if !state.query.isEmpty {
@@ -330,7 +368,7 @@ struct ContentView: View {
                 Label(notice.text, systemImage: notice.isError ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
                     .foregroundStyle(notice.isError ? .orange : .green)
             } else {
-                Text("⏎ copy · ⇧⏎ link · ⌘D favorite")
+                Text("\(key(.copyGif)) copy · \(key(.copyLink)) link · \(key(.toggleFavorite)) favorite")
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
@@ -440,11 +478,48 @@ struct ContentView: View {
 
     // MARK: Actions
 
-    private func moveSelection(by offset: Int) -> KeyPress.Result {
-        guard !state.gifs.isEmpty else { return .ignored }
+    private func key(_ action: ShortcutAction) -> String {
+        shortcuts.shortcut(for: action).displayString
+    }
+
+    /// Every popover shortcut goes through here, so all of them can be remapped in Settings.
+    private func handleKey(_ event: NSEvent) -> NSEvent? {
+        guard state.isShown, !state.isEditingKey, state.whatsNew == nil, !apiKey.isEmpty,
+              let action = shortcuts.action(for: event), perform(action) else { return event }
+        return nil
+    }
+
+    /// False when the action doesn't apply right now, so the key does what it normally would.
+    private func perform(_ action: ShortcutAction) -> Bool {
+        switch action {
+        case .openSnicker: return false
+        case .selectNext: return moveSelection(by: 1)
+        case .selectPrevious: return moveSelection(by: -1)
+        case .showFavorites: show(.favorites)
+        case .showRecent: show(.recents)
+        case .showTrending: show(.klipy)
+        case .copyGif, .copyLink, .toggleFavorite, .saveToDownloads:
+            guard let selected = state.selectedGif else { return false }
+            switch action {
+            case .copyLink: copyLink(selected)
+            case .toggleFavorite: library.toggleFavorite(selected)
+            case .saveToDownloads: saveToDownloads(selected)
+            default: copy(selected)
+            }
+        }
+        return true
+    }
+
+    private func show(_ mode: BrowseMode) {
+        state.query = ""
+        state.mode = mode
+    }
+
+    private func moveSelection(by offset: Int) -> Bool {
+        guard !state.gifs.isEmpty else { return false }
         state.hasNavigated = true
         state.selectedIndex = min(max(state.selectedIndex + offset, 0), state.gifs.count - 1)
-        return .handled
+        return true
     }
 
     private func copy(_ gif: Gif) {

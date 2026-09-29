@@ -6,6 +6,20 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-29
+
+### Added
+
+- A Settings window (⌘, or Settings… in the ⋯ menu) with General, Shortcuts and Advanced tabs.
+- Every keyboard shortcut can be changed under Shortcuts: opening Snicker, moving between GIFs, copying, favoriting, saving, and switching between Favorites, Recent and Trending. Handy for keyboards without arrow keys.
+- New shortcuts: ⌘S saves the chosen GIF to Downloads, and ⌘1, ⌘2 and ⌘3 show Favorites, Recent and Trending.
+- Choose what Snicker opens on: Trending, Favorites, Recent, or whatever you used last.
+- After an update, Snicker opens with what’s new in that version, and a link to the full changelog.
+
+### Changed
+
+- Launch at Login, Random File Names, Clear Recent GIFs and the API key moved from the ⋯ menu into Settings.
+
 ## [1.2.0] - 2026-09-28
 
 ### Added
@@ -46,7 +60,8 @@ All notable changes to Snicker are documented here. The format is based on
 - The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
 - A Support Snicker… item in the ⋯ menu, linking to Ko-fi.
 
-[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.0.0...v1.0.1

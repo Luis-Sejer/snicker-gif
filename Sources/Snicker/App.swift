@@ -17,11 +17,18 @@ enum Main {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
-    private var hotKey: HotKey?
+    private var shortcuts: ShortcutStore!
     private var outsideClickMonitor: Any?
     private let state = ViewState()
     private let library = Library()
-    private lazy var settingsMenu = SettingsMenu(state: state, library: library) { [weak self] in self?.showPopover() }
+    private lazy var settingsMenu = SettingsMenu { [weak self] in self?.openSettings() }
+    private lazy var settingsWindow = SettingsWindow { [unowned self] in
+        [
+            ("General", "gearshape", AnyView(GeneralSettingsView(library: library))),
+            ("Shortcuts", "keyboard", AnyView(ShortcutSettingsView(store: shortcuts))),
+            ("Advanced", "gearshape.2", AnyView(AdvancedSettingsView { [weak self] in self?.editApiKey() })),
+        ]
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Nothing from a previous session is still on the clipboard, so no downloaded GIF needs to be kept.
@@ -33,36 +40,53 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.action = #selector(statusItemClicked)
         statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
+        shortcuts = ShortcutStore { [weak self] in self?.togglePopover() }
+
         let hostingController = NSHostingController(
             rootView: ContentView(
                 close: { [weak self] in self?.popover.performClose(nil) },
                 settingsMenu: settingsMenu,
+                shortcuts: shortcuts,
                 state: state,
                 library: library
             )
         )
         // Size up front: letting SwiftUI report it after showing makes the popover grow up under the menu bar.
         hostingController.sizingOptions = []
-        NSApp.mainMenu = Self.editMenu()
+        NSApp.mainMenu = mainMenu()
         popover.behavior = .transient
         popover.contentSize = Layout.popoverSize
         popover.contentViewController = hostingController
 
         // A transient popover stops closing on outside clicks once a GIF's context menu has been open,
         // so close it ourselves. Global monitors only see clicks in other apps, and need no permission for mouse events.
+        if let whatsNew = WhatsNew.pending() {
+            state.whatsNew = whatsNew
+            // Right after an update, so open straight away. The delay lets the status item appear first.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in self?.showPopover() }
+        }
+
         outsideClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
             guard let popover = self?.popover, popover.isShown else { return }
             popover.performClose(nil)
         }
 
-        hotKey = HotKey(keyCode: UInt32(kVK_ANSI_V), modifiers: UInt32(cmdKey | optionKey)) { [weak self] in
-            self?.togglePopover()
-        }
+    }
+
+    private func openSettings() {
+        popover.performClose(nil)
+        settingsWindow.show()
+    }
+
+    private func editApiKey() {
+        state.apiKeyDraft = UserDefaults.standard.string(forKey: Klipy.apiKeyDefaultsKey) ?? ""
+        state.isEditingKey = true
+        showPopover()
     }
 
     /// Menu bar apps get no main menu, and without an Edit menu ⌘V, ⌘C and friends do nothing in text fields.
-    /// It is never shown; it only supplies the key equivalents.
-    private static func editMenu() -> NSMenu {
+    /// It is never shown; it only supplies the key equivalents, including ⌘, for Settings and ⌘Q.
+    private func mainMenu() -> NSMenu {
         let edit = NSMenu(title: "Edit")
         edit.addItem(withTitle: "Undo", action: Selector(("undo:")), keyEquivalent: "z")
         edit.addItem(withTitle: "Redo", action: Selector(("redo:")), keyEquivalent: "Z")
@@ -75,7 +99,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let editItem = NSMenuItem()
         editItem.submenu = edit
         let mainMenu = NSMenu()
-        mainMenu.addItem(NSMenuItem()) // the first item is always the app menu
+        let appMenu = NSMenu()
+        let settings = appMenu.addItem(withTitle: "Settings…", action: #selector(SettingsMenu.showSettings), keyEquivalent: ",")
+        settings.target = settingsMenu
+        appMenu.addItem(withTitle: "Quit Snicker", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        let appItem = NSMenuItem()
+        appItem.submenu = appMenu
+        mainMenu.addItem(appItem) // the first item is always the app menu
         mainMenu.addItem(editItem)
         return mainMenu
     }
@@ -142,12 +172,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 /// Global shortcut via Carbon — the only public API that works without Accessibility permission.
+/// Nil when another app already holds the shortcut.
 final class HotKey {
     private var hotKeyRef: EventHotKeyRef?
     private var handlerRef: EventHandlerRef?
     private let action: () -> Void
 
-    init(keyCode: UInt32, modifiers: UInt32, action: @escaping () -> Void) {
+    init?(_ shortcut: Shortcut, action: @escaping () -> Void) {
         self.action = action
         var eventType = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
         InstallEventHandler(GetApplicationEventTarget(), { _, _, userData in
@@ -156,7 +187,12 @@ final class HotKey {
             return noErr
         }, 1, &eventType, Unmanaged.passUnretained(self).toOpaque(), &handlerRef)
         let hotKeyID = EventHotKeyID(signature: OSType(0x534E_4B52), id: 1) // "SNKR"
-        RegisterEventHotKey(keyCode, modifiers, hotKeyID, GetApplicationEventTarget(), 0, &hotKeyRef)
+        let status = RegisterEventHotKey(shortcut.keyCode, shortcut.carbonModifiers, hotKeyID, GetApplicationEventTarget(), 0, &hotKeyRef)
+        guard status == noErr else {
+            if let handlerRef { RemoveEventHandler(handlerRef) }
+            handlerRef = nil
+            return nil
+        }
     }
 
     deinit {

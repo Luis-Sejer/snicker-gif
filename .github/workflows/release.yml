@@ -28,7 +28,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # The release notes are this version's section of CHANGELOG.md.
+          # build.sh already bundled this version's CHANGELOG section as the app's What's New.
           VERSION=${GITHUB_REF_NAME#v}
-          awk -v version="$VERSION" '/^## \[/ { inside = index($0, "[" version "]") > 0; next } inside' CHANGELOG.md > build/notes.md
-          gh release create "$GITHUB_REF_NAME" build/Snicker.zip --title "Snicker $VERSION" --notes-file build/notes.md
+          gh release create "$GITHUB_REF_NAME" build/Snicker.zip --title "Snicker $VERSION" --notes-file build/Snicker.app/Contents/Resources/whats-new.md

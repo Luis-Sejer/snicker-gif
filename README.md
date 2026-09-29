@@ -56,6 +56,7 @@ It is small and quiet: a native SwiftUI app of about 2 MB, with no account, no s
 - Use the arrow keys to choose, <kbd>Return</kbd> to copy and <kbd>⌘</kbd> <kbd>D</kbd> to favorite.
 - The grid shows every GIF at its real shape, animated.
 - Launch at Login keeps it ready, and Random File Names stops pasted files from giving away your search.
+- Every keyboard shortcut can be remapped in Settings, and you choose whether Snicker opens on Trending, Favorites, Recent or whatever you used last.
 - The Liquid Glass design fits right in on macOS Tahoe and later.
 - It works with VoiceOver, the keyboard, Reduce Motion and Auto-play Animated Images.
 
@@ -102,9 +103,9 @@ This removes the app and its GIF cache. Your favorites and settings stay, in cas
 
 ## Getting started
 
-Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the **GIF** icon in the menu bar, and start typing. There is nothing to set up and no account to create.
+Press <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd> or click the **GIF** icon in the menu bar, and start typing. There is nothing to set up and no account to create. Prefer other keys? Change any shortcut under **Settings → Shortcuts** (<kbd>⌘</kbd> <kbd>,</kbd>).
 
-To have Snicker start with your Mac, turn on **Launch at Login** in the ⋯ menu, or right-click the menu bar icon.
+To have Snicker start with your Mac, turn on **Launch at Login** in Settings. Open Settings from the ⋯ menu, by right-clicking the menu bar icon, or with <kbd>⌘</kbd> <kbd>,</kbd>.
 
 ## Usage
 
@@ -116,9 +117,13 @@ To have Snicker start with your Mac, turn on **Launch at Login** in the ⋯ menu
 | <kbd>Return</kbd> | copy the chosen GIF |
 | <kbd>⇧</kbd> <kbd>Return</kbd> | copy its link |
 | <kbd>⌘</kbd> <kbd>D</kbd> | add it to or remove it from Favorites |
+| <kbd>⌘</kbd> <kbd>S</kbd> | save it to Downloads |
+| <kbd>⌘</kbd> <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> | show Favorites, Recent or Trending |
 | Click a GIF | copy it and close |
 | Drag a GIF | drop it into any app |
 | Right-click a GIF | Copy GIF, Copy Link, Favorites, Save to Downloads, Open on KLIPY |
+
+Every keyboard shortcut here can be changed under **Settings → Shortcuts**.
 
 Launch at Login, Random File Names and the other settings are in the ⋯ menu at the bottom right.
 

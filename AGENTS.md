@@ -31,6 +31,9 @@ Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response deco
 | `Sources/Snicker/ContentView.swift` | All UI: `ViewState`, search field, chips, masonry grid, `GifTile`, footer + settings menu, `WelcomeView` (API key entry), `AnimatedGif` (NSImageView wrapper) |
 | `Sources/Snicker/Klipy.swift` | `Gif` model, KLIPY API client (`fetch`, `autocomplete`), `GifFile` (download cache, clipboard, drag, save) |
 | `Sources/Snicker/Library.swift` | Favorites and recents, persisted as JSON in UserDefaults |
+| `Sources/Snicker/Shortcuts.swift` | `Shortcut`, every remappable `ShortcutAction` with its default, and `ShortcutStore` (saved mappings, recording, the global Carbon hotkey) |
+| `Sources/Snicker/SettingsMenu.swift` | The ⋯ and right-click menu (About, Settings, Support, Quit) and the About panel |
+| `Sources/Snicker/SettingsWindow.swift` | The Settings window: an `NSTabViewController` toolbar hosting `GeneralSettingsView`, `ShortcutSettingsView` and `AdvancedSettingsView` |
 | `Sources/Snicker/Updater.swift` | Daily check of GitHub's latest release, the Update / Later reminder, and running `install.sh` to update |
 | `Tests/SnickerTests/` | Swift Testing tests; `Library(defaults:)` takes a throwaway `UserDefaults` suite so tests never touch real data |
 | `Sources/Snicker/BundledKey.swift` | **Generated and gitignored.** Written by `build.sh`; never create, edit or commit it by hand |
