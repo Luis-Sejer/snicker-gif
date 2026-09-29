@@ -64,6 +64,35 @@ It is small and quiet: a native SwiftUI app of about 2 MB, with no account, no s
 - The Liquid Glass design fits right in on macOS Tahoe and later.
 - It works with VoiceOver, the keyboard, Reduce Motion and Auto-play Animated Images.
 
+## A closer look
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/assets/screens/popover.webp" alt="The popover searching for the smartest: icon tabs for Favorites, Recent and Trending, the Surprise Me dice, and recent searches as chips above the GIFs"></td>
+    <td width="50%"><img src="docs/assets/screens/whats-new.webp" alt="The What's New screen for Snicker 1.4.0, listing the new features with a Continue button and a link to the full changelog"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Search, tabs, the dice and your recent searches</sub></td>
+    <td align="center"><sub>What's new, right after an update</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screens/settings-general.webp" alt="Settings, General tab: Launch at Login, Open On, Show Tab Names, Content filter, Random File Names, clearing history, and Updates"></td>
+    <td><img src="docs/assets/screens/settings-shortcuts.webp" alt="Settings, Shortcuts tab: every keyboard shortcut listed with a button to record a new one"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>General settings</sub></td>
+    <td align="center"><sub>Every shortcut, remappable</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screens/menu.webp" alt="The right-click menu: About Snicker, Check for Updates, Settings, Support Snicker and Quit Snicker"></td>
+    <td><img src="docs/assets/screens/settings-advanced.webp" alt="Settings, Advanced tab: choose between the built-in KLIPY key and your own"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Right-click the menu bar icon</sub></td>
+    <td align="center"><sub>Bring your own KLIPY key, if you like</sub></td>
+  </tr>
+</table>
+
 ## Install
 
 Paste this into Terminal:
