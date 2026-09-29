@@ -62,7 +62,7 @@ struct Shortcut: Codable, Equatable {
 
 /// Everything the keyboard can do in Snicker. Every one is remappable, for keyboards without arrow keys and friends.
 enum ShortcutAction: String, CaseIterable {
-    case openSnicker, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads, surpriseMe, switchMediaKind
+    case openSnicker, openAtCursor, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads, surpriseMe, switchMediaKind
     case showFavorites, showRecent, showTrending
     case favoriteSlot1, favoriteSlot2, favoriteSlot3, favoriteSlot4, favoriteSlot5
     case favoriteSlot6, favoriteSlot7, favoriteSlot8, favoriteSlot9
@@ -85,6 +85,7 @@ enum ShortcutAction: String, CaseIterable {
         if let slotNumber { return "Favorite Slot \(slotNumber)" }
         switch self {
         case .openSnicker: return "Open Snicker"
+        case .openAtCursor: return "Open at Text Cursor"
         case .selectNext: return "Next GIF"
         case .selectPrevious: return "Previous GIF"
         case .copyGif: return "Copy GIF"
@@ -101,7 +102,12 @@ enum ShortcutAction: String, CaseIterable {
     }
 
     /// Opening Snicker and the favorite slots work from any app; the rest work while Snicker is open.
-    var isGlobal: Bool { self == .openSnicker || slotNumber != nil }
+    var isGlobal: Bool { self == .openSnicker || self == .openAtCursor || slotNumber != nil }
+
+    /// Open at Text Cursor only exists while Replace Emoji & Symbols is on, so ⌃⌘Space stays Apple's until then.
+    var isAvailable: Bool {
+        self != .openAtCursor || UserDefaults.standard.bool(forKey: SettingKeys.replaceEmojiPicker)
+    }
 
     var defaultShortcut: Shortcut {
         // ⌃⌥ rather than ⌥ alone: ⌥ with a digit types characters like | [ ] on many keyboard layouts.
@@ -110,6 +116,8 @@ enum ShortcutAction: String, CaseIterable {
         }
         switch self {
         case .openSnicker: return Shortcut(keyCode: kVK_ANSI_V, modifiers: cmdKey | optionKey, keyName: "V")
+        // Apple's shortcut for Emoji & Symbols, which this takes over.
+        case .openAtCursor: return Shortcut(keyCode: kVK_Space, modifiers: controlKey | cmdKey, keyName: "Space")
         case .selectNext: return Shortcut(keyCode: kVK_DownArrow, keyName: "↓")
         case .selectPrevious: return Shortcut(keyCode: kVK_UpArrow, keyName: "↑")
         case .copyGif: return Shortcut(keyCode: kVK_Return, keyName: "↩")
@@ -191,7 +199,7 @@ final class ShortcutStore: ObservableObject {
         custom = [:]
         save()
         registerGlobals()
-        let taken = ShortcutAction.allCases.filter { $0.isGlobal && hotKeys[$0] == nil }
+        let taken = ShortcutAction.allCases.filter { $0.isGlobal && $0.isAvailable && hotKeys[$0] == nil }
         error = taken.isEmpty ? nil : "Used by another app: " + taken.map { shortcut(for: $0).displayString }.joined(separator: ", ")
     }
 
@@ -224,7 +232,7 @@ final class ShortcutStore: ObservableObject {
     }
 
     private func assign(_ shortcut: Shortcut, to action: ShortcutAction) {
-        if action.isGlobal {
+        if action.isGlobal && action.isAvailable {
             hotKeys[action] = nil // release the old registration first, or registering the same keys again fails
             guard let registered = HotKey(shortcut, action: { [weak self] in self?.performGlobal(action) }) else {
                 error = "\(shortcut.displayString) is already used by another app. Try another."
@@ -252,6 +260,12 @@ final class ShortcutStore: ObservableObject {
         keyMonitor = nil
     }
 
+    /// Called when Replace Emoji & Symbols is turned on or off, to take or give back ⌃⌘Space.
+    func refreshAvailability() {
+        cancelRecording()
+        registerGlobals()
+    }
+
     private func registerGlobals() {
         hotKeys = [:] // release the old registrations first, or registering the same keys again fails
         for action in ShortcutAction.allCases where action.isGlobal {
@@ -260,6 +274,10 @@ final class ShortcutStore: ObservableObject {
     }
 
     private func register(_ action: ShortcutAction) {
+        guard action.isAvailable else {
+            hotKeys[action] = nil
+            return
+        }
         hotKeys[action] = HotKey(shortcut(for: action), action: { [weak self] in self?.performGlobal(action) })
     }
 

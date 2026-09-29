@@ -53,6 +53,7 @@ It is small and quiet: a native SwiftUI app of about 2 MB, with no account, no s
 - Favorites and Recent are one click away and survive a restart, and collections group GIFs your way.
 - Pin favorites to nine slots and copy them from any app with <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>1</kbd>–<kbd>9</kbd>, without opening Snicker.
 - Select text in any app and choose **Services → Find GIF in Snicker**.
+- Paste for Me drops the GIF straight into the chat you came from, and <kbd>⌃</kbd> <kbd>⌘</kbd> <kbd>Space</kbd> can open Snicker right at the text cursor, in place of Apple's emoji picker.
 - Recent searches are one click away, and the dice copies a random GIF when you can't decide.
 - Choose how strictly results are filtered: Unrestricted, Standard or Work-Safe.
 - Suggestions appear as you type, and there are quick picks for common reactions.
@@ -190,6 +191,7 @@ Found something that doesn’t work with your setup? Please [open an issue](http
 - Your searches go to KLIPY to find GIFs, and nowhere else.
 - When you open Snicker, it asks GitHub whether a new version is out. Nothing about you is sent.
 - Favorites, recents, settings and any KLIPY key you add are stored locally in Snicker’s preferences.
+- Paste for Me and Replace Emoji & Symbols use macOS's Accessibility permission, only to find the text cursor and press ⌘V in the app you came from. Both are off until you turn them on.
 - No analytics, no tracking, no account.
 
 <details>

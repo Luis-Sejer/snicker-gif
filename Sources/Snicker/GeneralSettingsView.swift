@@ -4,6 +4,10 @@ import SwiftUI
 enum SettingKeys {
     /// Name copied files like "GIF-3F9A2C71.gif" instead of after the GIF's title.
     static let randomFileNames = "randomFileNames"
+    /// Take over ⌃⌘Space from Apple's Emoji & Symbols: Snicker opens at the text cursor and pastes the GIF there.
+    static let replaceEmojiPicker = "replaceEmojiPicker"
+    /// Paste the chosen GIF into the app Snicker was opened from, however it was opened.
+    static let pasteForMe = "pasteForMe"
     /// Show "Favorites", "Recent" and "Trending" next to their icons.
     static let showTabNames = "showTabNames"
 }
@@ -11,8 +15,12 @@ enum SettingKeys {
 struct GeneralSettingsView: View {
     @ObservedObject var library: Library
     @ObservedObject var updater: Updater
+    let shortcuts: ShortcutStore
 
     @StateObject private var loginItem = LoginItem()
+    @StateObject private var accessibility = AccessibilityAccess()
+    @AppStorage(SettingKeys.replaceEmojiPicker) private var replaceEmojiPicker = false
+    @AppStorage(SettingKeys.pasteForMe) private var pasteForMe = false
     @AppStorage(SettingKeys.randomFileNames) private var randomFileNames = false
     @AppStorage(StartTab.defaultsKey) private var startTab: StartTab = .trending
     @AppStorage(ContentFilter.defaultsKey) private var contentFilter: ContentFilter = .unrestricted
@@ -33,6 +41,27 @@ struct GeneralSettingsView: View {
                 Toggle("Show Tab Names", isOn: $showTabNames)
             } footer: {
                 Text("Snicker opens on this tab when it starts, and when you come back after a while. Tabs show as icons unless you turn on their names.")
+            }
+
+            Section {
+                Toggle("Paste for Me", isOn: $pasteForMe)
+                Toggle("Replace Emoji & Symbols", isOn: $replaceEmojiPicker)
+                if pasteForMe || replaceEmojiPicker {
+                    LabeledContent("Accessibility Permission") {
+                        if accessibility.isAllowed {
+                            Label("Allowed", systemImage: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                        } else {
+                            Button("Allow…", action: CursorPaste.requestAccess)
+                        }
+                    }
+                }
+            } footer: {
+                Text(cursorFooter)
+            }
+            .onChange(of: replaceEmojiPicker) { shortcuts.refreshAvailability() }
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                accessibility.refresh()
             }
 
             Section {
@@ -85,6 +114,13 @@ struct GeneralSettingsView: View {
 }
 
 private extension GeneralSettingsView {
+    var cursorFooter: String {
+        let shortcut = shortcuts.shortcut(for: .openAtCursor).displayString
+        let what = "Paste for Me pastes the GIF you pick into the app you came from. Replace Emoji & Symbols makes \(shortcut) open Snicker at the text cursor, in place of Apple’s emoji picker."
+        guard pasteForMe || replaceEmojiPicker, !accessibility.isAllowed else { return what }
+        return what + " Both need Snicker allowed under Privacy & Security → Accessibility; until then, GIFs are copied and Snicker opens at the pointer."
+    }
+
     var updateStatus: String {
         if updater.phase == .installing { return "Updating… Snicker will reopen by itself." }
         if updater.phase == .failed { return "Couldn’t update by itself. Download Snicker again from GitHub; it replaces this version." }
@@ -95,6 +131,16 @@ private extension GeneralSettingsView {
         case .failed: return "Couldn’t reach GitHub to check for updates."
         case .idle: return "Snicker checks for updates each time you open it."
         }
+    }
+}
+
+/// Accessibility permission is granted in System Settings, so it is read again whenever Snicker comes back to the front.
+@MainActor
+private final class AccessibilityAccess: ObservableObject {
+    @Published private(set) var isAllowed = CursorPaste.isAllowed
+
+    func refresh() {
+        isAllowed = CursorPaste.isAllowed
     }
 }
 

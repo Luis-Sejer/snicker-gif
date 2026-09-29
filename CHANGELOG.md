@@ -8,6 +8,10 @@ All notable changes to Snicker are documented here. The format is based on
 
 ### Added
 
+- Paste for Me: pick a GIF and Snicker pastes it straight into the app you came from. Turn it on in Settings → General.
+- Replace Emoji & Symbols: ⌃⌘Space opens Snicker right at the text cursor, in place of Apple's emoji picker, and pastes the GIF you pick. Turn it on in Settings → General, and change the shortcut under Shortcuts. Thanks to Mathias Costa Magnussen, whose emoji picker this grew out of.
+- Both need Snicker allowed under Privacy & Security → Accessibility. Settings has an Allow… button, and releases are now signed with Snicker's own certificate, so macOS keeps that permission when Snicker updates.
+
 - Stickers: switch between GIFs and KLIPY's stickers with the GIFs | Stickers switch in the search field, or ⌘T. Stickers have transparent backgrounds and paste like GIFs.
 - Cursed (Experimental), a new Content setting that shows only the wild GIFs: what Work-Safe would hide, plus cursed GIFs for your search. A Cursed chip stays visible while it's on; click it to turn Cursed off.
 

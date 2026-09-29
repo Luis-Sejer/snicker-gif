@@ -30,6 +30,8 @@ final class ViewState: ObservableObject {
     var closedAt: Date?
     /// Catches the popover's shortcuts while it is open.
     var keyMonitor: Any?
+    /// The app to paste into, when Snicker was opened at its text cursor; nil when opened from the menu bar.
+    var pasteTarget: NSRunningApplication?
     /// Shown once, in place of the GIFs, after an update.
     @Published var whatsNew: WhatsNew?
 
@@ -686,7 +688,7 @@ struct ContentView: View {
         case .showFavorites: show(.favorites)
         case .showRecent: show(.recents)
         case .showTrending: show(.klipy)
-        case .openSnicker, .favoriteSlot1, .favoriteSlot2, .favoriteSlot3, .favoriteSlot4, .favoriteSlot5,
+        case .openSnicker, .openAtCursor, .favoriteSlot1, .favoriteSlot2, .favoriteSlot3, .favoriteSlot4, .favoriteSlot5,
              .favoriteSlot6, .favoriteSlot7, .favoriteSlot8, .favoriteSlot9:
             return false // global: handled by the app delegate
         case .copyGif, .copyLink, .toggleFavorite, .saveToDownloads:
@@ -749,7 +751,9 @@ struct ContentView: View {
         withAnimation(.bouncy) { state.copiedID = gif.id }
         AccessibilityNotification.Announcement("\(announcement) \(gif.title.isEmpty ? "GIF" : gif.title)").post()
         try? await Task.sleep(for: Self.copiedLinger)
+        let target = state.pasteTarget
         close()
+        if let target { await CursorPaste.paste(into: target) }
     }
 
     private func saveToDownloads(_ gif: Gif) {

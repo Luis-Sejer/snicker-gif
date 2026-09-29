@@ -7,6 +7,9 @@ struct ShortcutSettingsView: View {
         Form {
             Section {
                 row(.openSnicker)
+                if ShortcutAction.openAtCursor.isAvailable {
+                    row(.openAtCursor)
+                }
             } footer: {
                 Text("Works from any app.")
             }

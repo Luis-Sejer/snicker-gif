@@ -31,6 +31,7 @@ Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response deco
 | `Sources/Snicker/ContentView.swift` | All UI: `ViewState`, search field, chips, masonry grid, `GifTile`, footer + settings menu, `WelcomeView` (API key entry), `AnimatedGif` (NSImageView wrapper) |
 | `Sources/Snicker/Klipy.swift` | `Gif` model, KLIPY API client (`fetch`, `autocomplete`), `GifFile` (download cache, clipboard, drag, save) |
 | `Sources/Snicker/Library.swift` | Favorites, recents, recent searches, favorite slots and collections, persisted as JSON in UserDefaults |
+| `Sources/Snicker/CursorPaste.swift` | Accessibility: finding the text cursor in another app, and pasting there with ⌘V (Paste for Me, Open at Text Cursor) |
 | `Sources/Snicker/Shortcuts.swift` | `Shortcut`, every remappable `ShortcutAction` with its default, and `ShortcutStore` (saved mappings, recording, the global Carbon hotkey) |
 | `Sources/Snicker/SettingsMenu.swift` | The ⋯ and right-click menu (About, Settings, Support, Quit) and the About panel |
 | `Sources/Snicker/SettingsWindow.swift` | The Settings window: an `NSTabViewController` toolbar hosting `GeneralSettingsView`, `ShortcutSettingsView` and `AdvancedSettingsView` |
@@ -59,7 +60,7 @@ Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response deco
 
 ## Release pipeline
 
-`release.sh` checks the tree is clean and the changelog has the version, then tags and pushes. `.github/workflows/release.yml` builds on a `macos-26` runner with the key secret, zips the app and publishes a GitHub release. `install.sh` (what the README's `curl` line runs) downloads the latest `Snicker.zip` into `~/Applications` and strips the quarantine flag.
+`release.sh` checks the tree is clean and the changelog has the version, then tags and pushes. `.github/workflows/release.yml` builds on a `macos-26` runner with the key secret, signs with Snicker's self-made certificate (`SIGNING_CERT_P12` and `SIGNING_CERT_PASSWORD` secrets, identity `Snicker`), zips the app and publishes a GitHub release. Keep that certificate: signing with a different one makes macOS drop Snicker's Accessibility permission for every user once. Local builds sign ad-hoc unless `SNICKER_SIGNING_IDENTITY` is set. `install.sh` (what the README's `curl` line runs) downloads the latest `Snicker.zip` into `~/Applications` and strips the quarantine flag.
 
 ## README artwork
 

@@ -73,8 +73,10 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </dict>
 </plist>
 PLIST
-# Ad-hoc signature: Apple Silicon refuses to run unsigned code, and this needs no developer account.
-codesign --force --sign - "$APP"
+# Apple Silicon refuses to run unsigned code. Releases sign with Snicker's own certificate (SNICKER_SIGNING_IDENTITY),
+# so macOS sees every update as the same app and keeps its Accessibility permission. Without one, sign ad-hoc,
+# which needs no certificate but makes macOS forget that permission on every build.
+codesign --force --sign "${SNICKER_SIGNING_IDENTITY:--}" "$APP"
 echo "Built $APP ($VERSION)"
 
 [ "$1" = "install" ] || exit 0

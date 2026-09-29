@@ -17,6 +17,16 @@ enum Main {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
+    /// An invisible window at the text cursor for the popover to point at, when Open at Text Cursor opens it.
+    private lazy var cursorAnchor: NSWindow = {
+        let window = NSWindow(contentRect: .zero, styleMask: .borderless, backing: .buffered, defer: true)
+        window.isOpaque = false
+        window.backgroundColor = .clear
+        window.ignoresMouseEvents = true
+        window.isReleasedWhenClosed = false
+        window.level = .floating
+        return window
+    }()
     private var shortcuts: ShortcutStore!
     private var outsideClickMonitor: Any?
     private let state = ViewState()
@@ -28,7 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     )
     private lazy var settingsWindow = SettingsWindow { [unowned self] in
         [
-            ("General", "gearshape", AnyView(GeneralSettingsView(library: library, updater: updater))),
+            ("General", "gearshape", AnyView(GeneralSettingsView(library: library, updater: updater, shortcuts: shortcuts))),
             ("Shortcuts", "keyboard", AnyView(ShortcutSettingsView(store: shortcuts))),
             ("Advanced", "gearshape.2", AnyView(AdvancedSettingsView { [weak self] in self?.editApiKey() })),
         ]
@@ -63,6 +73,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hostingController.sizingOptions = []
         NSApp.mainMenu = mainMenu()
         popover.behavior = .transient
+        popover.delegate = self
         popover.contentSize = Layout.popoverSize
         popover.contentViewController = hostingController
 
@@ -89,6 +100,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func performGlobal(_ action: ShortcutAction) {
         if let slot = action.slotNumber {
             copyFavoriteSlot(slot)
+        } else if action == .openAtCursor {
+            openAtTextCursor()
         } else {
             togglePopover()
         }
@@ -231,8 +244,40 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showPopover() {
         guard let button = statusItem.button, !popover.isShown else { return }
+        state.pasteTarget = UserDefaults.standard.bool(forKey: SettingKeys.pasteForMe) ? Self.appToPasteInto() : nil
         NSApp.activate(ignoringOtherApps: true)
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        popover.contentViewController?.view.window?.makeKey()
+    }
+}
+
+extension AppDelegate: NSPopoverDelegate {
+    /// The app in front before Snicker opens, while pasting into it is allowed. Read before Snicker activates.
+    fileprivate static func appToPasteInto() -> NSRunningApplication? {
+        let frontmost = NSWorkspace.shared.frontmostApplication
+        return frontmost == .current || !CursorPaste.isAllowed ? nil : frontmost
+    }
+
+    func popoverDidClose(_ notification: Notification) {
+        cursorAnchor.orderOut(nil)
+    }
+
+    /// In place of Apple's Emoji & Symbols: opens under the text cursor, and the GIF picked there is pasted
+    /// into the app that was in front. Without Accessibility permission it opens at the pointer and copies.
+    fileprivate func openAtTextCursor() {
+        if popover.isShown {
+            popover.performClose(nil)
+            return
+        }
+        let target = Self.appToPasteInto()
+        let pointer = NSEvent.mouseLocation
+        let anchor = CursorPaste.caretRect() ?? NSRect(x: pointer.x, y: pointer.y, width: 1, height: 1)
+        cursorAnchor.setFrame(NSRect(origin: anchor.origin, size: CGSize(width: max(anchor.width, 1), height: max(anchor.height, 1))), display: false)
+        cursorAnchor.orderFrontRegardless()
+        guard let view = cursorAnchor.contentView else { return }
+        state.pasteTarget = target
+        NSApp.activate(ignoringOtherApps: true)
+        popover.show(relativeTo: view.bounds, of: view, preferredEdge: .minY)
         popover.contentViewController?.view.window?.makeKey()
     }
 }
