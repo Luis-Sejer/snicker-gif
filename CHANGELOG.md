@@ -6,6 +6,8 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-09-29
+
 ### Added
 
 - Paste for Me: pick a GIF and Snicker pastes it straight into the app you came from. Turn it on in Settings → General.
@@ -93,7 +95,8 @@ All notable changes to Snicker are documented here. The format is based on
 - The search field reads "Search KLIPY", following KLIPY's attribution guidelines.
 - A Support Snicker… item in the ⋯ menu, linking to Ko-fi.
 
-[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/Luis-Sejer/snicker-gif/compare/v1.2.0...v1.3.0
