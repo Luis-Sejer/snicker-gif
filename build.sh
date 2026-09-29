@@ -59,6 +59,17 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleVersion</key><string>$BUILD</string>
     <key>LSMinimumSystemVersion</key><string>26.0</string>
     <key>LSUIElement</key><true/>
+    <key>NSServices</key>
+    <array>
+        <dict>
+            <key>NSMenuItem</key><dict><key>default</key><string>Find GIF in Snicker</string></dict>
+            <key>NSMessage</key><string>findGif</string>
+            <key>NSPortName</key><string>Snicker</string>
+            <key>NSSendTypes</key><array><string>public.utf8-plain-text</string></array>
+            <!-- An empty context makes macOS show the service by default instead of leaving it switched off. -->
+            <key>NSRequiredContext</key><dict/>
+        </dict>
+    </array>
 </dict>
 </plist>
 PLIST

@@ -7,14 +7,17 @@ final class SettingsMenu: NSObject {
     private static let repositoryURL = URL(string: "https://github.com/Luis-Sejer/snicker-gif")!
 
     private let openSettings: () -> Void
+    private let checkForUpdates: () -> Void
 
-    init(openSettings: @escaping () -> Void) {
+    init(openSettings: @escaping () -> Void, checkForUpdates: @escaping () -> Void) {
         self.openSettings = openSettings
+        self.checkForUpdates = checkForUpdates
     }
 
     func make() -> NSMenu {
         let menu = NSMenu()
         menu.addItem(item("About Snicker", action: #selector(showAbout), symbol: "info.circle"))
+        menu.addItem(item("Check for Updates…", action: #selector(checkUpdates), symbol: "arrow.triangle.2.circlepath"))
         menu.addItem(item("Settings…", action: #selector(showSettings), symbol: "gearshape", keyEquivalent: ","))
         menu.addItem(.separator())
         menu.addItem(item("Support Snicker…", action: #selector(openSupport), symbol: "heart"))
@@ -27,6 +30,10 @@ final class SettingsMenu: NSObject {
         item.target = self
         item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
         return item
+    }
+
+    @objc private func checkUpdates() {
+        checkForUpdates()
     }
 
     @objc func showSettings() {

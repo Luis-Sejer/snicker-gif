@@ -31,5 +31,7 @@ rm -rf "$HOME/Applications/Snicker.app"
 ditto -x -k "$DOWNLOAD_DIR/Snicker.zip" "$HOME/Applications"
 # Not notarized, so drop the quarantine flag that would make Gatekeeper block it.
 xattr -dr com.apple.quarantine "$HOME/Applications/Snicker.app" 2>/dev/null || true
+# Refresh the Services menu so "Find GIF in Snicker" shows up without logging out.
+/System/Library/CoreServices/pbs -update 2>/dev/null || true
 open "$HOME/Applications/Snicker.app"
 echo "Snicker is installed. Press ⌘⌥V to open it."

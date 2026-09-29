@@ -56,4 +56,39 @@ struct LibraryTests {
         #expect(library.recents.isEmpty)
         #expect(library.favorites.map(\.id) == ["a"])
     }
+
+    @Test func recentSearchesDedupeIgnoringCaseAndCap() {
+        let library = Library(defaults: defaults)
+        library.addSearch("cat")
+        library.addSearch("  dog ")
+        library.addSearch("Cat")
+        #expect(library.recentSearches == ["Cat", "dog"])
+        for index in 0...Library.searchesLimit {
+            library.addSearch("term \(index)")
+        }
+        #expect(library.recentSearches.count == Library.searchesLimit)
+    }
+
+    @Test func aGifLivesInOneSlotAndATakenSlotIsReplaced() {
+        let library = Library(defaults: defaults)
+        library.pin(gif("a"), to: 1)
+        library.pin(gif("a"), to: 2)
+        #expect(library.slots[1] == nil)
+        #expect(library.slots[2]?.id == "a")
+
+        library.pin(gif("b"), to: 2)
+        #expect(library.slot(of: gif("a")) == nil)
+        #expect(Library(defaults: defaults).slots[2]?.id == "b")
+    }
+
+    @Test func collectionsToggleGifsAndSurviveARelaunch() {
+        let library = Library(defaults: defaults)
+        let id = library.createCollection(named: "Work", with: gif("a"))
+        library.toggle(gif("b"), in: id)
+        library.toggle(gif("a"), in: id)
+        #expect(library.collection(id)?.gifs.map(\.id) == ["b"])
+
+        library.renameCollection(id, to: "Mondays")
+        #expect(Library(defaults: defaults).collection(id)?.name == "Mondays")
+    }
 }

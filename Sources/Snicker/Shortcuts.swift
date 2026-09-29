@@ -62,44 +62,69 @@ struct Shortcut: Codable, Equatable {
 
 /// Everything the keyboard can do in Snicker. Every one is remappable, for keyboards without arrow keys and friends.
 enum ShortcutAction: String, CaseIterable {
-    case openSnicker, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads
+    case openSnicker, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads, surpriseMe
     case showFavorites, showRecent, showTrending
+    case favoriteSlot1, favoriteSlot2, favoriteSlot3, favoriteSlot4, favoriteSlot5
+    case favoriteSlot6, favoriteSlot7, favoriteSlot8, favoriteSlot9
+
+    /// Digit key codes aren't in order on the keyboard, hence the table.
+    private static let digitKeyCodes = [kVK_ANSI_1, kVK_ANSI_2, kVK_ANSI_3, kVK_ANSI_4, kVK_ANSI_5, kVK_ANSI_6, kVK_ANSI_7, kVK_ANSI_8, kVK_ANSI_9]
+
+    static let favoriteSlots: [ShortcutAction] = [
+        .favoriteSlot1, .favoriteSlot2, .favoriteSlot3, .favoriteSlot4, .favoriteSlot5,
+        .favoriteSlot6, .favoriteSlot7, .favoriteSlot8, .favoriteSlot9,
+    ]
+
+    static func favoriteSlot(_ number: Int) -> ShortcutAction { favoriteSlots[number - 1] }
+
+    var slotNumber: Int? {
+        Self.favoriteSlots.firstIndex(of: self).map { $0 + 1 }
+    }
 
     var title: String {
+        if let slotNumber { return "Favorite Slot \(slotNumber)" }
         switch self {
-        case .openSnicker: "Open Snicker"
-        case .selectNext: "Next GIF"
-        case .selectPrevious: "Previous GIF"
-        case .copyGif: "Copy GIF"
-        case .copyLink: "Copy Link"
-        case .toggleFavorite: "Add to or Remove from Favorites"
-        case .saveToDownloads: "Save to Downloads"
-        case .showFavorites: "Show Favorites"
-        case .showRecent: "Show Recent"
-        case .showTrending: "Show Trending"
+        case .openSnicker: return "Open Snicker"
+        case .selectNext: return "Next GIF"
+        case .selectPrevious: return "Previous GIF"
+        case .copyGif: return "Copy GIF"
+        case .copyLink: return "Copy Link"
+        case .toggleFavorite: return "Add to or Remove from Favorites"
+        case .saveToDownloads: return "Save to Downloads"
+        case .surpriseMe: return "Surprise Me"
+        case .showFavorites: return "Show Favorites"
+        case .showRecent: return "Show Recent"
+        case .showTrending: return "Show Trending"
+        default: return rawValue
         }
     }
 
-    /// Only opening Snicker works from other apps; the rest work while Snicker is open.
-    var isGlobal: Bool { self == .openSnicker }
+    /// Opening Snicker and the favorite slots work from any app; the rest work while Snicker is open.
+    var isGlobal: Bool { self == .openSnicker || slotNumber != nil }
 
     var defaultShortcut: Shortcut {
+        // ⌃⌥ rather than ⌥ alone: ⌥ with a digit types characters like | [ ] on many keyboard layouts.
+        if let slotNumber {
+            return Shortcut(keyCode: Self.digitKeyCodes[slotNumber - 1], modifiers: controlKey | optionKey, keyName: "\(slotNumber)")
+        }
         switch self {
-        case .openSnicker: Shortcut(keyCode: kVK_ANSI_V, modifiers: cmdKey | optionKey, keyName: "V")
-        case .selectNext: Shortcut(keyCode: kVK_DownArrow, keyName: "↓")
-        case .selectPrevious: Shortcut(keyCode: kVK_UpArrow, keyName: "↑")
-        case .copyGif: Shortcut(keyCode: kVK_Return, keyName: "↩")
-        case .copyLink: Shortcut(keyCode: kVK_Return, modifiers: shiftKey, keyName: "↩")
-        case .toggleFavorite: Shortcut(keyCode: kVK_ANSI_D, modifiers: cmdKey, keyName: "D")
-        case .saveToDownloads: Shortcut(keyCode: kVK_ANSI_S, modifiers: cmdKey, keyName: "S")
-        case .showFavorites: Shortcut(keyCode: kVK_ANSI_1, modifiers: cmdKey, keyName: "1")
-        case .showRecent: Shortcut(keyCode: kVK_ANSI_2, modifiers: cmdKey, keyName: "2")
-        case .showTrending: Shortcut(keyCode: kVK_ANSI_3, modifiers: cmdKey, keyName: "3")
+        case .openSnicker: return Shortcut(keyCode: kVK_ANSI_V, modifiers: cmdKey | optionKey, keyName: "V")
+        case .selectNext: return Shortcut(keyCode: kVK_DownArrow, keyName: "↓")
+        case .selectPrevious: return Shortcut(keyCode: kVK_UpArrow, keyName: "↑")
+        case .copyGif: return Shortcut(keyCode: kVK_Return, keyName: "↩")
+        case .copyLink: return Shortcut(keyCode: kVK_Return, modifiers: shiftKey, keyName: "↩")
+        case .toggleFavorite: return Shortcut(keyCode: kVK_ANSI_D, modifiers: cmdKey, keyName: "D")
+        case .saveToDownloads: return Shortcut(keyCode: kVK_ANSI_S, modifiers: cmdKey, keyName: "S")
+        case .surpriseMe: return Shortcut(keyCode: kVK_ANSI_R, modifiers: cmdKey, keyName: "R")
+        case .showFavorites: return Shortcut(keyCode: kVK_ANSI_1, modifiers: cmdKey, keyName: "1")
+        case .showRecent: return Shortcut(keyCode: kVK_ANSI_2, modifiers: cmdKey, keyName: "2")
+        case .showTrending: return Shortcut(keyCode: kVK_ANSI_3, modifiers: cmdKey, keyName: "3")
+        default: return Shortcut(keyCode: kVK_F12, keyName: "F12") // unreachable: every slot is handled above
         }
     }
 }
 
-/// The user's shortcuts: stored, recorded in Settings, and the global one registered with the system.
+/// The user's shortcuts: stored, recorded in Settings, and the global ones registered with the system.
 @MainActor
 final class ShortcutStore: ObservableObject {
     private static let defaultsKey = "shortcuts"
@@ -108,22 +133,22 @@ final class ShortcutStore: ObservableObject {
     @Published private(set) var recording: ShortcutAction?
     @Published private(set) var error: String?
 
-    private let openSnicker: () -> Void
+    private let performGlobal: (ShortcutAction) -> Void
     private let defaults: UserDefaults
-    private var hotKey: HotKey?
+    private var hotKeys: [ShortcutAction: HotKey] = [:]
     private var keyMonitor: Any?
 
-    init(defaults: UserDefaults = .standard, openSnicker: @escaping () -> Void) {
+    init(defaults: UserDefaults = .standard, performGlobal: @escaping (ShortcutAction) -> Void) {
         self.defaults = defaults
-        self.openSnicker = openSnicker
+        self.performGlobal = performGlobal
         let saved = defaults.data(forKey: Self.defaultsKey).flatMap { try? JSONDecoder().decode([String: Shortcut].self, from: $0) } ?? [:]
         custom = Dictionary(uniqueKeysWithValues: saved.compactMap { key, value in ShortcutAction(rawValue: key).map { ($0, value) } })
-        registerGlobal()
+        registerGlobals()
         // If another app took the saved shortcut meanwhile, fall back rather than leave Snicker unreachable.
-        if hotKey == nil, custom[.openSnicker] != nil {
+        if hotKeys[.openSnicker] == nil, custom[.openSnicker] != nil {
             custom[.openSnicker] = nil
             save()
-            registerGlobal()
+            register(.openSnicker)
         }
     }
 
@@ -137,12 +162,12 @@ final class ShortcutStore: ObservableObject {
         return ShortcutAction.allCases.first { !$0.isGlobal && shortcut(for: $0).matches(pressed) }
     }
 
-    /// All shortcuts are paused while recording, so pressing the current one records it instead of opening Snicker.
+    /// All global shortcuts are paused while recording, so pressing one records it instead of running it.
     func startRecording(_ action: ShortcutAction) {
         stopMonitoring()
         error = nil
         recording = action
-        hotKey = nil
+        hotKeys = [:]
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             self?.handleRecording(event)
             return nil
@@ -163,8 +188,9 @@ final class ShortcutStore: ObservableObject {
         cancelRecording()
         custom = [:]
         save()
-        registerGlobal()
-        error = hotKey == nil ? "\(ShortcutAction.openSnicker.defaultShortcut.displayString) is used by another app." : nil
+        registerGlobals()
+        let taken = ShortcutAction.allCases.filter { $0.isGlobal && hotKeys[$0] == nil }
+        error = taken.isEmpty ? nil : "Used by another app: " + taken.map { shortcut(for: $0).displayString }.joined(separator: ", ")
     }
 
     private func handleRecording(_ event: NSEvent) {
@@ -197,13 +223,13 @@ final class ShortcutStore: ObservableObject {
 
     private func assign(_ shortcut: Shortcut, to action: ShortcutAction) {
         if action.isGlobal {
-            hotKey = nil // release the old registration first, or registering the same keys again fails
-            guard let registered = HotKey(shortcut, action: openSnicker) else {
+            hotKeys[action] = nil // release the old registration first, or registering the same keys again fails
+            guard let registered = HotKey(shortcut, action: { [weak self] in self?.performGlobal(action) }) else {
                 error = "\(shortcut.displayString) is already used by another app. Try another."
-                if recording == nil { registerGlobal() }
+                if recording == nil { register(action) }
                 return
             }
-            hotKey = registered
+            hotKeys[action] = registered
         }
         custom[action] = shortcut == action.defaultShortcut ? nil : shortcut
         save()
@@ -214,7 +240,9 @@ final class ShortcutStore: ObservableObject {
         stopMonitoring()
         recording = nil
         error = nil
-        if hotKey == nil { registerGlobal() }
+        for action in ShortcutAction.allCases where action.isGlobal && hotKeys[action] == nil {
+            register(action)
+        }
     }
 
     private func stopMonitoring() {
@@ -222,9 +250,15 @@ final class ShortcutStore: ObservableObject {
         keyMonitor = nil
     }
 
-    private func registerGlobal() {
-        hotKey = nil // release the old registration first, or registering the same keys again fails
-        hotKey = HotKey(shortcut(for: .openSnicker), action: openSnicker)
+    private func registerGlobals() {
+        hotKeys = [:] // release the old registrations first, or registering the same keys again fails
+        for action in ShortcutAction.allCases where action.isGlobal {
+            register(action)
+        }
+    }
+
+    private func register(_ action: ShortcutAction) {
+        hotKeys[action] = HotKey(shortcut(for: action), action: { [weak self] in self?.performGlobal(action) })
     }
 
     private func save() {

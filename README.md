@@ -50,7 +50,11 @@ It is small and quiet: a native SwiftUI app of about 2 MB, with no account, no s
 - Search from any app with <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>V</kbd>. Trending shows up before you type.
 - Click a GIF to copy it, or drag it straight into another app.
 - Paste into Teams, Slack, Discord, Messages or Mail.
-- Favorites and Recent are one click away and survive a restart.
+- Favorites and Recent are one click away and survive a restart, and collections group GIFs your way.
+- Pin favorites to nine slots and copy them from any app with <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>1</kbd>–<kbd>9</kbd>, without opening Snicker.
+- Select text in any app and choose **Services → Find GIF in Snicker**.
+- Recent searches are one click away, and the dice copies a random GIF when you can't decide.
+- Choose how strictly results are filtered: Unrestricted, Standard or Work-Safe.
 - Suggestions appear as you type, and there are quick picks for common reactions.
 - Right-click a GIF to copy its link (handy in chats that unfurl links) or save it to Downloads.
 - Use the arrow keys to choose, <kbd>Return</kbd> to copy and <kbd>⌘</kbd> <kbd>D</kbd> to favorite.
@@ -119,6 +123,8 @@ To have Snicker start with your Mac, turn on **Launch at Login** in Settings. Op
 | <kbd>⌘</kbd> <kbd>D</kbd> | add it to or remove it from Favorites |
 | <kbd>⌘</kbd> <kbd>S</kbd> | save it to Downloads |
 | <kbd>⌘</kbd> <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> | show Favorites, Recent or Trending |
+| <kbd>⌘</kbd> <kbd>R</kbd> | copy a random GIF |
+| <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>1</kbd>–<kbd>9</kbd>, from any app | copy the GIF pinned to that slot |
 | Click a GIF | copy it and close |
 | Drag a GIF | drop it into any app |
 | Right-click a GIF | Copy GIF, Copy Link, Favorites, Save to Downloads, Open on KLIPY |
@@ -153,7 +159,7 @@ Found something that doesn’t work with your setup? Please [open an issue](http
 ## Privacy
 
 - Your searches go to KLIPY to find GIFs, and nowhere else.
-- Once a day, Snicker asks GitHub whether a new version is out. Nothing about you is sent.
+- When you open Snicker, it asks GitHub whether a new version is out. Nothing about you is sent.
 - Favorites, recents, settings and any KLIPY key you add are stored locally in Snicker’s preferences.
 - No analytics, no tracking, no account.
 
@@ -178,6 +184,8 @@ Source builds ask for your own free KLIPY key on first launch; get one from KLIP
 | `docs/src/render.sh` | re-renders the icon, README artwork and launch video |
 
 </details>
+
+Ideas that aren't planned yet live in the [roadmap](ROADMAP.md).
 
 ## Contributing
 

@@ -6,6 +6,22 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+
+- Check for Updates… in the ⋯ menu, and a Check for Updates button in Settings → General.
+- Favorite slots: pin a GIF to one of nine slots from its right-click menu, then copy it from any app with ⌃⌥1 to ⌃⌥9, without opening Snicker. The menu bar icon flashes a checkmark to confirm.
+- Collections: group GIFs into your own named sets, like "Work" or "Mondays". Add a GIF from its right-click menu, and right-click a collection to rename or delete it.
+- Recent searches show as chips when the search field is empty. Right-click one to remove it, or clear them all in Settings.
+- Surprise Me: the dice button (or ⌘R) copies a random GIF from what's showing.
+- Find GIF in Snicker: select text in any app, then right-click → Services → Find GIF in Snicker.
+- A Content setting in Settings → General: Unrestricted, Standard or Work-Safe.
+
+### Changed
+
+- Snicker checks for a new version every time you open it, not once a day. Clicking Later still holds the reminder until the next day.
+- Favorites, Recent and Trending are icons now, to make room for collections and searches. Turn on Show Tab Names in Settings to bring the names back.
+- The shortcut hints and the ⋯ button sit on a glass bar, so they stay readable over busy GIFs. Update messages grow out of it instead of stacking a second card on top.
+
 ## [1.3.0] - 2026-09-29
 
 ### Added

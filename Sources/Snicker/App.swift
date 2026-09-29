@@ -21,10 +21,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var outsideClickMonitor: Any?
     private let state = ViewState()
     private let library = Library()
-    private lazy var settingsMenu = SettingsMenu { [weak self] in self?.openSettings() }
+    private let updater = Updater()
+    private lazy var settingsMenu = SettingsMenu(
+        openSettings: { [weak self] in self?.openSettings() },
+        checkForUpdates: { [weak self] in self?.checkForUpdates() }
+    )
     private lazy var settingsWindow = SettingsWindow { [unowned self] in
         [
-            ("General", "gearshape", AnyView(GeneralSettingsView(library: library))),
+            ("General", "gearshape", AnyView(GeneralSettingsView(library: library, updater: updater))),
             ("Shortcuts", "keyboard", AnyView(ShortcutSettingsView(store: shortcuts))),
             ("Advanced", "gearshape.2", AnyView(AdvancedSettingsView { [weak self] in self?.editApiKey() })),
         ]
@@ -40,7 +44,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.action = #selector(statusItemClicked)
         statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
-        shortcuts = ShortcutStore { [weak self] in self?.togglePopover() }
+        shortcuts = ShortcutStore { [weak self] action in self?.performGlobal(action) }
+        // Services → Find GIF in Snicker, declared in Info.plist by build.sh.
+        NSApp.servicesProvider = self
+        NSUpdateDynamicServices()
 
         let hostingController = NSHostingController(
             rootView: ContentView(
@@ -48,7 +55,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 settingsMenu: settingsMenu,
                 shortcuts: shortcuts,
                 state: state,
-                library: library
+                library: library,
+                updater: updater
             )
         )
         // Size up front: letting SwiftUI report it after showing makes the popover grow up under the menu bar.
@@ -76,6 +84,64 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func openSettings() {
         popover.performClose(nil)
         settingsWindow.show()
+    }
+
+    private func performGlobal(_ action: ShortcutAction) {
+        if let slot = action.slotNumber {
+            copyFavoriteSlot(slot)
+        } else {
+            togglePopover()
+        }
+    }
+
+    /// Copies without opening Snicker; the menu bar icon briefly turns into a checkmark to confirm.
+    private func copyFavoriteSlot(_ slot: Int) {
+        guard let gif = library.slots[slot] else {
+            NSSound.beep()
+            return
+        }
+        let randomName = UserDefaults.standard.bool(forKey: SettingKeys.randomFileNames)
+        Task {
+            do {
+                try GifFile.copyToPasteboard(try await GifFile.download(gif, randomName: randomName))
+                library.addRecent(gif)
+                flashStatusIcon()
+                NSAccessibility.post(element: NSApp as Any, notification: .announcementRequested, userInfo: [
+                    .announcement: "Copied \(gif.title.isEmpty ? "GIF" : gif.title)",
+                    .priority: NSAccessibilityPriorityLevel.high.rawValue,
+                ])
+            } catch {
+                NSSound.beep()
+            }
+        }
+    }
+
+    private static let copiedFlash: Duration = .milliseconds(900)
+
+    private func flashStatusIcon() {
+        statusItem.button?.image = NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: "Copied")
+        Task {
+            try? await Task.sleep(for: Self.copiedFlash)
+            statusItem.button?.image = Self.statusIcon()
+        }
+    }
+
+    /// Services → Find GIF in Snicker: searches whatever text is selected in another app.
+    @objc func findGif(_ pasteboard: NSPasteboard, userData: String?, error: AutoreleasingUnsafeMutablePointer<NSString>?) {
+        guard let text = pasteboard.string(forType: .string)?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else { return }
+        state.closedAt = nil // or reopening after a while would clear the search just set
+        state.mode = .klipy
+        state.query = String(text.prefix(Self.serviceQueryLimit))
+        showPopover()
+    }
+
+    /// Selections can be whole paragraphs; a GIF search only needs the start.
+    private static let serviceQueryLimit = 100
+
+    /// Opens the popover so the answer shows in its banner.
+    private func checkForUpdates() {
+        showPopover()
+        updater.checkNow()
     }
 
     private func editApiKey() {
@@ -174,19 +240,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 /// Global shortcut via Carbon — the only public API that works without Accessibility permission.
 /// Nil when another app already holds the shortcut.
 final class HotKey {
+    private static var nextID: UInt32 = 1
+
     private var hotKeyRef: EventHotKeyRef?
     private var handlerRef: EventHandlerRef?
     private let action: () -> Void
+    private let id: UInt32
 
     init?(_ shortcut: Shortcut, action: @escaping () -> Void) {
         self.action = action
+        id = Self.nextID
+        Self.nextID += 1
         var eventType = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-        InstallEventHandler(GetApplicationEventTarget(), { _, _, userData in
-            guard let userData else { return OSStatus(eventNotHandledErr) }
-            Unmanaged<HotKey>.fromOpaque(userData).takeUnretainedValue().action()
+        // Every registration gets every hotkey event, so each passes on the ones that aren't its own.
+        InstallEventHandler(GetApplicationEventTarget(), { _, event, userData in
+            guard let event, let userData else { return OSStatus(eventNotHandledErr) }
+            var pressed = EventHotKeyID()
+            GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil,
+                              MemoryLayout<EventHotKeyID>.size, nil, &pressed)
+            let hotKey = Unmanaged<HotKey>.fromOpaque(userData).takeUnretainedValue()
+            guard pressed.id == hotKey.id else { return OSStatus(eventNotHandledErr) }
+            hotKey.action()
             return noErr
         }, 1, &eventType, Unmanaged.passUnretained(self).toOpaque(), &handlerRef)
-        let hotKeyID = EventHotKeyID(signature: OSType(0x534E_4B52), id: 1) // "SNKR"
+        let hotKeyID = EventHotKeyID(signature: OSType(0x534E_4B52), id: id) // "SNKR"
         let status = RegisterEventHotKey(shortcut.keyCode, shortcut.carbonModifiers, hotKeyID, GetApplicationEventTarget(), 0, &hotKeyRef)
         guard status == noErr else {
             if let handlerRef { RemoveEventHandler(handlerRef) }

@@ -4,14 +4,19 @@ import SwiftUI
 enum SettingKeys {
     /// Name copied files like "GIF-3F9A2C71.gif" instead of after the GIF's title.
     static let randomFileNames = "randomFileNames"
+    /// Show "Favorites", "Recent" and "Trending" next to their icons.
+    static let showTabNames = "showTabNames"
 }
 
 struct GeneralSettingsView: View {
     @ObservedObject var library: Library
+    @ObservedObject var updater: Updater
 
     @StateObject private var loginItem = LoginItem()
     @AppStorage(SettingKeys.randomFileNames) private var randomFileNames = false
     @AppStorage(StartTab.defaultsKey) private var startTab: StartTab = .trending
+    @AppStorage(ContentFilter.defaultsKey) private var contentFilter: ContentFilter = .unrestricted
+    @AppStorage(SettingKeys.showTabNames) private var showTabNames = false
 
     var body: some View {
         Form {
@@ -25,8 +30,19 @@ struct GeneralSettingsView: View {
                         Text(tab.title).tag(tab)
                     }
                 }
+                Toggle("Show Tab Names", isOn: $showTabNames)
             } footer: {
-                Text("Snicker opens here when it starts, and when you come back after a while.")
+                Text("Snicker opens on this tab when it starts, and when you come back after a while. Tabs show as icons unless you turn on their names.")
+            }
+
+            Section {
+                Picker("Content", selection: $contentFilter) {
+                    ForEach(ContentFilter.allCases, id: \.self) { filter in
+                        Text(filter.title).tag(filter)
+                    }
+                }
+            } footer: {
+                Text("Work-Safe hides anything you wouldn’t want popping up in a work chat. Standard hides the most explicit GIFs. Filtering is done by KLIPY.")
             }
 
             Section {
@@ -35,8 +51,29 @@ struct GeneralSettingsView: View {
                     Button("Clear", action: library.clearRecents)
                         .disabled(library.recents.isEmpty)
                 }
+                LabeledContent("Recent Searches") {
+                    Button("Clear", action: library.clearSearches)
+                        .disabled(library.recentSearches.isEmpty)
+                }
             } footer: {
                 Text("Random file names stop a pasted GIF’s name from giving away what you searched for.")
+            }
+
+            Section {
+                LabeledContent("Snicker \(updater.installedVersion)") {
+                    if updater.phase == .installing {
+                        ProgressView().controlSize(.small)
+                    } else if let available = updater.availableVersion {
+                        Button("Update to \(available)", action: updater.install)
+                    } else {
+                        Button("Check for Updates", action: updater.checkNow)
+                            .disabled(updater.checkStatus == .checking)
+                    }
+                }
+            } header: {
+                Text("Updates")
+            } footer: {
+                Text(updateStatus)
             }
         }
         .formStyle(.grouped)
@@ -44,6 +81,20 @@ struct GeneralSettingsView: View {
         .scrollDisabled(true)
         .frame(width: 480)
         .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+private extension GeneralSettingsView {
+    var updateStatus: String {
+        if updater.phase == .installing { return "Updating… Snicker will reopen by itself." }
+        if updater.phase == .failed { return "Couldn’t update by itself. Download Snicker again from GitHub; it replaces this version." }
+        if let available = updater.availableVersion { return "Snicker \(available) is available." }
+        switch updater.checkStatus {
+        case .checking: return "Checking…"
+        case .upToDate: return "You have the latest version."
+        case .failed: return "Couldn’t reach GitHub to check for updates."
+        case .idle: return "Snicker checks for updates each time you open it."
+        }
     }
 }
 

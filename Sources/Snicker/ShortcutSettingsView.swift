@@ -14,6 +14,13 @@ struct ShortcutSettingsView: View {
                 ForEach(ShortcutAction.allCases.filter { !$0.isGlobal }, id: \.self, content: row)
             }
             Section {
+                ForEach(ShortcutAction.favoriteSlots, id: \.self, content: row)
+            } header: {
+                Text("Favorite Slots")
+            } footer: {
+                Text("Copy a pinned GIF from any app without opening Snicker. Pin one from a GIF’s right-click menu.")
+            }
+            Section {
                 HStack {
                     Text("Click a shortcut, then press the keys you want. Esc cancels.")
                         .font(.caption)

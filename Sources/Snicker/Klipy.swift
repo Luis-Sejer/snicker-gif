@@ -34,6 +34,23 @@ struct Gif: Identifiable, Codable, Hashable {
     }
 }
 
+/// How strictly KLIPY filters results. The raw values are KLIPY's own `contentfilter` levels.
+enum ContentFilter: String, CaseIterable {
+    case unrestricted = "off"
+    case standard = "medium"
+    case workSafe = "high"
+
+    static let defaultsKey = "contentFilter"
+
+    var title: String {
+        switch self {
+        case .unrestricted: "Unrestricted"
+        case .standard: "Standard"
+        case .workSafe: "Work-Safe"
+        }
+    }
+}
+
 /// Klipy's Tenor-compatible v2 API (Tenor itself shut down in June 2026).
 enum Klipy {
     static let apiKeyDefaultsKey = "klipyApiKey"
@@ -43,13 +60,11 @@ enum Klipy {
     private static let suggestionLimit = "8"
 
     /// Trending when the query is empty, otherwise search results.
-    static func fetch(query: String, apiKey: String) async throws -> [Gif] {
+    static func fetch(query: String, apiKey: String, contentFilter: ContentFilter) async throws -> [Gif] {
         let trimmed = query.trimmingCharacters(in: .whitespaces)
-        let data = try await request(
-            trimmed.isEmpty ? "featured" : "search",
-            apiKey: apiKey,
-            parameters: ["limit": resultLimit, "media_filter": "gif,tinygif"].merging(trimmed.isEmpty ? [:] : ["q": trimmed]) { $1 }
-        )
+        var parameters = ["limit": resultLimit, "media_filter": "gif,tinygif", "contentfilter": contentFilter.rawValue]
+        if !trimmed.isEmpty { parameters["q"] = trimmed }
+        let data = try await request(trimmed.isEmpty ? "featured" : "search", apiKey: apiKey, parameters: parameters)
         return try decodeGifs(from: data)
     }
 
