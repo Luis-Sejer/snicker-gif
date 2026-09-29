@@ -35,8 +35,7 @@ struct ShortcutSettingsView: View {
             }
         }
         .formStyle(.grouped)
-        // Too long to show whole on a small screen, so this tab scrolls at a fixed height.
-        .frame(width: 480, height: 560)
+        .settingsPane()
         .onDisappear(perform: store.cancelRecording)
     }
 

@@ -106,10 +106,7 @@ struct GeneralSettingsView: View {
             }
         }
         .formStyle(.grouped)
-        // Short enough to never scroll, so the window fits the form instead.
-        .scrollDisabled(true)
-        .frame(width: 480)
-        .fixedSize(horizontal: false, vertical: true)
+        .settingsPane()
     }
 }
 

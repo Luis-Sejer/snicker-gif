@@ -38,3 +38,26 @@ final class SettingsWindow {
         return window
     }
 }
+
+extension View {
+    /// Every tab fits its content up to a height the screen has room for, and scrolls beyond that,
+    /// so a growing tab never runs off a small screen.
+    func settingsPane() -> some View {
+        frame(width: SettingsWindow.paneWidth)
+            .frame(maxHeight: SettingsWindow.maxPaneHeight)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+extension SettingsWindow {
+    static let paneWidth: CGFloat = 480
+    /// Tall enough for most tabs; a taller one would be a wall of settings even on a big screen.
+    private static let tallestPane: CGFloat = 680
+    /// The toolbar, the title bar and some breathing room above and below the window.
+    private static let windowChrome: CGFloat = 200
+
+    @MainActor static var maxPaneHeight: CGFloat {
+        let available = (NSScreen.main?.visibleFrame.height ?? tallestPane + windowChrome) - windowChrome
+        return min(tallestPane, available)
+    }
+}
