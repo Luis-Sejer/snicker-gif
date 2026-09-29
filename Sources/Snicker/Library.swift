@@ -7,13 +7,14 @@ struct GifCollection: Codable, Identifiable, Equatable {
     var gifs: [Gif]
 }
 
-/// Favorites, recents, recent searches, favorite slots and collections. All small, so they live in UserDefaults as JSON.
+/// Favorites, recents, recent searches, recent emoji, favorite slots and collections. All small, so they live in UserDefaults as JSON.
 final class Library: ObservableObject {
     private static let favoritesKey = "favorites"
     private static let recentsKey = "recents"
     private static let searchesKey = "recentSearches"
     private static let slotsKey = "favoriteSlots"
     private static let collectionsKey = "collections"
+    private static let emojiKey = "recentEmoji"
     static let recentsLimit = 60
     static let searchesLimit = 8
     static let slotNumbers = 1...9
@@ -24,6 +25,8 @@ final class Library: ObservableObject {
     /// Slot number to GIF; each copies from any app with its own shortcut.
     @Published private(set) var slots: [Int: Gif]
     @Published private(set) var collections: [GifCollection]
+    /// Emoji characters, skin tone included, newest first.
+    @Published private(set) var recentEmoji: [String]
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
@@ -34,6 +37,7 @@ final class Library: ObservableObject {
         let storedSlots: [String: Gif] = Self.load(Self.slotsKey, from: defaults) ?? [:]
         slots = Dictionary(uniqueKeysWithValues: storedSlots.compactMap { key, gif in Int(key).map { ($0, gif) } })
         collections = Self.load(Self.collectionsKey, from: defaults) ?? []
+        recentEmoji = Self.load(Self.emojiKey, from: defaults) ?? []
     }
 
     var favoriteIDs: Set<String> { Set(favorites.map(\.id)) }
@@ -81,6 +85,20 @@ final class Library: ObservableObject {
     func clearSearches() {
         recentSearches = []
         save(recentSearches, Self.searchesKey)
+    }
+
+    // MARK: Recent emoji
+
+    func addRecentEmoji(_ character: String) {
+        recentEmoji.removeAll { $0 == character }
+        recentEmoji.insert(character, at: 0)
+        recentEmoji = Array(recentEmoji.prefix(EmojiCatalog.recentLimit))
+        save(recentEmoji, Self.emojiKey)
+    }
+
+    func clearRecentEmoji() {
+        recentEmoji = []
+        save(recentEmoji, Self.emojiKey)
     }
 
     // MARK: Favorite slots

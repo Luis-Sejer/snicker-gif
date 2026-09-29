@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ShortcutSettingsView: View {
     @ObservedObject var store: ShortcutStore
+    @AppStorage(SettingKeys.showEmoji) private var showEmoji = false
 
     var body: some View {
         Form {
@@ -11,7 +12,7 @@ struct ShortcutSettingsView: View {
                 Text("Works from any app.")
             }
             Section("While Snicker Is Open") {
-                ForEach(ShortcutAction.allCases.filter { !$0.isGlobal }, id: \.self, content: row)
+                ForEach(ShortcutAction.allCases.filter { !$0.isGlobal && ($0 != .showEmoji || showEmoji) }, id: \.self, content: row)
             }
             Section {
                 ForEach(ShortcutAction.favoriteSlots, id: \.self, content: row)

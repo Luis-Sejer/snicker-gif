@@ -21,6 +21,18 @@ struct LibraryTests {
         #expect(library.favorites.map(\.id) == ["b"])
     }
 
+    @Test func recentEmojiKeepTheirSkinToneAndStayCapped() {
+        let library = Library(defaults: defaults)
+        library.addRecentEmoji("😂")
+        library.addRecentEmoji("👋🏽")
+        library.addRecentEmoji("😂")
+        #expect(library.recentEmoji == ["😂", "👋🏽"])
+        #expect(Library(defaults: defaults).recentEmoji == ["😂", "👋🏽"])
+
+        for scalar in 0x1F600..<0x1F640 { library.addRecentEmoji(String(UnicodeScalar(scalar)!)) }
+        #expect(library.recentEmoji.count == EmojiCatalog.recentLimit)
+    }
+
     @Test func recentsMoveAReusedGifToTheFront() {
         let library = Library(defaults: defaults)
         library.addRecent(gif("a"))

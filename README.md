@@ -60,7 +60,8 @@ It is small and quiet: a native SwiftUI app of about 2 MB, with no account, no s
 - Use the arrow keys to choose, <kbd>Return</kbd> to copy and <kbd>⌘</kbd> <kbd>D</kbd> to favorite.
 - The grid shows every GIF at its real shape, animated.
 - Launch at Login keeps it ready, and Random File Names stops pasted files from giving away your search.
-- Every keyboard shortcut can be remapped in Settings, and you choose whether Snicker opens on Trending, Favorites, Recent or whatever you used last.
+- Every keyboard shortcut can be remapped in Settings, and you choose whether Snicker opens on Trending, Favorites, Recent, Emoji or whatever you used last.
+- An optional Emoji tab with every emoji your Mac can draw, in Apple’s categories, searchable by name or keyword, with skin tones on right-click. Turn it on under Settings → General → Show Emoji.
 - The Liquid Glass design fits right in on macOS Tahoe and later.
 - It works with VoiceOver, the keyboard, Reduce Motion and Auto-play Animated Images.
 
@@ -152,6 +153,7 @@ To have Snicker start with your Mac, turn on **Launch at Login** in Settings. Op
 | <kbd>⌘</kbd> <kbd>D</kbd> | add it to or remove it from Favorites |
 | <kbd>⌘</kbd> <kbd>S</kbd> | save it to Downloads |
 | <kbd>⌘</kbd> <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> | show Favorites, Recent or Trending |
+| <kbd>⌘</kbd> <kbd>4</kbd> | show Emoji, once turned on in Settings |
 | <kbd>⌘</kbd> <kbd>R</kbd> | copy a random GIF |
 | <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>1</kbd>–<kbd>9</kbd>, from any app | copy the GIF pinned to that slot |
 | Click a GIF | copy it and close |

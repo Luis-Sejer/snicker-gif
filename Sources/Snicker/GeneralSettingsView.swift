@@ -6,6 +6,8 @@ enum SettingKeys {
     static let randomFileNames = "randomFileNames"
     /// Show "Favorites", "Recent" and "Trending" next to their icons.
     static let showTabNames = "showTabNames"
+    /// Show the Emoji tab, an emoji picker next to the GIFs. Off until turned on.
+    static let showEmoji = "showEmoji"
 }
 
 struct GeneralSettingsView: View {
@@ -17,6 +19,7 @@ struct GeneralSettingsView: View {
     @AppStorage(StartTab.defaultsKey) private var startTab: StartTab = .trending
     @AppStorage(ContentFilter.defaultsKey) private var contentFilter: ContentFilter = .unrestricted
     @AppStorage(SettingKeys.showTabNames) private var showTabNames = false
+    @AppStorage(SettingKeys.showEmoji) private var showEmoji = false
 
     var body: some View {
         Form {
@@ -26,13 +29,17 @@ struct GeneralSettingsView: View {
                     Text(error).font(.caption).foregroundStyle(.orange)
                 }
                 Picker("Open On", selection: $startTab) {
-                    ForEach(StartTab.allCases, id: \.self) { tab in
+                    ForEach(StartTab.allCases.filter { $0 != .emoji || showEmoji }, id: \.self) { tab in
                         Text(tab.title).tag(tab)
                     }
                 }
                 Toggle("Show Tab Names", isOn: $showTabNames)
+                Toggle("Show Emoji", isOn: $showEmoji)
             } footer: {
-                Text("Snicker opens on this tab when it starts, and when you come back after a while. Tabs show as icons unless you turn on their names.")
+                Text("Snicker opens on this tab when it starts, and when you come back after a while. Tabs show as icons unless you turn on their names. Show Emoji adds a tab with every emoji, to copy like a GIF.")
+            }
+            .onChange(of: showEmoji) {
+                if !showEmoji && startTab == .emoji { startTab = .trending }
             }
 
             Section {
@@ -54,6 +61,12 @@ struct GeneralSettingsView: View {
                 LabeledContent("Recent Searches") {
                     Button("Clear", action: library.clearSearches)
                         .disabled(library.recentSearches.isEmpty)
+                }
+                if showEmoji {
+                    LabeledContent("Recent Emoji") {
+                        Button("Clear", action: library.clearRecentEmoji)
+                            .disabled(library.recentEmoji.isEmpty)
+                    }
                 }
             } footer: {
                 Text("Random file names stop a pasted GIF’s name from giving away what you searched for.")

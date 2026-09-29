@@ -63,7 +63,7 @@ struct Shortcut: Codable, Equatable {
 /// Everything the keyboard can do in Snicker. Every one is remappable, for keyboards without arrow keys and friends.
 enum ShortcutAction: String, CaseIterable {
     case openSnicker, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads, surpriseMe
-    case showFavorites, showRecent, showTrending
+    case showFavorites, showRecent, showTrending, showEmoji
     case favoriteSlot1, favoriteSlot2, favoriteSlot3, favoriteSlot4, favoriteSlot5
     case favoriteSlot6, favoriteSlot7, favoriteSlot8, favoriteSlot9
 
@@ -95,6 +95,7 @@ enum ShortcutAction: String, CaseIterable {
         case .showFavorites: return "Show Favorites"
         case .showRecent: return "Show Recent"
         case .showTrending: return "Show Trending"
+        case .showEmoji: return "Show Emoji"
         default: return rawValue
         }
     }
@@ -119,6 +120,7 @@ enum ShortcutAction: String, CaseIterable {
         case .showFavorites: return Shortcut(keyCode: kVK_ANSI_1, modifiers: cmdKey, keyName: "1")
         case .showRecent: return Shortcut(keyCode: kVK_ANSI_2, modifiers: cmdKey, keyName: "2")
         case .showTrending: return Shortcut(keyCode: kVK_ANSI_3, modifiers: cmdKey, keyName: "3")
+        case .showEmoji: return Shortcut(keyCode: kVK_ANSI_4, modifiers: cmdKey, keyName: "4")
         default: return Shortcut(keyCode: kVK_F12, keyName: "F12") // unreachable: every slot is handled above
         }
     }

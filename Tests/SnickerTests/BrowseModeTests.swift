@@ -4,7 +4,7 @@ import Testing
 
 struct BrowseModeTests {
     @Test func everyModeSurvivesStorage() {
-        let modes: [BrowseMode] = [.klipy, .favorites, .recents, .collection(UUID())]
+        let modes: [BrowseMode] = [.klipy, .favorites, .recents, .emoji, .collection(UUID())]
         for mode in modes {
             #expect(BrowseMode(storageKey: mode.storageKey) == mode)
         }

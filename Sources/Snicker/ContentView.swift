@@ -32,6 +32,14 @@ final class ViewState: ObservableObject {
     var keyMonitor: Any?
     /// Shown once, in place of the GIFs, after an update.
     @Published var whatsNew: WhatsNew?
+    /// The emoji picker's contents while Emoji is showing; empty otherwise.
+    @Published var emojiSections: [EmojiSection] = [] {
+        didSet { emojiItems = emojiSections.flatMap(\.items) }
+    }
+    /// Every emoji showing, in the order the arrow keys move through them.
+    private(set) var emojiItems: [EmojiItem] = []
+    /// Set by a category chip; the grid scrolls to that section.
+    @Published var emojiScrollTarget: String?
 
     private static var lastMode: BrowseMode {
         UserDefaults.standard.string(forKey: lastModeKey).flatMap(BrowseMode.init(storageKey:)) ?? .klipy
@@ -40,10 +48,14 @@ final class ViewState: ObservableObject {
     var selectedGif: Gif? {
         gifs.indices.contains(selectedIndex) ? gifs[selectedIndex] : nil
     }
+
+    var selectedEmoji: EmojiItem? {
+        emojiItems.indices.contains(selectedIndex) ? emojiItems[selectedIndex] : nil
+    }
 }
 
 enum BrowseMode: Hashable {
-    case klipy, favorites, recents
+    case klipy, favorites, recents, emoji
     case collection(UUID)
 
     private static let collectionPrefix = "collection:"
@@ -54,6 +66,7 @@ enum BrowseMode: Hashable {
         case .klipy: "klipy"
         case .favorites: "favorites"
         case .recents: "recents"
+        case .emoji: "emoji"
         case .collection(let id): Self.collectionPrefix + id.uuidString
         }
     }
@@ -63,6 +76,7 @@ enum BrowseMode: Hashable {
         case "klipy": self = .klipy
         case "favorites": self = .favorites
         case "recents": self = .recents
+        case "emoji": self = .emoji
         default:
             guard storageKey.hasPrefix(Self.collectionPrefix),
                   let id = UUID(uuidString: String(storageKey.dropFirst(Self.collectionPrefix.count))) else { return nil }
@@ -73,12 +87,14 @@ enum BrowseMode: Hashable {
 
 /// What Snicker opens on: at launch, and when reopened after the search was forgotten.
 enum StartTab: String, CaseIterable {
-    case trending, favorites, recents, lastUsed
+    case trending, favorites, recents, emoji, lastUsed
 
     static let defaultsKey = "startTab"
 
+    /// Emoji is only offered while the Emoji tab is turned on in Settings.
     static var current: StartTab {
-        UserDefaults.standard.string(forKey: defaultsKey).flatMap(StartTab.init) ?? .trending
+        let saved = UserDefaults.standard.string(forKey: defaultsKey).flatMap(StartTab.init) ?? .trending
+        return saved == .emoji && !UserDefaults.standard.bool(forKey: SettingKeys.showEmoji) ? .trending : saved
     }
 
     var title: String {
@@ -86,6 +102,7 @@ enum StartTab: String, CaseIterable {
         case .trending: "Trending"
         case .favorites: "Favorites"
         case .recents: "Recent"
+        case .emoji: "Emoji"
         case .lastUsed: "Last Used"
         }
     }
@@ -96,6 +113,7 @@ enum StartTab: String, CaseIterable {
         case .trending: .klipy
         case .favorites: .favorites
         case .recents: .recents
+        case .emoji: .emoji
         case .lastUsed: nil
         }
     }
@@ -127,6 +145,10 @@ enum Layout {
     static let tileSpacing: CGFloat = 6
     static let columnCount = 3
     static let tileCornerRadius: CGFloat = 12
+    static let emojiColumnCount = 8
+    static let emojiSize: CGFloat = 28
+    static let emojiCellHeight: CGFloat = 44
+    static let emojiCornerRadius: CGFloat = 8
 }
 
 struct ContentView: View {
@@ -139,6 +161,8 @@ struct ContentView: View {
     /// Name copied files like "GIF-3F9A2C71.gif" instead of after the GIF's title.
     @AppStorage(SettingKeys.randomFileNames) private var randomFileNames = false
     @AppStorage(SettingKeys.showTabNames) private var showTabNames = false
+    /// Off by default: the Emoji tab only shows once turned on in Settings.
+    @AppStorage(SettingKeys.showEmoji) private var showEmoji = false
     @AppStorage(ContentFilter.defaultsKey) private var contentFilter: ContentFilter = .unrestricted
     /// Owned by the app delegate, which shares them with the menu bar icon's right-click menu.
     @ObservedObject var state: ViewState
@@ -176,6 +200,8 @@ struct ContentView: View {
             if let closedAt = state.closedAt, Date().timeIntervalSince(closedAt) > Self.searchMemory {
                 startFresh()
             }
+            // Recently Used isn't refreshed while copying, so the grid doesn't shift under the Copied badge.
+            if effectiveMode == .emoji { showEmoji(matching: state.query) }
             // Still true from the last open, so setting it again would be a no-op: reset it first.
             searchFocused = false
             DispatchQueue.main.async { searchFocused = true }
@@ -201,9 +227,16 @@ struct ContentView: View {
         customApiKey.isEmpty ? BundledKey.value : customApiKey
     }
 
-    /// Typing always searches KLIPY; Favorites and Recent apply while the search field is empty.
+    /// Typing searches KLIPY, and Favorites and Recent apply while the search field is empty. In Emoji, typing
+    /// searches emoji instead. A hidden Emoji tab (turned off in Settings) falls back to Trending.
     private var effectiveMode: BrowseMode {
-        state.query.isEmpty ? state.mode : .klipy
+        let mode = state.mode == .emoji && !showEmoji ? .klipy : state.mode
+        return state.query.isEmpty || mode == .emoji ? mode : .klipy
+    }
+
+    /// GIFs or emoji, whichever is showing.
+    private var itemCount: Int {
+        effectiveMode == .emoji ? state.emojiItems.count : state.gifs.count
     }
 
     private var actions: GifActions {
@@ -232,20 +265,39 @@ struct ContentView: View {
     private var browser: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                MasonryGrid(
-                    state: state,
-                    favoriteIDs: library.favoriteIDs,
-                    slots: Dictionary(uniqueKeysWithValues: library.slots.map { ($0.value.id, $0.key) }),
-                    collections: library.collections,
-                    highlightedID: selectionRingID,
-                    showsPlaceholders: effectiveMode == .klipy,
-                    actions: actions
-                )
+                Group {
+                    if effectiveMode == .emoji {
+                        EmojiGrid(
+                            sections: state.emojiSections,
+                            highlightedID: selectionRingID,
+                            hoveredID: state.hoveredID,
+                            copiedID: state.copiedID,
+                            onHover: { id, hovering in state.hoveredID = hovering ? id : nil },
+                            copy: copyEmoji,
+                            drag: dragEmoji
+                        )
+                    } else {
+                        MasonryGrid(
+                            state: state,
+                            favoriteIDs: library.favoriteIDs,
+                            slots: Dictionary(uniqueKeysWithValues: library.slots.map { ($0.value.id, $0.key) }),
+                            collections: library.collections,
+                            highlightedID: selectionRingID,
+                            showsPlaceholders: effectiveMode == .klipy,
+                            actions: actions
+                        )
+                    }
+                }
                 .padding(.horizontal, Layout.gridPadding)
             }
             .onChange(of: state.selectedIndex) {
-                guard let id = state.selectedGif?.id else { return }
+                guard let id = effectiveMode == .emoji ? state.selectedEmoji?.id : state.selectedGif?.id else { return }
                 withAnimation(.smooth) { proxy.scrollTo(id, anchor: .center) }
+            }
+            .onChange(of: state.emojiScrollTarget) {
+                guard let target = state.emojiScrollTarget else { return }
+                withAnimation(reduceMotion ? nil : .smooth) { proxy.scrollTo(target, anchor: .top) }
+                state.emojiScrollTarget = nil
             }
         }
         .scrollIndicators(.never) // a legacy scroller would steal a column's worth of gutter on the right
@@ -267,11 +319,15 @@ struct ContentView: View {
         .onChange(of: library.collections) {
             if case .collection(let id) = effectiveMode { show(library.collection(id)?.gifs ?? []) }
         }
+        .onChange(of: showEmoji) {
+            if !showEmoji && state.mode == .emoji { state.mode = .klipy }
+        }
     }
 
     /// Return copies the selected result; ring it once there is a search or the arrow keys were used.
     private var selectionRingID: String? {
-        state.query.isEmpty && !state.hasNavigated ? nil : state.selectedGif?.id
+        guard !state.query.isEmpty || state.hasNavigated else { return nil }
+        return effectiveMode == .emoji ? state.selectedEmoji?.id : state.selectedGif?.id
     }
 
     private var header: some View {
@@ -288,11 +344,13 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
                 .fontWeight(.medium)
                 .accessibilityHidden(true)
-            TextField("Search KLIPY", text: $state.query) // KLIPY's attribution rules require this placeholder
+            // KLIPY's attribution rules require "Search KLIPY" wherever the field searches KLIPY. In Emoji it
+            // searches the emoji on this Mac instead.
+            TextField(effectiveMode == .emoji ? "Search Emoji" : "Search KLIPY", text: $state.query)
                 .textFieldStyle(.plain)
                 .font(.title3)
                 .focused($searchFocused)
-                .accessibilityHint("\(key(.selectNext)) and \(key(.selectPrevious)) choose a GIF, \(key(.copyGif)) copies it, \(key(.copyLink)) copies its link, and \(key(.toggleFavorite)) favorites it.")
+                .accessibilityHint(searchHint)
             if state.isLoading {
                 ProgressView().controlSize(.small)
             } else if !state.query.isEmpty {
@@ -308,7 +366,15 @@ struct ContentView: View {
         .padding(.horizontal, Layout.gridPadding)
     }
 
-    /// Favorites, Recent and Trending, then search suggestions while typing or quick picks otherwise.
+    private var searchHint: String {
+        if effectiveMode == .emoji {
+            return "\(key(.selectNext)) and \(key(.selectPrevious)) choose an emoji, and \(key(.copyGif)) copies it."
+        }
+        return "\(key(.selectNext)) and \(key(.selectPrevious)) choose a GIF, \(key(.copyGif)) copies it, \(key(.copyLink)) copies its link, and \(key(.toggleFavorite)) favorites it."
+    }
+
+    /// Favorites, Recent, Trending and Emoji, then search suggestions while typing or quick picks otherwise.
+    /// In Emoji, its categories instead, to jump between them like the Character Viewer's bottom bar.
     private var chips: some View {
         ScrollView(.horizontal) {
             GlassEffectContainer(spacing: 6) {
@@ -316,10 +382,13 @@ struct ContentView: View {
                     tab("Favorites", systemImage: "star.fill", mode: .favorites)
                     tab("Recent", systemImage: "clock.arrow.circlepath", mode: .recents)
                     tab("Trending", systemImage: "trophy.fill", mode: .klipy)
+                    if showEmoji {
+                        tab("Emoji", systemImage: "face.smiling.inverse", mode: .emoji)
+                    }
                     chip("Surprise Me", systemImage: "die.face.5.fill", isSelected: false, iconOnly: !showTabNames) {
                         _ = surpriseMe()
                     }
-                    .disabled(state.gifs.isEmpty)
+                    .disabled(itemCount == 0)
                     ForEach(library.collections) { collection in
                         chip(collection.name, systemImage: "square.stack.fill", isSelected: effectiveMode == .collection(collection.id)) {
                             state.query = ""
@@ -327,17 +396,10 @@ struct ContentView: View {
                         }
                         .contextMenu { collectionMenu(collection) }
                     }
-                    ForEach(chipTerms, id: \.self) { term in
-                        let isRecentSearch = state.query.isEmpty && library.recentSearches.contains(term)
-                        chip(term, systemImage: isRecentSearch ? "magnifyingglass" : nil, isSelected: state.query.caseInsensitiveCompare(term) == .orderedSame) {
-                            state.mode = .klipy
-                            state.query = term
-                        }
-                        .contextMenu {
-                            if isRecentSearch {
-                                Button("Remove from Recent Searches", systemImage: "xmark") { library.removeSearch(term) }
-                            }
-                        }
+                    if effectiveMode == .emoji {
+                        emojiCategoryChips
+                    } else {
+                        searchChips
                     }
                 }
                 .padding(.horizontal, Layout.gridPadding)
@@ -345,6 +407,37 @@ struct ContentView: View {
             }
         }
         .scrollIndicators(.never)
+    }
+
+    /// Jumps to a category, like the Character Viewer's bottom bar. Hidden while searching.
+    @ViewBuilder
+    private var emojiCategoryChips: some View {
+        if state.query.isEmpty {
+            Divider()
+                .frame(height: 16)
+            ForEach(state.emojiSections) { section in
+                chip(section.title, systemImage: section.systemImage, isSelected: false, iconOnly: true) {
+                    state.emojiScrollTarget = section.id
+                }
+                .accessibilityHint("Scrolls to \(section.title)")
+            }
+        }
+    }
+
+    /// Recent searches and quick picks, or suggestions while typing.
+    private var searchChips: some View {
+        ForEach(chipTerms, id: \.self) { term in
+            let isRecentSearch = state.query.isEmpty && library.recentSearches.contains(term)
+            chip(term, systemImage: isRecentSearch ? "magnifyingglass" : nil, isSelected: state.query.caseInsensitiveCompare(term) == .orderedSame) {
+                state.mode = .klipy
+                state.query = term
+            }
+            .contextMenu {
+                if isRecentSearch {
+                    Button("Remove from Recent Searches", systemImage: "xmark") { library.removeSearch(term) }
+                }
+            }
+        }
     }
 
     /// Icons by default, to leave room for collections and searches; Settings can bring the names back.
@@ -521,7 +614,9 @@ struct ContentView: View {
                 Label(notice.text, systemImage: notice.isError ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
                     .foregroundStyle(notice.isError ? .orange : .green)
             } else {
-                Text("\(key(.copyGif)) copy · \(key(.copyLink)) link · \(key(.toggleFavorite)) favorite")
+                Text(effectiveMode == .emoji
+                    ? "\(key(.copyGif)) copy · right-click for skin tones"
+                    : "\(key(.copyGif)) copy · \(key(.copyLink)) link · \(key(.toggleFavorite)) favorite")
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
@@ -573,7 +668,11 @@ struct ContentView: View {
 
     @ViewBuilder
     private var emptyState: some View {
-        if let loadError = state.loadError, effectiveMode == .klipy {
+        if effectiveMode == .emoji {
+            if state.emojiSections.isEmpty && !state.query.isEmpty {
+                ContentUnavailableView.search(text: state.query)
+            }
+        } else if let loadError = state.loadError, effectiveMode == .klipy {
             ContentUnavailableView("Couldn’t Load GIFs", systemImage: "wifi.exclamationmark", description: Text(loadError))
         } else if state.gifs.isEmpty && !state.isLoading {
             switch effectiveMode {
@@ -593,7 +692,7 @@ struct ContentView: View {
                 )
             case .klipy where !state.query.isEmpty:
                 ContentUnavailableView.search(text: state.query)
-            case .klipy:
+            case .klipy, .emoji:
                 EmptyView()
             }
         }
@@ -607,11 +706,21 @@ struct ContentView: View {
         case .recents: show(library.recents)
         case .collection(let id): show(library.collection(id)?.gifs ?? [])
         case .klipy: await loadFromKlipy()
+        case .emoji: showEmoji(matching: state.query)
         }
     }
 
     private func show(_ gifs: [Gif]) {
         withAnimation(.smooth) { state.gifs = gifs }
+        state.emojiSections = []
+        state.selectedIndex = 0
+        state.loadError = nil
+    }
+
+    /// Instant, with no debounce: the search runs over the emoji built into the app.
+    private func showEmoji(matching query: String) {
+        state.gifs = []
+        state.emojiSections = EmojiCatalog.sections(query: query, recent: library.recentEmoji)
         state.selectedIndex = 0
         state.loadError = nil
     }
@@ -659,11 +768,17 @@ struct ContentView: View {
         case .showFavorites: show(.favorites)
         case .showRecent: show(.recents)
         case .showTrending: show(.klipy)
+        case .showEmoji:
+            guard showEmoji else { return false }
+            show(.emoji)
         case .openSnicker, .favoriteSlot1, .favoriteSlot2, .favoriteSlot3, .favoriteSlot4, .favoriteSlot5,
              .favoriteSlot6, .favoriteSlot7, .favoriteSlot8, .favoriteSlot9:
             return false // global: handled by the app delegate
+        case .copyGif where effectiveMode == .emoji:
+            guard let selected = state.selectedEmoji else { return false }
+            copyEmoji(selected.emoji.character, itemID: selected.id)
         case .copyGif, .copyLink, .toggleFavorite, .saveToDownloads:
-            guard let selected = state.selectedGif else { return false }
+            guard effectiveMode != .emoji, let selected = state.selectedGif else { return false }
             switch action {
             case .copyLink: copyLink(selected)
             case .toggleFavorite: library.toggleFavorite(selected)
@@ -674,8 +789,13 @@ struct ContentView: View {
         return true
     }
 
-    /// Copies a random GIF from what's showing, for when nothing feels quite right.
+    /// Copies a random GIF (or emoji) from what's showing, for when nothing feels quite right.
     private func surpriseMe() -> Bool {
+        if effectiveMode == .emoji {
+            guard let item = state.emojiItems.randomElement() else { return false }
+            copyEmoji(item.emoji.character, itemID: item.id)
+            return true
+        }
         guard let gif = state.gifs.randomElement() else { return false }
         copy(gif)
         return true
@@ -687,10 +807,28 @@ struct ContentView: View {
     }
 
     private func moveSelection(by offset: Int) -> Bool {
-        guard !state.gifs.isEmpty else { return false }
+        guard itemCount > 0 else { return false }
         state.hasNavigated = true
-        state.selectedIndex = min(max(state.selectedIndex + offset, 0), state.gifs.count - 1)
+        state.selectedIndex = min(max(state.selectedIndex + offset, 0), itemCount - 1)
         return true
+    }
+
+    /// Emoji are plain text, so they paste anywhere without the GIF's two clipboard types.
+    private func copyEmoji(_ character: String, itemID: String) {
+        EmojiCatalog.copyToPasteboard(character)
+        library.addRecentEmoji(character)
+        state.notice = nil
+        withAnimation(.bouncy) { state.copiedID = itemID }
+        AccessibilityNotification.Announcement("Copied \(EmojiCatalog.emoji(for: character)?.title ?? character)").post()
+        Task {
+            try? await Task.sleep(for: Self.copiedLinger)
+            close()
+        }
+    }
+
+    private func dragEmoji(_ character: String) -> NSItemProvider {
+        library.addRecentEmoji(character)
+        return NSItemProvider(object: character as NSString)
     }
 
     private func copy(_ gif: Gif) {
@@ -941,6 +1079,120 @@ private struct GifTile: View {
                 .transition(reduceMotion ? .opacity : .scale.combined(with: .opacity))
         } else if isPending {
             ProgressView().controlSize(.small)
+        }
+    }
+}
+
+// MARK: - Emoji
+
+/// Apple's emoji categories as a grid, like the Character Viewer's, sized for the popover.
+private struct EmojiGrid: View {
+    let sections: [EmojiSection]
+    let highlightedID: String?
+    let hoveredID: String?
+    let copiedID: String?
+    let onHover: (String, Bool) -> Void
+    /// The emoji or skin-tone variant, and where it was clicked.
+    let copy: (String, String) -> Void
+    let drag: (String) -> NSItemProvider
+
+    private static let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: Layout.emojiColumnCount)
+
+    var body: some View {
+        LazyVStack(alignment: .leading, spacing: 0) {
+            ForEach(sections) { section in
+                Text(section.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 4)
+                    .padding(.top, 10)
+                    .padding(.bottom, 4)
+                    .accessibilityAddTraits(.isHeader)
+                    .id(section.id)
+                LazyVGrid(columns: Self.columns, spacing: 0) {
+                    ForEach(section.items) { item in
+                        EmojiCell(
+                            emoji: item.emoji,
+                            isHighlighted: item.id == highlightedID,
+                            isHovered: item.id == hoveredID,
+                            isCopied: item.id == copiedID,
+                            onHover: { hovering in onHover(item.id, hovering) },
+                            copy: { character in copy(character, item.id) },
+                            drag: drag
+                        )
+                        .id(item.id)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct EmojiCell: View {
+    let emoji: Emoji
+    let isHighlighted: Bool
+    let isHovered: Bool
+    let isCopied: Bool
+    let onHover: (Bool) -> Void
+    let copy: (String) -> Void
+    let drag: (String) -> NSItemProvider
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var shape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: Layout.emojiCornerRadius, style: .continuous)
+    }
+
+    var body: some View {
+        Text(emoji.character)
+            .font(.system(size: Layout.emojiSize))
+            .frame(maxWidth: .infinity)
+            .frame(height: Layout.emojiCellHeight)
+            .background { shape.fill(.quaternary).opacity(isHovered || isCopied ? 1 : 0) }
+            .overlay { shape.strokeBorder(Color.accentColor, lineWidth: 2).opacity(isHighlighted ? 1 : 0) }
+            .overlay(alignment: .bottomTrailing) { copiedBadge }
+            .scaleEffect(isHovered && !reduceMotion ? 1.12 : 1)
+            .animation(.smooth(duration: 0.15), value: isHovered)
+            .contentShape(shape)
+            .onHover(perform: onHover)
+            .onTapGesture { copy(emoji.character) }
+            .onDrag { drag(emoji.character) }
+            .contextMenu { menu }
+            .help(emoji.title)
+            .accessibilityElement()
+            .accessibilityLabel(emoji.title)
+            .accessibilityAddTraits(isHighlighted ? [.isButton, .isSelected] : .isButton)
+            .accessibilityHint("Copies the emoji to the clipboard")
+            .accessibilityAction { copy(emoji.character) }
+            .accessibilityActions {
+                ForEach(emoji.variants, id: \.self) { variant in
+                    Button("Copy with \(Emoji.toneDescription(of: variant))") { copy(variant) }
+                }
+            }
+    }
+
+    /// Skin tones live here, the way Apple's picker offers them from a click and hold.
+    @ViewBuilder
+    private var menu: some View {
+        Button("Copy Emoji", systemImage: "doc.on.doc") { copy(emoji.character) }
+        if !emoji.variants.isEmpty {
+            Section("Skin Tones") {
+                ForEach(emoji.variants, id: \.self) { variant in
+                    Button("\(variant)  \(Emoji.toneDescription(of: variant).capitalized)") { copy(variant) }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var copiedBadge: some View {
+        if isCopied {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white, .green)
+                .symbolEffect(.bounce, value: isCopied)
+                .transition(reduceMotion ? .opacity : .scale.combined(with: .opacity))
+                .accessibilityHidden(true)
         }
     }
 }

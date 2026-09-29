@@ -6,6 +6,11 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+
+- An Emoji tab with every emoji your Mac can draw, skin tones included, in the same categories as Apple’s emoji picker. Search by name or keyword (“lol” finds 😂), jump between categories from the chips, and click to copy or drag into any app. Right-click an emoji for its skin tones. Recently used emoji come first.
+- The Emoji tab is off until you turn on Show Emoji in Settings → General. Once it’s on, ⌘4 shows it and Snicker can open on it.
+
 ## [1.4.1] - 2026-09-29
 
 ### Fixed

@@ -4,7 +4,7 @@ Guide for AI coding agents working on Snicker. Humans: see [CONTRIBUTING.md](CON
 
 ## What Snicker is
 
-A macOS menu bar app for finding and sharing GIFs. ⌘⌥V opens a popover; the user searches KLIPY's GIF library and clicks a GIF to copy it or drags it into any app. Its reason to exist: copied GIFs paste into Microsoft Teams, which only accepts a file URL on the clipboard, as well as apps that take raw GIF data.
+A macOS menu bar app for finding and sharing GIFs, with an optional emoji picker. ⌘⌥V opens a popover; the user searches KLIPY's GIF library and clicks a GIF to copy it or drags it into any app. Its reason to exist: copied GIFs paste into Microsoft Teams, which only accepts a file URL on the clipboard, as well as apps that take raw GIF data.
 
 - SwiftUI + AppKit, Swift Package Manager, **no third-party dependencies**
 - macOS 26+ (Liquid Glass APIs), Apple Silicon
@@ -19,18 +19,21 @@ swift test            # run the tests (needs full Xcode; CI runs them on every p
 swift build           # quick compile check (needs Sources/Snicker/BundledKey.swift; run ./build.sh once first)
 docs/src/render.sh    # re-render icon, README hero and launch video (needs Chrome, Node, ffmpeg, img2webp)
 ./release.sh 1.1.0    # tag a release; GitHub Actions builds and publishes it
+./update-emoji.sh     # regenerate EmojiData.swift from Unicode's emoji list and CLDR keywords (needs network)
 ```
 
-Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response decoding, file naming and favorites/recents storage. They need full Xcode, because XCTest and Swift Testing don't ship with the Command Line Tools; without Xcode, push and read the CI result (`gh run watch`). Test new logic there; views are verified by eye: run `./build.sh install` and ask the user for a screenshot, since the sandboxed agent cannot capture the screen or send keystrokes, and offscreen snapshots do not render Liquid Glass.
+Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response decoding, file naming, favorites/recents storage and emoji parsing and search. They need full Xcode, because XCTest and Swift Testing don't ship with the Command Line Tools; without Xcode, push and read the CI result (`gh run watch`). Test new logic there; views are verified by eye: run `./build.sh install` and ask the user for a screenshot, since the sandboxed agent cannot capture the screen or send keystrokes, and offscreen snapshots do not render Liquid Glass.
 
 ## Code map
 
 | File | Responsibility |
 |---|---|
 | `Sources/Snicker/App.swift` | Entry point, `AppDelegate`, status item + template icon, `NSPopover`, hidden Edit menu, Carbon global hotkey (`HotKey`) |
-| `Sources/Snicker/ContentView.swift` | All UI: `ViewState`, search field, chips, masonry grid, `GifTile`, footer + settings menu, `WelcomeView` (API key entry), `AnimatedGif` (NSImageView wrapper) |
+| `Sources/Snicker/ContentView.swift` | All UI: `ViewState`, search field, chips, masonry grid, `GifTile`, `EmojiGrid`, footer + settings menu, `WelcomeView` (API key entry), `AnimatedGif` (NSImageView wrapper) |
 | `Sources/Snicker/Klipy.swift` | `Gif` model, KLIPY API client (`fetch`, `autocomplete`), `GifFile` (download cache, clipboard, drag, save) |
-| `Sources/Snicker/Library.swift` | Favorites, recents, recent searches, favorite slots and collections, persisted as JSON in UserDefaults |
+| `Sources/Snicker/Library.swift` | Favorites, recents, recent searches, recent emoji, favorite slots and collections, persisted as JSON in UserDefaults |
+| `Sources/Snicker/Emoji.swift` | `Emoji`, `EmojiCatalog` (parsing, search, Recently Used, hiding emoji this Mac's font can't draw) |
+| `Sources/Snicker/EmojiData.swift` | **Generated** by `update-emoji.sh`: every emoji with its name, keywords and skin-tone variants, in Apple's categories. Don't edit by hand |
 | `Sources/Snicker/Shortcuts.swift` | `Shortcut`, every remappable `ShortcutAction` with its default, and `ShortcutStore` (saved mappings, recording, the global Carbon hotkey) |
 | `Sources/Snicker/SettingsMenu.swift` | The ⋯ and right-click menu (About, Settings, Support, Quit) and the About panel |
 | `Sources/Snicker/SettingsWindow.swift` | The Settings window: an `NSTabViewController` toolbar hosting `GeneralSettingsView`, `ShortcutSettingsView` and `AdvancedSettingsView` |
@@ -44,7 +47,7 @@ Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response deco
 1. **Build with the Command Line Tools, not Xcode.** On the macOS 27 SDK, `@State` is a macro whose plugin ships only with Xcode, so it fails to compile here. Keep view state in `ViewState` (an `ObservableObject`) or another `ObservableObject`. `@StateObject`, `@ObservedObject`, `@AppStorage`, `@FocusState`, `@Binding` and `@Environment` are fine.
 2. **Never commit an API key.** `build.sh` reads the KLIPY key from `SNICKER_KLIPY_KEY` or `~/.config/snicker/klipy-key` and writes it XOR-masked into `BundledKey.swift`. CI uses the `KLIPY_API_KEY` repository secret. A user-entered key in UserDefaults (`klipyApiKey`) overrides the bundled one.
 3. **Copying must write both clipboard types** (`GifFile.copyToPasteboard`): the file URL for Teams, the raw `com.compuserve.gif` data for Slack, Discord and Messages. Removing either breaks pasting somewhere.
-4. **KLIPY uses a Tenor-compatible v2 API** at `https://api.klipy.com/v2/` (`featured`, `search`, `autocomplete`). An invalid key returns HTTP 404 with a JSON error message, not 401. KLIPY's attribution rules require the search placeholder to read "Search KLIPY" (the only hard requirement); the official "Powered by KLIPY" logo is recommended and shown in the popover footer (`Resources/powered-by-klipy.png`, copied into the app by `build.sh`, tinted as a template image) and on the site (`docs/assets/klipy/`). Keep both. Their terms forbid storing, rehosting or retaining copies of KLIPY media: `GifFile.download` keeps only the GIF currently on the clipboard and `clearDownloads()` runs at launch. Don't add a persistent media cache; favorites and recents store metadata and URLs only.
+4. **KLIPY uses a Tenor-compatible v2 API** at `https://api.klipy.com/v2/` (`featured`, `search`, `autocomplete`). An invalid key returns HTTP 404 with a JSON error message, not 401. KLIPY's attribution rules require the search placeholder to read "Search KLIPY" (the only hard requirement); the official "Powered by KLIPY" logo is recommended and shown in the popover footer (`Resources/powered-by-klipy.png`, copied into the app by `build.sh`, tinted as a template image) and on the site (`docs/assets/klipy/`). Keep both. The Emoji tab searches emoji built into the app, not KLIPY, so its placeholder reads "Search Emoji". Their terms forbid storing, rehosting or retaining copies of KLIPY media: `GifFile.download` keeps only the GIF currently on the clipboard and `clearDownloads()` runs at launch. Don't add a persistent media cache; favorites and recents store metadata and URLs only.
 5. **GIFs animate only while the popover is open** (`ViewState.isShown`). A hidden popover must cost nothing; letting them run cost ~20% CPU at idle.
 6. **Accessibility is a requirement.** New controls need VoiceOver labels; everything must work from the keyboard; animations respect `accessibilityReduceMotion`; GIFs respect `accessibilityPlayAnimatedImages`.
 7. **The popover size is fixed up front** (`Layout.popoverSize`, `sizingOptions = []`). Letting SwiftUI size it after showing makes it grow up under the menu bar.
