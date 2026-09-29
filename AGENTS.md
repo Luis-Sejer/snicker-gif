@@ -62,6 +62,16 @@ Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response deco
 
 `release.sh` checks the tree is clean and the changelog has the version, then tags and pushes. `.github/workflows/release.yml` builds on a `macos-26` runner with the key secret, signs with Snicker's self-made certificate (`SIGNING_CERT_P12` and `SIGNING_CERT_PASSWORD` secrets, identity `Snicker`), zips the app and publishes a GitHub release. Keep that certificate: signing with a different one makes macOS drop Snicker's Accessibility permission for every user once. Local builds sign ad-hoc unless `SNICKER_SIGNING_IDENTITY` is set. `install.sh` (what the README's `curl` line runs) downloads the latest `Snicker.zip` into `~/Applications` and strips the quarantine flag.
 
+## Signing certificate
+
+**Only the repository owner (@Luis-Sejer) has Snicker's signing certificate.** Contributors, and the agents working for them, don't have it and don't need it. Don't look for it, ask for it or try to recreate it.
+
+- **What it is.** A self-made code-signing certificate, identity `Snicker`. Releases are signed with it so macOS recognises every update as the same app and keeps Snicker's Accessibility permission (Paste for Me, Replace Emoji & Symbols).
+- **Where it lives.** In the owner's login keychain as "Snicker", with a personal backup. GitHub Actions gets it from the `SIGNING_CERT_P12` and `SIGNING_CERT_PASSWORD` repo secrets, which only the owner can see or change.
+- **Never replace it.** Don't generate a new certificate, and don't change the signing step or the secrets. A different certificate makes macOS drop the Accessibility permission for every user once.
+- **Contributor builds sign ad-hoc.** `./build.sh` signs ad-hoc unless `SNICKER_SIGNING_IDENTITY` is set, and works for everyone without the certificate. Ad-hoc builds lose the Accessibility permission on every rebuild. That's expected; re-allow Snicker under Privacy & Security → Accessibility when testing those features.
+- **For the owner.** Sign local builds with `SNICKER_SIGNING_IDENTITY=Snicker ./build.sh install`. To restore the secrets from the backup: `base64 -i snicker-signing.p12 | gh secret set SIGNING_CERT_P12 --repo Luis-Sejer/snicker-gif`, then `gh secret set SIGNING_CERT_PASSWORD --repo Luis-Sejer/snicker-gif` and paste the password.
+
 ## README artwork
 
 The hero image, the looping WebP and the launch video all come from one timeline in `docs/src/anim.html`, driven by `?t=<seconds>`. The beats are constants at the top of its script; `render.sh` places the sound effects and voiceover on the same beats (in ms). The artwork is a drawing of the real UI, so keep it in sync when the UI changes.
