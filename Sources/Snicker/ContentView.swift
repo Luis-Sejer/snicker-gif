@@ -473,6 +473,15 @@ struct ContentView: View {
             EmptyView()
         }
         Spacer(minLength: 0)
+        if updater.checkStatus == .upToDate || updater.checkStatus == .failed {
+            Button("Dismiss", systemImage: "xmark", action: updater.clearCheckResult)
+                .labelStyle(.iconOnly)
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+                .frame(width: 24, height: 24)
+                .contentShape(.rect)
+                .help("Dismiss")
+        }
     }
 
     @ViewBuilder
