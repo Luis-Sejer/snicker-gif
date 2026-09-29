@@ -6,15 +6,18 @@ enum SettingKeys {
     static let randomFileNames = "randomFileNames"
     /// Show "Favorites", "Recent" and "Trending" next to their icons.
     static let showTabNames = "showTabNames"
-    /// Show the Emoji tab, an emoji picker next to the GIFs. Off until turned on.
+    /// The emoji picker: an Emoji tab, and a shortcut that opens Snicker at the text cursor in place of
+    /// Apple's Emoji & Symbols. Off until turned on.
     static let showEmoji = "showEmoji"
 }
 
 struct GeneralSettingsView: View {
     @ObservedObject var library: Library
     @ObservedObject var updater: Updater
+    let shortcuts: ShortcutStore
 
     @StateObject private var loginItem = LoginItem()
+    @StateObject private var accessibility = AccessibilityAccess()
     @AppStorage(SettingKeys.randomFileNames) private var randomFileNames = false
     @AppStorage(StartTab.defaultsKey) private var startTab: StartTab = .trending
     @AppStorage(ContentFilter.defaultsKey) private var contentFilter: ContentFilter = .unrestricted
@@ -34,12 +37,31 @@ struct GeneralSettingsView: View {
                     }
                 }
                 Toggle("Show Tab Names", isOn: $showTabNames)
-                Toggle("Show Emoji", isOn: $showEmoji)
             } footer: {
-                Text("Snicker opens on this tab when it starts, and when you come back after a while. Tabs show as icons unless you turn on their names. Show Emoji adds a tab with every emoji, to copy like a GIF.")
+                Text("Snicker opens on this tab when it starts, and when you come back after a while. Tabs show as icons unless you turn on their names.")
+            }
+
+            Section {
+                Toggle("Emoji Picker", isOn: $showEmoji)
+                if showEmoji {
+                    LabeledContent("Type Emoji Into Apps") {
+                        if accessibility.isAllowed {
+                            Label("Allowed", systemImage: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                        } else {
+                            Button("Allow…", action: TextInsertion.requestAccess)
+                        }
+                    }
+                }
+            } footer: {
+                Text(emojiFooter)
             }
             .onChange(of: showEmoji) {
                 if !showEmoji && startTab == .emoji { startTab = .trending }
+                shortcuts.refreshAvailability()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                accessibility.refresh()
             }
 
             Section {
@@ -98,6 +120,17 @@ struct GeneralSettingsView: View {
 }
 
 private extension GeneralSettingsView {
+    var emojiFooter: String {
+        let shortcut = shortcuts.shortcut(for: .openEmojiPicker).displayString
+        guard showEmoji else {
+            return "Replaces Apple’s Emoji & Symbols with Snicker, opened at the text cursor. Adds an Emoji tab too."
+        }
+        if accessibility.isAllowed {
+            return "\(shortcut) opens Snicker at the text cursor, and emoji you pick are typed in. Change the shortcut under Shortcuts."
+        }
+        return "\(shortcut) opens Snicker. To open it at the text cursor and type emoji in, allow Snicker under Privacy & Security → Accessibility; until then emoji are copied."
+    }
+
     var updateStatus: String {
         if updater.phase == .installing { return "Updating… Snicker will reopen by itself." }
         if updater.phase == .failed { return "Couldn’t update by itself. Download Snicker again from GitHub; it replaces this version." }
@@ -108,6 +141,16 @@ private extension GeneralSettingsView {
         case .failed: return "Couldn’t reach GitHub to check for updates."
         case .idle: return "Snicker checks for updates each time you open it."
         }
+    }
+}
+
+/// Accessibility permission is granted in System Settings, so it is read again whenever Snicker comes back to the front.
+@MainActor
+private final class AccessibilityAccess: ObservableObject {
+    @Published private(set) var isAllowed = TextInsertion.isAllowed
+
+    func refresh() {
+        isAllowed = TextInsertion.isAllowed
     }
 }
 

@@ -63,6 +63,12 @@ struct EmojiTests {
         #expect(EmojiCatalog.sections(query: "zzqx", recent: []).isEmpty)
     }
 
+    /// Typing an emoji into another app sends it in one keyboard event, which has a length limit.
+    @MainActor @Test func everyEmojiFitsInOneKeyboardEvent() {
+        let all = EmojiCatalog.parse(EmojiData.table).flatMap(\.emoji).flatMap { [$0.character] + $0.variants }
+        #expect(all.allSatisfy { $0.utf16.count <= TextInsertion.maxEventLength })
+    }
+
     @Test func itemIDsAreUniquePerSection() {
         let sections = EmojiCatalog.sections(query: "", recent: ["😀"])
         let ids = sections.flatMap(\.items).map(\.id)

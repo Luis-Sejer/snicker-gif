@@ -62,7 +62,7 @@ struct Shortcut: Codable, Equatable {
 
 /// Everything the keyboard can do in Snicker. Every one is remappable, for keyboards without arrow keys and friends.
 enum ShortcutAction: String, CaseIterable {
-    case openSnicker, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads, surpriseMe
+    case openSnicker, openEmojiPicker, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads, surpriseMe
     case showFavorites, showRecent, showTrending, showEmoji
     case favoriteSlot1, favoriteSlot2, favoriteSlot3, favoriteSlot4, favoriteSlot5
     case favoriteSlot6, favoriteSlot7, favoriteSlot8, favoriteSlot9
@@ -85,6 +85,7 @@ enum ShortcutAction: String, CaseIterable {
         if let slotNumber { return "Favorite Slot \(slotNumber)" }
         switch self {
         case .openSnicker: return "Open Snicker"
+        case .openEmojiPicker: return "Open Emoji Picker"
         case .selectNext: return "Next GIF"
         case .selectPrevious: return "Previous GIF"
         case .copyGif: return "Copy GIF"
@@ -101,7 +102,14 @@ enum ShortcutAction: String, CaseIterable {
     }
 
     /// Opening Snicker and the favorite slots work from any app; the rest work while Snicker is open.
-    var isGlobal: Bool { self == .openSnicker || slotNumber != nil }
+    var isGlobal: Bool { self == .openSnicker || self == .openEmojiPicker || slotNumber != nil }
+
+    /// The emoji shortcuts only exist while the emoji picker is turned on in Settings, so ⌃⌘Space stays
+    /// Apple's until then.
+    var isAvailable: Bool {
+        guard self == .openEmojiPicker || self == .showEmoji else { return true }
+        return UserDefaults.standard.bool(forKey: SettingKeys.showEmoji)
+    }
 
     var defaultShortcut: Shortcut {
         // ⌃⌥ rather than ⌥ alone: ⌥ with a digit types characters like | [ ] on many keyboard layouts.
@@ -110,6 +118,8 @@ enum ShortcutAction: String, CaseIterable {
         }
         switch self {
         case .openSnicker: return Shortcut(keyCode: kVK_ANSI_V, modifiers: cmdKey | optionKey, keyName: "V")
+        // Apple's shortcut for Emoji & Symbols, which this takes over.
+        case .openEmojiPicker: return Shortcut(keyCode: kVK_Space, modifiers: controlKey | cmdKey, keyName: "Space")
         case .selectNext: return Shortcut(keyCode: kVK_DownArrow, keyName: "↓")
         case .selectPrevious: return Shortcut(keyCode: kVK_UpArrow, keyName: "↑")
         case .copyGif: return Shortcut(keyCode: kVK_Return, keyName: "↩")
@@ -161,7 +171,7 @@ final class ShortcutStore: ObservableObject {
     /// The in-Snicker action a key press maps to, if any.
     func action(for event: NSEvent) -> ShortcutAction? {
         guard let pressed = Shortcut(event: event) else { return nil }
-        return ShortcutAction.allCases.first { !$0.isGlobal && shortcut(for: $0).matches(pressed) }
+        return ShortcutAction.allCases.first { !$0.isGlobal && $0.isAvailable && shortcut(for: $0).matches(pressed) }
     }
 
     /// All global shortcuts are paused while recording, so pressing one records it instead of running it.
@@ -191,7 +201,7 @@ final class ShortcutStore: ObservableObject {
         custom = [:]
         save()
         registerGlobals()
-        let taken = ShortcutAction.allCases.filter { $0.isGlobal && hotKeys[$0] == nil }
+        let taken = ShortcutAction.allCases.filter { $0.isGlobal && $0.isAvailable && hotKeys[$0] == nil }
         error = taken.isEmpty ? nil : "Used by another app: " + taken.map { shortcut(for: $0).displayString }.joined(separator: ", ")
     }
 
@@ -224,7 +234,7 @@ final class ShortcutStore: ObservableObject {
     }
 
     private func assign(_ shortcut: Shortcut, to action: ShortcutAction) {
-        if action.isGlobal {
+        if action.isGlobal && action.isAvailable {
             hotKeys[action] = nil // release the old registration first, or registering the same keys again fails
             guard let registered = HotKey(shortcut, action: { [weak self] in self?.performGlobal(action) }) else {
                 error = "\(shortcut.displayString) is already used by another app. Try another."
@@ -252,6 +262,12 @@ final class ShortcutStore: ObservableObject {
         keyMonitor = nil
     }
 
+    /// Called when the emoji picker is turned on or off, to take or give back its shortcut.
+    func refreshAvailability() {
+        cancelRecording()
+        registerGlobals()
+    }
+
     private func registerGlobals() {
         hotKeys = [:] // release the old registrations first, or registering the same keys again fails
         for action in ShortcutAction.allCases where action.isGlobal {
@@ -260,6 +276,10 @@ final class ShortcutStore: ObservableObject {
     }
 
     private func register(_ action: ShortcutAction) {
+        guard action.isAvailable else {
+            hotKeys[action] = nil
+            return
+        }
         hotKeys[action] = HotKey(shortcut(for: action), action: { [weak self] in self?.performGlobal(action) })
     }
 

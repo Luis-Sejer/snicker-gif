@@ -17,6 +17,16 @@ enum Main {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
+    /// An invisible window at the text cursor for the popover to point at, when the emoji picker shortcut opens it.
+    private lazy var cursorAnchor: NSWindow = {
+        let window = NSWindow(contentRect: .zero, styleMask: .borderless, backing: .buffered, defer: true)
+        window.isOpaque = false
+        window.backgroundColor = .clear
+        window.ignoresMouseEvents = true
+        window.isReleasedWhenClosed = false
+        window.level = .floating
+        return window
+    }()
     private var shortcuts: ShortcutStore!
     private var outsideClickMonitor: Any?
     private let state = ViewState()
@@ -28,7 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     )
     private lazy var settingsWindow = SettingsWindow { [unowned self] in
         [
-            ("General", "gearshape", AnyView(GeneralSettingsView(library: library, updater: updater))),
+            ("General", "gearshape", AnyView(GeneralSettingsView(library: library, updater: updater, shortcuts: shortcuts))),
             ("Shortcuts", "keyboard", AnyView(ShortcutSettingsView(store: shortcuts))),
             ("Advanced", "gearshape.2", AnyView(AdvancedSettingsView { [weak self] in self?.editApiKey() })),
         ]
@@ -63,6 +73,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hostingController.sizingOptions = []
         NSApp.mainMenu = mainMenu()
         popover.behavior = .transient
+        popover.delegate = self
         popover.contentSize = Layout.popoverSize
         popover.contentViewController = hostingController
 
@@ -89,6 +100,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func performGlobal(_ action: ShortcutAction) {
         if let slot = action.slotNumber {
             copyFavoriteSlot(slot)
+        } else if action == .openEmojiPicker {
+            openAtTextCursor()
         } else {
             togglePopover()
         }
@@ -231,9 +244,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showPopover() {
         guard let button = statusItem.button, !popover.isShown else { return }
+        state.insertTarget = nil
         NSApp.activate(ignoringOtherApps: true)
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         popover.contentViewController?.view.window?.makeKey()
+    }
+
+    /// In place of Apple's Emoji & Symbols: opens under the text cursor, and emoji picked there are typed
+    /// into the app that was in front. Without Accessibility permission it opens at the pointer and copies.
+    private func openAtTextCursor() {
+        if popover.isShown {
+            popover.performClose(nil)
+            return
+        }
+        let frontmost = NSWorkspace.shared.frontmostApplication
+        let target = frontmost == .current || !TextInsertion.isAllowed ? nil : frontmost
+        let pointer = NSEvent.mouseLocation
+        let anchor = TextInsertion.caretRect() ?? NSRect(x: pointer.x, y: pointer.y, width: 1, height: 1)
+        cursorAnchor.setFrame(NSRect(origin: anchor.origin, size: CGSize(width: max(anchor.width, 1), height: max(anchor.height, 1))), display: false)
+        cursorAnchor.orderFrontRegardless()
+        guard let view = cursorAnchor.contentView else { return }
+        state.insertTarget = target
+        NSApp.activate(ignoringOtherApps: true)
+        popover.show(relativeTo: view.bounds, of: view, preferredEdge: .minY)
+        popover.contentViewController?.view.window?.makeKey()
+    }
+}
+
+extension AppDelegate: NSPopoverDelegate {
+    func popoverDidClose(_ notification: Notification) {
+        cursorAnchor.orderOut(nil)
     }
 }
 

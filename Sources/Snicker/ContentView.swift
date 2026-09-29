@@ -40,6 +40,8 @@ final class ViewState: ObservableObject {
     private(set) var emojiItems: [EmojiItem] = []
     /// Set by a category chip; the grid scrolls to that section.
     @Published var emojiScrollTarget: String?
+    /// The app to type a picked emoji into, when the emoji picker shortcut opened Snicker at its text cursor.
+    var insertTarget: NSRunningApplication?
 
     private static var lastMode: BrowseMode {
         UserDefaults.standard.string(forKey: lastModeKey).flatMap(BrowseMode.init(storageKey:)) ?? .klipy
@@ -771,7 +773,7 @@ struct ContentView: View {
         case .showEmoji:
             guard showEmoji else { return false }
             show(.emoji)
-        case .openSnicker, .favoriteSlot1, .favoriteSlot2, .favoriteSlot3, .favoriteSlot4, .favoriteSlot5,
+        case .openSnicker, .openEmojiPicker, .favoriteSlot1, .favoriteSlot2, .favoriteSlot3, .favoriteSlot4, .favoriteSlot5,
              .favoriteSlot6, .favoriteSlot7, .favoriteSlot8, .favoriteSlot9:
             return false // global: handled by the app delegate
         case .copyGif where effectiveMode == .emoji:
@@ -813,10 +815,16 @@ struct ContentView: View {
         return true
     }
 
-    /// Emoji are plain text, so they paste anywhere without the GIF's two clipboard types.
+    /// Emoji are plain text, so they paste anywhere without the GIF's two clipboard types. Opened with the
+    /// emoji picker shortcut, the emoji is typed where the cursor was instead, like Apple's picker does.
     private func copyEmoji(_ character: String, itemID: String) {
-        EmojiCatalog.copyToPasteboard(character)
         library.addRecentEmoji(character)
+        if let target = state.insertTarget, character.utf16.count <= TextInsertion.maxEventLength {
+            close()
+            Task { await TextInsertion.type(character, into: target) }
+            return
+        }
+        EmojiCatalog.copyToPasteboard(character)
         state.notice = nil
         withAnimation(.bouncy) { state.copiedID = itemID }
         AccessibilityNotification.Announcement("Copied \(EmojiCatalog.emoji(for: character)?.title ?? character)").post()

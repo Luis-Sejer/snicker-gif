@@ -32,6 +32,7 @@ Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response deco
 | `Sources/Snicker/ContentView.swift` | All UI: `ViewState`, search field, chips, masonry grid, `GifTile`, `EmojiGrid`, footer + settings menu, `WelcomeView` (API key entry), `AnimatedGif` (NSImageView wrapper) |
 | `Sources/Snicker/Klipy.swift` | `Gif` model, KLIPY API client (`fetch`, `autocomplete`), `GifFile` (download cache, clipboard, drag, save) |
 | `Sources/Snicker/Library.swift` | Favorites, recents, recent searches, recent emoji, favorite slots and collections, persisted as JSON in UserDefaults |
+| `Sources/Snicker/TextInsertion.swift` | The emoji picker shortcut's Accessibility work: finding the text cursor in other apps and typing an emoji there |
 | `Sources/Snicker/Emoji.swift` | `Emoji`, `EmojiCatalog` (parsing, search, Recently Used, hiding emoji this Mac's font can't draw) |
 | `Sources/Snicker/EmojiData.swift` | **Generated** by `update-emoji.sh`: every emoji with its name, keywords and skin-tone variants, in Apple's categories. Don't edit by hand |
 | `Sources/Snicker/Shortcuts.swift` | `Shortcut`, every remappable `ShortcutAction` with its default, and `ShortcutStore` (saved mappings, recording, the global Carbon hotkey) |
@@ -51,7 +52,8 @@ Tests live in `Tests/SnickerTests` (Swift Testing) and cover KLIPY response deco
 5. **GIFs animate only while the popover is open** (`ViewState.isShown`). A hidden popover must cost nothing; letting them run cost ~20% CPU at idle.
 6. **Accessibility is a requirement.** New controls need VoiceOver labels; everything must work from the keyboard; animations respect `accessibilityReduceMotion`; GIFs respect `accessibilityPlayAnimatedImages`.
 7. **The popover size is fixed up front** (`Layout.popoverSize`, `sizingOptions = []`). Letting SwiftUI size it after showing makes it grow up under the menu bar.
-8. **Menu bar apps have no main menu**, so text-editing shortcuts only work because of the hidden Edit menu in `App.swift`. Don't remove it.
+8. **The emoji picker is opt-in** (`SettingKeys.showEmoji`, off by default). Until it is on, its shortcuts are not registered (`ShortcutAction.isAvailable`), so ⌃⌘Space stays Apple's. Typing into other apps needs Accessibility permission, which macOS drops whenever the ad-hoc signature changes, so every update asks for it again; without it the picker opens at the pointer and copies.
+9. **Menu bar apps have no main menu**, so text-editing shortcuts only work because of the hidden Edit menu in `App.swift`. Don't remove it.
 
 ## Conventions
 

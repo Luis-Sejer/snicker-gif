@@ -7,6 +7,11 @@ struct ShortcutTests {
         #expect(ShortcutAction.openSnicker.defaultShortcut.displayString == "⌥⌘V")
     }
 
+    @Test func emojiPickerTakesOverApplesShortcut() {
+        #expect(ShortcutAction.openEmojiPicker.defaultShortcut.displayString == "⌃⌘Space")
+        #expect(ShortcutAction.openEmojiPicker.isGlobal)
+    }
+
     @Test func modifiersShowInMenuOrder() {
         let all = Shortcut(keyCode: kVK_ANSI_G, modifiers: cmdKey | shiftKey | optionKey | controlKey, keyName: "G")
         #expect(all.displayString == "⌃⌥⇧⌘G")

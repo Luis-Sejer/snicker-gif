@@ -8,11 +8,16 @@ struct ShortcutSettingsView: View {
         Form {
             Section {
                 row(.openSnicker)
+                if showEmoji {
+                    row(.openEmojiPicker)
+                }
             } footer: {
-                Text("Works from any app.")
+                Text(showEmoji
+                    ? "Works from any app. Open Emoji Picker opens Snicker at the text cursor instead of Apple’s Emoji & Symbols, and types the emoji you pick."
+                    : "Works from any app.")
             }
             Section("While Snicker Is Open") {
-                ForEach(ShortcutAction.allCases.filter { !$0.isGlobal && ($0 != .showEmoji || showEmoji) }, id: \.self, content: row)
+                ForEach(ShortcutAction.allCases.filter { !$0.isGlobal && $0.isAvailable }, id: \.self, content: row)
             }
             Section {
                 ForEach(ShortcutAction.favoriteSlots, id: \.self, content: row)

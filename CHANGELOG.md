@@ -8,8 +8,9 @@ All notable changes to Snicker are documented here. The format is based on
 
 ### Added
 
-- An Emoji tab with every emoji your Mac can draw, skin tones included, in the same categories as Apple’s emoji picker. Search by name or keyword (“lol” finds 😂), jump between categories from the chips, and click to copy or drag into any app. Right-click an emoji for its skin tones. Recently used emoji come first.
-- The Emoji tab is off until you turn on Show Emoji in Settings → General. Once it’s on, ⌘4 shows it and Snicker can open on it.
+- An emoji picker that can stand in for Apple’s Emoji & Symbols. Press ⌃⌘Space (or your own shortcut, under Settings → Shortcuts) and Snicker opens at the text cursor. Pick an emoji and it’s typed right where you were, like Apple’s picker. Typing into other apps needs Accessibility permission; without it Snicker opens at the pointer and copies the emoji instead.
+- The picker has every emoji your Mac can draw, skin tones included, in the same categories as Apple’s. Search by name or keyword (“lol” finds 😂), jump between categories from the chips, and right-click an emoji for its skin tones. Recently used emoji come first. It’s an Emoji tab next to the GIFs, so ⌘4 shows it and Open On can start there.
+- The emoji picker is off until you turn on Settings → General → Emoji Picker. Until then ⌃⌘Space still opens Apple’s.
 
 ## [1.4.1] - 2026-09-29
 
