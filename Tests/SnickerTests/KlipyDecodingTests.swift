@@ -29,6 +29,17 @@ struct KlipyDecodingTests {
         #expect(abs(gif.aspectRatio - 220.0 / 165.0) < 0.001)
     }
 
+    @Test func decodesAStickerFromItsTransparentRenditions() throws {
+        let sticker = try #require(try decode("""
+        {"results": [{"id": "9", "title": "Wut What Sticker", "media_formats": {
+            "gif_transparent": {"url": "https://static.klipy.com/full.gif", "dims": [366, 366]},
+            "tinygif_transparent": {"url": "https://static.klipy.com/tiny.gif", "dims": [200, 200]}
+        }}]}
+        """).first)
+        #expect(sticker.fullURL.absoluteString == "https://static.klipy.com/full.gif")
+        #expect(sticker.previewURL.absoluteString == "https://static.klipy.com/tiny.gif")
+    }
+
     @Test func acceptsNumericIDsAndFallsBackToTheDescription() throws {
         let gif = try #require(try decode("""
         {"results": [{"id": 7, "content_description": "A wave",
@@ -58,5 +69,11 @@ struct KlipyDecodingTests {
         ]}
         """)
         #expect(gifs.map(\.aspectRatio) == [2.2, 0.5])
+    }
+
+    @Test func uniqueKeepsTheFirstOfEachGifInOrder() {
+        let url = URL(string: "https://static.klipy.com/a.gif")!
+        func gif(_ id: String) -> Gif { Gif(id: id, title: id, previewURL: url, fullURL: url, pageURL: nil, aspectRatio: 1) }
+        #expect(Klipy.unique([gif("a"), gif("b"), gif("a"), gif("c"), gif("b")]).map(\.id) == ["a", "b", "c"])
     }
 }

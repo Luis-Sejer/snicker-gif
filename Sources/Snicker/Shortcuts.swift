@@ -62,7 +62,7 @@ struct Shortcut: Codable, Equatable {
 
 /// Everything the keyboard can do in Snicker. Every one is remappable, for keyboards without arrow keys and friends.
 enum ShortcutAction: String, CaseIterable {
-    case openSnicker, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads, surpriseMe
+    case openSnicker, selectNext, selectPrevious, copyGif, copyLink, toggleFavorite, saveToDownloads, surpriseMe, switchMediaKind
     case showFavorites, showRecent, showTrending
     case favoriteSlot1, favoriteSlot2, favoriteSlot3, favoriteSlot4, favoriteSlot5
     case favoriteSlot6, favoriteSlot7, favoriteSlot8, favoriteSlot9
@@ -92,6 +92,7 @@ enum ShortcutAction: String, CaseIterable {
         case .toggleFavorite: return "Add to or Remove from Favorites"
         case .saveToDownloads: return "Save to Downloads"
         case .surpriseMe: return "Surprise Me"
+        case .switchMediaKind: return "Switch GIFs and Stickers"
         case .showFavorites: return "Show Favorites"
         case .showRecent: return "Show Recent"
         case .showTrending: return "Show Trending"
@@ -116,6 +117,7 @@ enum ShortcutAction: String, CaseIterable {
         case .toggleFavorite: return Shortcut(keyCode: kVK_ANSI_D, modifiers: cmdKey, keyName: "D")
         case .saveToDownloads: return Shortcut(keyCode: kVK_ANSI_S, modifiers: cmdKey, keyName: "S")
         case .surpriseMe: return Shortcut(keyCode: kVK_ANSI_R, modifiers: cmdKey, keyName: "R")
+        case .switchMediaKind: return Shortcut(keyCode: kVK_ANSI_T, modifiers: cmdKey, keyName: "T")
         case .showFavorites: return Shortcut(keyCode: kVK_ANSI_1, modifiers: cmdKey, keyName: "1")
         case .showRecent: return Shortcut(keyCode: kVK_ANSI_2, modifiers: cmdKey, keyName: "2")
         case .showTrending: return Shortcut(keyCode: kVK_ANSI_3, modifiers: cmdKey, keyName: "3")

@@ -42,7 +42,7 @@ struct GeneralSettingsView: View {
                     }
                 }
             } footer: {
-                Text("Work-Safe hides anything you wouldn’t want popping up in a work chat. Standard hides the most explicit GIFs. Filtering is done by KLIPY.")
+                Text("From mildest to wildest. Work-Safe hides anything you wouldn’t want popping up in a work chat, Standard hides the most explicit GIFs, and Unrestricted shows everything. Cursed shows only the wild ones: what Work-Safe would hide, plus cursed GIFs for your search. Filtering is done by KLIPY.")
             }
 
             Section {

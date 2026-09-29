@@ -6,6 +6,11 @@ All notable changes to Snicker are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+
+- Stickers: switch between GIFs and KLIPY's stickers with the GIFs | Stickers switch in the search field, or ⌘T. Stickers have transparent backgrounds and paste like GIFs.
+- Cursed (Experimental), a new Content setting that shows only the wild GIFs: what Work-Safe would hide, plus cursed GIFs for your search. A Cursed chip stays visible while it's on; click it to turn Cursed off.
+
 ## [1.4.1] - 2026-09-29
 
 ### Fixed

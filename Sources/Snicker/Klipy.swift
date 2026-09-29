@@ -34,11 +34,14 @@ struct Gif: Identifiable, Codable, Hashable {
     }
 }
 
-/// How strictly KLIPY filters results. The raw values are KLIPY's own `contentfilter` levels.
+/// How strictly KLIPY filters results, mildest first, which is the order Settings lists them in.
+/// The raw values are KLIPY's own `contentfilter` levels.
 enum ContentFilter: String, CaseIterable {
-    case unrestricted = "off"
-    case standard = "medium"
     case workSafe = "high"
+    case standard = "medium"
+    case unrestricted = "off"
+    /// Only the wild stuff. KLIPY has no such level, so `Klipy.fetchCursed` builds it from several searches.
+    case cursed
 
     static let defaultsKey = "contentFilter"
 
@@ -47,6 +50,29 @@ enum ContentFilter: String, CaseIterable {
         case .unrestricted: "Unrestricted"
         case .standard: "Standard"
         case .workSafe: "Work-Safe"
+        case .cursed: "Cursed (Experimental)"
+        }
+    }
+}
+
+/// GIFs or KLIPY's stickers, which are transparent GIFs.
+enum MediaKind: String, CaseIterable {
+    case gifs, stickers
+
+    static let defaultsKey = "mediaKind"
+
+    var title: String {
+        switch self {
+        case .gifs: "GIFs"
+        case .stickers: "Stickers"
+        }
+    }
+
+    /// The full-size and preview renditions to ask for; `Item.gif` picks whichever came back.
+    fileprivate var mediaFilter: String {
+        switch self {
+        case .gifs: "gif,tinygif"
+        case .stickers: "gif_transparent,tinygif_transparent"
         }
     }
 }
@@ -60,12 +86,53 @@ enum Klipy {
     private static let suggestionLimit = "8"
 
     /// Trending when the query is empty, otherwise search results.
-    static func fetch(query: String, apiKey: String, contentFilter: ContentFilter) async throws -> [Gif] {
+    static func fetch(query: String, apiKey: String, contentFilter: ContentFilter, kind: MediaKind) async throws -> [Gif] {
         let trimmed = query.trimmingCharacters(in: .whitespaces)
-        var parameters = ["limit": resultLimit, "media_filter": "gif,tinygif", "contentfilter": contentFilter.rawValue]
-        if !trimmed.isEmpty { parameters["q"] = trimmed }
-        let data = try await request(trimmed.isEmpty ? "featured" : "search", apiKey: apiKey, parameters: parameters)
-        return try decodeGifs(from: data)
+        guard contentFilter != .cursed else { return try await fetchCursed(query: trimmed, apiKey: apiKey, kind: kind) }
+        return try await page(query: trimmed, apiKey: apiKey, level: contentFilter, kind: kind, limit: resultLimit).gifs
+    }
+
+    private static let cursedPageLimit = "50"
+    private static let cursedPageCount = 2
+
+    /// What Work-Safe hides from the first pages, in KLIPY's order. That alone is often only a handful, so it is
+    /// topped up with a search for "<query> cursed".
+    private static func fetchCursed(query: String, apiKey: String, kind: MediaKind) async throws -> [Gif] {
+        async let everything = pages(query: query, apiKey: apiKey, level: .unrestricted, kind: kind)
+        async let safe = pages(query: query, apiKey: apiKey, level: .workSafe, kind: kind)
+        async let themed = page(query: query.isEmpty ? "cursed" : "\(query) cursed", apiKey: apiKey, level: .unrestricted, kind: kind, limit: resultLimit)
+        let safeIDs = Set(try await safe.map(\.id))
+        let hidden = try await everything.filter { !safeIDs.contains($0.id) }
+        return unique(hidden + (try await themed).gifs)
+    }
+
+    /// Follows KLIPY's `next` token, since later pages can repeat earlier results.
+    private static func pages(query: String, apiKey: String, level: ContentFilter, kind: MediaKind) async throws -> [Gif] {
+        var gifs: [Gif] = []
+        var position: String?
+        for _ in 0..<cursedPageCount {
+            let result = try await page(query: query, apiKey: apiKey, level: level, kind: kind, limit: cursedPageLimit, position: position)
+            gifs += result.gifs
+            guard let next = result.next, !next.isEmpty else { break }
+            position = next
+        }
+        return unique(gifs)
+    }
+
+    private static func page(query: String, apiKey: String, level: ContentFilter, kind: MediaKind, limit: String, position: String? = nil) async throws -> (gifs: [Gif], next: String?) {
+        var parameters = ["limit": limit, "media_filter": kind.mediaFilter, "contentfilter": level.rawValue]
+        if !query.isEmpty { parameters["q"] = query }
+        if kind == .stickers { parameters["searchfilter"] = "sticker" }
+        if let position { parameters["pos"] = position }
+        let data = try await request(query.isEmpty ? "featured" : "search", apiKey: apiKey, parameters: parameters)
+        let response = try JSONDecoder().decode(SearchResponse.self, from: data)
+        return (response.results.compactMap(\.gif), response.next)
+    }
+
+    /// Keeps the first of each GIF, so order is preserved.
+    static func unique(_ gifs: [Gif]) -> [Gif] {
+        var seen = Set<String>()
+        return gifs.filter { seen.insert($0.id).inserted }
     }
 
     /// Results without a GIF rendition are skipped rather than failing the whole page.
@@ -114,6 +181,7 @@ private struct TermsResponse: Decodable {
 
 private struct SearchResponse: Decodable {
     let results: [Item]
+    let next: String?
 
     struct Item: Decodable {
         let id: String
@@ -156,8 +224,9 @@ private struct SearchResponse: Decodable {
         }
 
         var gif: Gif? {
-            guard let full = mediaFormats["gif"] else { return nil }
-            let preview = mediaFormats["tinygif"] ?? full
+            // Stickers come as the *_transparent renditions.
+            guard let full = mediaFormats["gif"] ?? mediaFormats["gif_transparent"] else { return nil }
+            let preview = mediaFormats["tinygif"] ?? mediaFormats["tinygif_transparent"] ?? full
             let aspectRatio = preview.aspectRatio ?? full.aspectRatio ?? 1
             return Gif(
                 id: id,

@@ -140,6 +140,7 @@ struct ContentView: View {
     @AppStorage(SettingKeys.randomFileNames) private var randomFileNames = false
     @AppStorage(SettingKeys.showTabNames) private var showTabNames = false
     @AppStorage(ContentFilter.defaultsKey) private var contentFilter: ContentFilter = .unrestricted
+    @AppStorage(MediaKind.defaultsKey) private var mediaKind: MediaKind = .gifs
     /// Owned by the app delegate, which shares them with the menu bar icon's right-click menu.
     @ObservedObject var state: ViewState
     @ObservedObject var library: Library
@@ -255,7 +256,7 @@ struct ContentView: View {
         .safeAreaInset(edge: .top, spacing: 4) { header }
         .safeAreaInset(edge: .bottom, spacing: 0) { bottomBar }
         .overlay { emptyState }
-        .task(id: "\(effectiveMode)|\(state.query)|\(contentFilter.rawValue)") {
+        .task(id: "\(effectiveMode)|\(state.query)|\(contentFilter.rawValue)|\(mediaKind.rawValue)") {
             if effectiveMode == .klipy {
                 do { try await Task.sleep(for: Self.searchDebounce) } catch { return }
             }
@@ -293,6 +294,16 @@ struct ContentView: View {
                 .font(.title3)
                 .focused($searchFocused)
                 .accessibilityHint("\(key(.selectNext)) and \(key(.selectPrevious)) choose a GIF, \(key(.copyGif)) copies it, \(key(.copyLink)) copies its link, and \(key(.toggleFavorite)) favorites it.")
+            Picker("Show", selection: $mediaKind) {
+                ForEach(MediaKind.allCases, id: \.self) { kind in
+                    Text(kind.title).tag(kind)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .controlSize(.small)
+            .fixedSize()
+            .help("Switch between GIFs and stickers (\(key(.switchMediaKind)))")
             if state.isLoading {
                 ProgressView().controlSize(.small)
             } else if !state.query.isEmpty {
@@ -313,6 +324,13 @@ struct ContentView: View {
         ScrollView(.horizontal) {
             GlassEffectContainer(spacing: 6) {
                 HStack(spacing: 6) {
+                    if contentFilter == .cursed {
+                        // Always visible, so nobody forgets it's on before pasting into a work chat.
+                        chip("Cursed", systemImage: "flame.fill", isSelected: true) { contentFilter = .unrestricted }
+                            .help("Cursed is on. Click to turn it off.")
+                            .accessibilityLabel("Cursed is on")
+                            .accessibilityHint("Turns Cursed off")
+                    }
                     tab("Favorites", systemImage: "star.fill", mode: .favorites)
                     tab("Recent", systemImage: "clock.arrow.circlepath", mode: .recents)
                     tab("Trending", systemImage: "trophy.fill", mode: .klipy)
@@ -591,6 +609,12 @@ struct ContentView: View {
                     systemImage: "square.stack",
                     description: Text("Right-click a GIF and choose Add to Collection.")
                 )
+            case .klipy where contentFilter == .cursed:
+                ContentUnavailableView(
+                    "Nothing Cursed Here",
+                    systemImage: "flame",
+                    description: Text("Everything for this search is too wholesome. Try something spicier.")
+                )
             case .klipy where !state.query.isEmpty:
                 ContentUnavailableView.search(text: state.query)
             case .klipy:
@@ -622,7 +646,7 @@ struct ContentView: View {
         let query = state.query
         async let suggestions = fetchSuggestions(for: query)
         do {
-            show(try await Klipy.fetch(query: query, apiKey: apiKey, contentFilter: contentFilter))
+            show(try await Klipy.fetch(query: query, apiKey: apiKey, contentFilter: contentFilter, kind: mediaKind))
             state.suggestions = await suggestions
         } catch is CancellationError {
         } catch let error as URLError where error.code == .cancelled {
@@ -654,6 +678,9 @@ struct ContentView: View {
     private func perform(_ action: ShortcutAction) -> Bool {
         switch action {
         case .surpriseMe: return surpriseMe()
+        case .switchMediaKind:
+            mediaKind = mediaKind == .gifs ? .stickers : .gifs
+            return true
         case .selectNext: return moveSelection(by: 1)
         case .selectPrevious: return moveSelection(by: -1)
         case .showFavorites: show(.favorites)
